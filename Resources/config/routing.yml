@@ -1,0 +1,3 @@
+ekyna_orde_order_admin:
+    resource: "routing/admin/order.yml"
+    prefix:   /admin/orde/orders

@@ -1,0 +1,20 @@
+{% extends "EkynaAdminBundle:Entity:sided.html.twig" %}
+
+{% block title %}
+<h1>{{ 'ekyna_order.order.header.edit'|trans({'%number%': order.number})|raw }}</h1>
+{% endblock %}
+
+{% block actions %}
+{{ ui_link(path('ekyna_order_order_admin_list'), 'ekyna_core.button.back_to_list', 'default', 'sm', 'list') }}
+{{ ui_link(path('ekyna_order_order_admin_new'), 'ekyna_order.order.button.new', 'primary', 'sm', 'plus') }}
+{% endblock %}
+
+{% block main %}
+<form action="{{ path('ekyna_order_order_admin_edit', {'orderId': order.id}) }}" {{ form_enctype(form) }} method="post" class="form-horizontal form-with-tabs">
+    {% include "EkynaOrderBundle:Order/Admin:_form.html.twig" %}
+    {{ ui_form_footer(path('ekyna_order_order_admin_show', {'orderId': order.id})) }}
+</form>
+{% endblock %}
+
+{% block side %}
+{% endblock %}

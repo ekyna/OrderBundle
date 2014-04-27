@@ -1,0 +1,19 @@
+ekyna_order:
+    order:
+        label:
+            singular: Commande
+            plural: Commandes
+        header:
+            list: Commandes <small>Liste des commandes</small>
+            show: Detail de la commande<small>%number%</small>
+            content: Contenu de la commande <small>%number%</small>
+            new: Créer une nouvelle commande
+            edit: Modifier la commande <small>%number%</small>
+            remove: Supprimer la commande <small>%number%</small>
+        button:
+            list: Liste des commandes
+            show: Detail de la commande
+            new: Nouvelle commande
+            edit: Modifier la commande
+        alert:
+            no_order: Aucune commande configuré

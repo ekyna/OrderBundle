@@ -1,0 +1,19 @@
+{% extends "EkynaAdminBundle:Entity:sided.html.twig" %}
+
+{% block title %}
+<h1>{{ 'ekyna_order.order.header.new'|trans|raw }}</h1>
+{% endblock %}
+
+{% block actions %}
+{{ ui_link(path('ekyna_order_order_admin_list'), 'ekyna_core.button.back_to_list', 'default', 'sm', 'list') }}
+{% endblock %}
+
+{% block main %}
+<form action="{{ path('ekyna_order_order_admin_new') }}" {{ form_enctype(form) }} method="post" class="form-horizontal form-with-tabs">
+    {% include "EkynaOrderBundle:Order/Admin:_form.html.twig" %}
+    {{ ui_form_footer(path('ekyna_order_order_admin_list')) }}
+</form>
+{% endblock %}
+
+{% block side %}
+{% endblock %}
