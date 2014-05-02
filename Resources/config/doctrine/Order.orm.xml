@@ -33,7 +33,7 @@
         <field name="completedAt" column="completed_at" type="datetime" nullable="true" />
         <field name="expiresAt" column="expires_at" type="datetime" nullable="true" />
 
-        <one-to-many field="items" target-entity="Ekyna\Bundle\OrderBundle\Entity\OrderItem" mapped-by="order" orphan-removal="true">
+        <one-to-many field="items" target-entity="Ekyna\Bundle\OrderBundle\Entity\OrderItem" mapped-by="order">
             <order-by>
                 <order-by-field name="position" direction="ASC" />
             </order-by>
