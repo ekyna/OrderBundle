@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\OrderBundle\Entity;
 
 use Ekyna\Bundle\AdminBundle\Doctrine\ORM\ResourceRepository;
-use Ekyna\Component\Sale\Order\OrderStatuses;
+use Ekyna\Component\Sale\Order\OrderInterface;
 
 /**
  * OrderRepository.
@@ -12,16 +12,11 @@ use Ekyna\Component\Sale\Order\OrderStatuses;
  */
 class OrderRepository extends ResourceRepository
 {
-    public function findCart($cartId)
+    public function createNew($type = OrderInterface::TYPE_ORDER)
     {
-        $qb = $this->createQueryBuilder('c');
+        $order = parent::createNew();
+        $order->setType($type);
 
-        $qb
-            ->andWhere($qb->expr()->eq('c.id', ':id'))
-            ->andWhere($qb->expr()->eq('c.status', OrderStatuses::CART))
-            ->setParameter('id', $cartId)
-        ;
-
-        return $qb->getQuery()->getSingleResult();
+        return $order;
     }
 }

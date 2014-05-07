@@ -5,7 +5,7 @@ namespace Ekyna\Bundle\OrderBundle\Table\Type;
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Table\AbstractTableType;
-use Ekyna\Component\Sale\Order\OrderStatuses;
+use Ekyna\Component\Sale\Order\OrderInterface;
 
 /**
  * OrderType
@@ -62,8 +62,8 @@ class OrderType extends AbstractTableType
             ->setDefaultSort('number')
             ->setCustomizeQueryBuilder(function(QueryBuilder $qb) {
                 $qb
-                    ->andWhere($qb->expr()->neq('a.status', ':not_cart_status'))
-                    ->setParameter('not_cart_status', OrderStatuses::CART)
+                    ->andWhere($qb->expr()->eq('a.type', ':type'))
+                    ->setParameter('type', OrderInterface::TYPE_ORDER)
                 ;
             });
         ;

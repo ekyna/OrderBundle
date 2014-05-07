@@ -3,13 +3,17 @@
 namespace Ekyna\Bundle\OrderBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Bundle\UserBundle\Model\AddressInterface;
+use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Sale\Order\OrderInterface;
 use Ekyna\Component\Sale\Order\OrderItemInterface;
-use Ekyna\Component\Sale\Order\OrderStatuses;
-use Ekyna\Component\Sale\TaxesAmounts;
+use Ekyna\Component\Sale\Order\OrderPaymentInterface;
+use Ekyna\Component\Sale\Order\OrderStates;
+use Ekyna\Component\Sale\Order\OrderShipmentInterface;
+use Ekyna\Component\Sale\Payment\PaymentStates;
 use Ekyna\Component\Sale\Product\ProductTypes;
+use Ekyna\Component\Sale\TaxesAmounts;
+use Ekyna\Component\Sale\Shipment\ShipmentStates;
 
 /**
  * Order
@@ -39,6 +43,11 @@ class Order implements OrderInterface
     protected $totalWeight;
 
     /**
+     * @var string
+     */
+    protected $currency;
+
+    /**
      * @var float
      */
     protected $netTotal;
@@ -49,14 +58,29 @@ class Order implements OrderInterface
     protected $atiTotal;
 
     /**
-     * @var integer
+     * @var string
      */
-    protected $status;
+    protected $type;
 
     /**
-     * @var \DateTime
+     * @var bool
      */
-    protected $expiresAt;
+    protected $locked;
+
+    /**
+     * @var string
+     */
+    protected $state;
+
+    /**
+     * @var string
+     */
+    protected $paymentState;
+
+    /**
+     * @var string
+     */
+    protected $shipmentState;
 
     /**
      * @var \DateTime
@@ -84,6 +108,16 @@ class Order implements OrderInterface
     protected $items;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $payments;
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $shipments;
+
+    /**
      * @var \Ekyna\Bundle\UserBundle\Model\UserInterface
      */
     protected $user;
@@ -104,8 +138,18 @@ class Order implements OrderInterface
      */
     public function __construct()
     {
-        $this->items = new ArrayCollection();
-        $this->status = OrderStatuses::CART;
+        $this->type   = OrderInterface::TYPE_ORDER;
+        $this->locked = false;
+
+        $this->currency = 'EUR';
+
+        $this->items     = new ArrayCollection();
+        $this->payments  = new ArrayCollection();
+        $this->shipments = new ArrayCollection();
+
+        $this->state         = OrderStates::STATE_NEW;
+        $this->paymentState  = PaymentStates::STATE_PENDING;
+        $this->shipmentState = ShipmentStates::STATE_PENDING;
     }
 
     /**
@@ -131,7 +175,7 @@ class Order implements OrderInterface
      *
      * @param string $number
      * 
-     * @return Order
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setNumber($number)
     {
@@ -153,7 +197,7 @@ class Order implements OrderInterface
      *
      * @param integer $itemCount
      * 
-     * @return Order
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setItemsCount($count)
     {
@@ -175,7 +219,7 @@ class Order implements OrderInterface
      *
      * @param integer $weight
      * 
-     * @return Order
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setTotalWeight($weight)
     {
@@ -193,11 +237,33 @@ class Order implements OrderInterface
     }
 
     /**
+     * Sets the currency.
+     *
+     * @param string $currency
+     *
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
+     */
+    public function setCurrency($currency)
+    {
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
+    }
+
+    /**
      * Sets the "all taxes excluded" total.
      *
      * @param float $netTotal
      * 
-     * @return Order
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setNetTotal($netTotal)
     {
@@ -219,7 +285,7 @@ class Order implements OrderInterface
      *
      * @param float $atiTotal
      * 
-     * @return Order
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setAtiTotal($atiTotal)
     {
@@ -251,16 +317,60 @@ class Order implements OrderInterface
         return $taxesAmounts;
     }
 
+	/**
+	 * Sets the type.
+	 * 
+	 * @param string $type
+	 * 
+	 * @return \Ekyna\Bundle\OrderBundle\Entity\Order
+	 */
+	public function setType($type)
+	{
+		$this->type = $type;
+
+		return $this;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getType()
+	{
+		return $this->type;
+	}
+
+	/**
+	 * Sets whether the order is locked.
+	 * 
+	 * @param boolean $locked
+	 * 
+	 * @return \Ekyna\Bundle\OrderBundle\Entity\Order
+	 */
+	public function setLocked($locked)
+	{
+		$this->locked = (bool) $locked;
+
+		return $this;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getLocked()
+	{
+		return $this->locked;
+	}
+
     /**
-     * Sets the status.
+     * Sets the state.
      *
-     * @param integer $status
+     * @param string $state
      * 
-     * @return Order
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
-    public function setStatus($status)
+    public function setState($state)
     {
-        $this->status = $status;
+        $this->state = $state;
 
         return $this;
     }
@@ -268,21 +378,21 @@ class Order implements OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function getStatus()
+    public function getState()
     {
-        return $this->status;
+        return $this->state;
     }
 
     /**
-     * Sets the "expires at" datetime.
+     * Sets the payment state.
      *
-     * @param \DateTime $expiresAt
+     * @param string $paymentState
      * 
-     * @return Order
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
-    public function setExpiresAt($expiresAt)
+    public function setPaymentState($paymentState)
     {
-        $this->expiresAt = $expiresAt;
+        $this->paymentState = $paymentState;
 
         return $this;
     }
@@ -290,9 +400,31 @@ class Order implements OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function getExpiresAt()
+    public function getPaymentState()
     {
-        return $this->expiresAt;
+        return $this->paymentState;
+    }
+
+    /**
+     * Sets the shipment state.
+     *
+     * @param string $shipmentState
+     * 
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
+     */
+    public function setShipmentState($shipmentState)
+    {
+        $this->shipmentState = $shipmentState;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getShipmentState()
+    {
+        return $this->shipmentState;
     }
 
     /**
@@ -300,7 +432,7 @@ class Order implements OrderInterface
      *
      * @param \DateTime $completedAt
      * 
-     * @return Order
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setCompletedAt(\DateTime $completedAt = null)
     {
@@ -322,7 +454,7 @@ class Order implements OrderInterface
      *
      * @param \DateTime $createdAt
      * 
-     * @return Order
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setCreatedAt($createdAt)
     {
@@ -344,7 +476,7 @@ class Order implements OrderInterface
      *
      * @param \DateTime $updatedAt
      * 
-     * @return Order
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setUpdatedAt(\DateTime $updatedAt = null)
     {
@@ -366,7 +498,7 @@ class Order implements OrderInterface
      *
      * @param \DateTime $deletedAt
      * 
-     * @return Order
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setDeletedAt(\DateTime $deletedAt = null)
     {
@@ -384,7 +516,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * Returns wether the order has the given item or not.
+     * Returns whether the order has the given item or not.
      *
      * @param \Ekyna\Component\Sale\Order\OrderItemInterface $orderItem
      *
@@ -400,15 +532,13 @@ class Order implements OrderInterface
      *
      * @param \Ekyna\Component\Sale\Order\OrderItemInterface $orderItem
      * 
-     * @return Order
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function addItem(OrderItemInterface $orderItem)
     {
         if($this->hasItem($orderItem)) {
             return $this;
         }
-
-        $this->setUpdatedAt(new \DateTime());
 
         foreach($this->items as $item) {
             if($item->equals($orderItem)) {
@@ -430,7 +560,6 @@ class Order implements OrderInterface
      */
     public function removeItem(OrderItemInterface $orderItem)
     {
-        $this->setUpdatedAt(new \DateTime());
         $this->items->removeElement($orderItem);
     }
 
@@ -466,11 +595,109 @@ class Order implements OrderInterface
     }
 
     /**
+     * Returns whether the order has the given payment or not.
+     *
+     * @param \Ekyna\Component\Sale\Order\OrderPaymentInterface $orderPayment
+     *
+     * @return boolean
+     */
+    public function hasPayment(OrderPaymentInterface $orderPayment)
+    {
+        return $this->payments->contains($orderPayment);
+    }
+
+    /**
+     * Adds a payment.
+     *
+     * @param \Ekyna\Component\Sale\Order\OrderPaymentInterface $payment
+     * 
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
+     */
+    public function addPayment(OrderPaymentInterface $orderPayment)
+    {
+        if($this->hasPayment($orderPayment)) {
+            return $this;
+        }
+
+        $orderPayment->setOrder($this);
+        $this->payments->add($orderPayment);
+
+        return $this;
+    }
+
+    /**
+     * Removes the payment.
+     *
+     * @param \Ekyna\Component\Sale\Order\OrderPaymentInterface $orderPayment
+     */
+    public function removePayment(OrderPaymentInterface $orderPayment)
+    {
+        $this->payments->removeElement($orderPayment);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPayments()
+    {
+        return $this->payments;
+    }
+
+    /**
+     * Returns whether the order has the given shipment or not.
+     *
+     * @param \Ekyna\Component\Sale\Order\OrderShipmentInterface $orderShipment
+     *
+     * @return boolean
+     */
+    public function hasShipment(OrderShipmentInterface $orderShipment)
+    {
+        return $this->shipments->contains($orderShipment);
+    }
+
+    /**
+     * Adds a shipment.
+     *
+     * @param \Ekyna\Component\Sale\Order\OrderShipmentInterface $shipment
+     * 
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
+     */
+    public function addShipment(OrderShipmentInterface $orderShipment)
+    {
+        if($this->hasShipment($orderShipment)) {
+            return $this;
+        }
+
+        $orderShipment->setOrder($this);
+        $this->shipments->add($orderShipment);
+
+        return $this;
+    }
+
+    /**
+     * Removes the shipment.
+     *
+     * @param \Ekyna\Component\Sale\Order\OrderShipmentInterface $orderShipment
+     */
+    public function removeShipment(OrderShipmentInterface $orderShipment)
+    {
+        $this->shipments->removeElement($orderShipment);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getShipments()
+    {
+        return $this->shipments;
+    }
+
+    /**
      * Sets the user.
      *
      * @param \Ekyna\Bundle\UserBundle\Model\UserInterface $user
      * 
-     * @return Order
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setUser(UserInterface $user = null)
     {
@@ -492,7 +719,7 @@ class Order implements OrderInterface
      *
      * @param \Ekyna\Bundle\UserBundle\Model\AddressInterface $address
      * 
-     * @return Order
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setInvoiceAddress(AddressInterface $address = null)
     {
@@ -514,7 +741,7 @@ class Order implements OrderInterface
      *
      * @param \Ekyna\Bundle\UserBundle\Model\AddressInterface $address
      * 
-     * @return Order
+     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setDeliveryAddress(AddressInterface $address = null)
     {
