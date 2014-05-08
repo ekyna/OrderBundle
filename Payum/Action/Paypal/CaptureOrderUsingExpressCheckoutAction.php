@@ -54,7 +54,7 @@ class CaptureOrderUsingExpressCheckoutAction extends PaymentAwareAction
                 $request->getToken()->getPaymentName(),
                 $order
             )->getTargetUrl();*/
-            
+
             $details['PAYMENTREQUEST_n_INVNUM'] = $payment->getId();
             $details['PAYMENTREQUEST_0_CURRENCYCODE'] = 'EUR';
             $details['PAYMENTREQUEST_0_AMT'] = $order->getAtiTotal();
@@ -63,13 +63,13 @@ class CaptureOrderUsingExpressCheckoutAction extends PaymentAwareAction
 
             foreach($order->getItems() as $item) {
                 $details['L_PAYMENTREQUEST_n_NAME'.$m] = $item->getDesignation();
-                $details['L_PAYMENTREQUEST_n_AMT'.$m] = $item->getBaseAtiPrice();
+                $details['L_PAYMENTREQUEST_n_AMT'.$m] = round($item->getBaseAtiPrice(), 2);
                 $details['L_PAYMENTREQUEST_n_QTY'.$m] = $item->getQuantity();
                 $itemTotal += $item->getTotalAtiPrice();
                 $m++;
             }
 
-            $details['PAYMENTREQUEST_0_ITEMAMT'] = $itemTotal;
+            $details['PAYMENTREQUEST_0_ITEMAMT'] = round($itemTotal, 2);
 
             //$details['PAYMENTREQUEST_0_SHIPPINGAMT'] = $order->get();
 
