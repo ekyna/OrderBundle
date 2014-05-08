@@ -214,20 +214,20 @@ class OrderSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
     	return array(
-    		OrderEvents::PRE_CONTENT_CHANGE   => array('onOrderPreContentChange',   128),
-    		OrderEvents::POST_CONTENT_CHANGE  => array('onOrderPostContentChange',  128),
+    		OrderEvents::PRE_CONTENT_CHANGE   => array('onOrderPreContentChange',   512),
+    		OrderEvents::POST_CONTENT_CHANGE  => array('onOrderPostContentChange',  512),
 
-    		OrderEvents::PRE_PAYMENT_PROCESS  => array('onOrderPrePaymentProcess',  128),
-    		OrderEvents::POST_PAYMENT_PROCESS => array('onOrderPostPaymentProcess', 128),
+    		OrderEvents::PRE_PAYMENT_PROCESS  => array('onOrderPrePaymentProcess',  512),
+    		OrderEvents::POST_PAYMENT_PROCESS => array('onOrderPostPaymentProcess', 512),
 
-    		OrderEvents::PRE_STATE_CHANGE     => array('onOrderPreStateChange',     128),
-    		OrderEvents::POST_STATE_CHANGE    => array('onOrderPostStateChange',    128),
+    		OrderEvents::PRE_STATE_CHANGE     => array('onOrderPreStateChange',     512),
+    		OrderEvents::POST_STATE_CHANGE    => array('onOrderPostStateChange',    512),
 
-    		PaymentEvents::PRE_STATE_CHANGE   => array('onPaymentPreStateChange',   128),
-    		PaymentEvents::POST_STATE_CHANGE  => array('onPaymentPostStateChange',  128),
+    		PaymentEvents::PRE_STATE_CHANGE   => array('onPaymentPreStateChange',   512),
+    		PaymentEvents::POST_STATE_CHANGE  => array('onPaymentPostStateChange',  512),
 
-    		ShipmentEvents::PRE_STATE_CHANGE  => array('onShipmentPreStateChange',  128),
-    		ShipmentEvents::POST_STATE_CHANGE => array('onShipmentPostStateChange', 128),
+    		ShipmentEvents::PRE_STATE_CHANGE  => array('onShipmentPreStateChange',  512),
+    		ShipmentEvents::POST_STATE_CHANGE => array('onShipmentPostStateChange', 512),
     	);
     }
 }
