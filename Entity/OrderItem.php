@@ -51,6 +51,11 @@ class OrderItem implements OrderItemInterface
      */
     protected $options;
 
+    /**
+     * @var array
+     */
+    protected $extras;
+
 
     /**
      * Constructor.
@@ -58,6 +63,7 @@ class OrderItem implements OrderItemInterface
     public function __construct()
     {
         $this->options = new ArrayCollection();
+        $this->extras = array();
     }
 
     /**
@@ -249,6 +255,28 @@ class OrderItem implements OrderItemInterface
             $this->quantity += $orderItem->getQuantity();
         }
         return $this;
+    }
+
+    /**
+     * Sets the extra datas.
+     *
+     * @param integer $extras
+     *
+     * @return OrderItem
+     */
+    public function setExtras($extras)
+    {
+        $this->extras = $extras;
+    
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getExtras()
+    {
+        return $this->extras;
     }
 
     /**
