@@ -317,6 +317,21 @@ class Order implements OrderInterface
         return $taxesAmounts;
     }
 
+    public function getNetShippingCost()
+    {
+        return 0;
+    }
+
+    public function getAtiShippingCost()
+    {
+        return 0;
+    }
+
+    public function getShippingTaxAmount()
+    {
+        return 0;
+    }
+    
 	/**
 	 * Sets the type.
 	 * 

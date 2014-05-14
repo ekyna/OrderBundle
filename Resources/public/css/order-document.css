@@ -1,0 +1,149 @@
+.order-doc-wrap {
+    font-family: Herlvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 21px;
+    color: #333333;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.order-doc-wrap h1 {
+    font-variant: small-caps;
+    color: #999999;
+    font-size: 1.6em;
+}
+
+.order-doc-header {
+    width: 100%;
+}
+
+.order-doc-company-address {
+    float: left;
+    text-align: left;
+}
+
+.order-doc-wrap table {
+    border-collapse: collapse;
+    border-spacing: 3px;
+}
+
+.order-doc-bloc {
+    margin: 0 0 40px 0;
+    width: 100%;
+}
+
+.order-doc-bloc:last-child {
+    margin: 0;
+}
+
+.order-doc-table {
+    width: 100%;
+}
+
+.order-doc-totals .order-doc-table {
+    width: auto;
+}
+
+.order-doc-table th {
+    text-transform: uppercase;
+    color: #999999;
+}
+
+.order-doc-table thead th {
+    padding: 0 8px;
+    position: relative;
+    text-align: left;
+    font-size: 12px;
+    line-height: 21px !important;
+    border-bottom: 1px solid #dddddd;
+    position: relative;
+}
+
+.order-doc-table thead th:before {
+    position: absolute;
+    display: block;
+    bottom: 0;
+    left: 0;
+    height: 7px;
+    width: 1px;
+    border-left: 1px solid #dddddd;
+    content: "";
+}
+
+.order-doc-table th:last-child:after {
+    position: absolute;
+    display: block;
+    bottom: 0;
+    right: 0;
+    height: 7px;
+    width: 1px;
+    border-right: 1px solid #dddddd;
+    content: "";
+}
+
+.order-doc-table thead th.order-doc-blank {
+    border-bottom: 0;
+}
+
+.order-doc-table tbody td {
+    padding: 5px 8px;
+    line-height: 18px;
+    vertical-align: top;
+}
+
+.order-doc-table>tbody>tr:nth-child(even)>td {
+    background: #f6f6f6;
+}
+
+.order-doc-table tbody td.order-doc-address {
+    padding-top: 10px;
+    line-height: 20px;
+}
+
+.order-doc-item-options {
+    margin: 0;
+    padding-left: 24px;
+}
+
+.order-doc-items tbody td {
+    vertical-align: middle;
+}
+
+.order-doc-item-options {
+    font-size: 12px;
+}
+
+.order-doc-number {
+    text-align: right;
+}
+
+.order-doc-final-total {
+    vertical-align: bottom;
+}
+
+.order-doc-final-total-wrap {
+    padding: 7px;
+    border: 1px solid #dddddd;
+    border-radius: 7px;
+    background: #f6f6f6;
+}
+
+.order-doc-final-total-wrap table {
+    margin: auto;
+}
+
+.order-doc-final-total-wrap table td {
+    padding: 0 0 0 10px;
+    font-size: 18px;
+    text-align: right;
+}
+
+.order-doc-final-total-wrap table th {
+    padding: 0 10px 0 0;
+    text-align: left;
+}
+
+.order-doc-mentions {
+    margin-top: 60px;
+    text-align: center;
+}

@@ -12,7 +12,7 @@
 {% block main %}
 <form action="{{ path('ekyna_order_order_admin_edit', {'orderId': order.id}) }}" {{ form_enctype(form) }} method="post" class="form-horizontal form-with-tabs">
     {% include "EkynaOrderBundle:Order/Admin:_form.html.twig" %}
-    {{ ui_form_footer(path('ekyna_order_order_admin_show', {'orderId': order.id})) }}
+    {{ ui_form_footer(form) }}
 </form>
 {% endblock %}
 

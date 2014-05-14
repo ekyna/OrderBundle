@@ -15,7 +15,7 @@
 	    {{ bootstrap_set_style('horizontal') }}
 		{{ form_widget(form) }}
     </div>
-    {{ ui_form_footer(path('ekyna_order_order_admin_show', {'orderId': order.id}), 'ekyna_core.button.remove', 'danger') }}
+    {{ ui_form_footer(form) }}
 </form>
 {% endblock %}
 

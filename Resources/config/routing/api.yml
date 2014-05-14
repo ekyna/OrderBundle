@@ -1,0 +1,15 @@
+ekyna_order_invoice_render:
+    path: /{orderId}/invoice/render.{_format}
+    defaults: { _controller: "EkynaOrderBundle:Document:invoice", _format: html }
+    requirements:
+        _method: GET
+        orderId: \d+
+        _format:  html|pdf
+
+ekyna_order_invoice_download:
+    path: /{orderId}/invoice/download.{_format}
+    defaults: { _controller: "EkynaOrderBundle:Document:invoice", _format: pdf, _download: true }
+    requirements:
+        _method: GET
+        orderId: \d+
+        _format:  html|pdf

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	{% block stylesheets -%}
+	{% stylesheets output='css/order-document.css' filter='cssrewrite, ?yui_css'
+	    'bundles/ekynaorder/css/order-document.css'
+	%}
+	<link href="{{ app.request.getSchemeAndHttpHost() ~ asset_url }}" rel="stylesheet" type="text/css" />
+	{%- endstylesheets %}
+    {% endblock %}
+</head>
+<body>
+<div class="order-doc-wrap">
+
+{# --- HEADER --- #}
+{% block header %}
+{#<table class="order-doc-bloc order-doc-header">
+    <tr>
+        <td>
+            {% if companyLogo is not same as(false) %}
+            {{ render_image(companyLogo, {}, path('accueil'), {}, true) }}
+            {% endif %}
+            <br>
+            <strong>{{ companyAddress.street ~ ' - ' ~ companyAddress.postalCode ~ ' ' ~ companyAddress.city }}<br>
+			Tél. {{ companyAddress.phone ~ ' - Port. ' ~ companyAddress.mobile }}</strong><br>
+			Mail : {{ app['parameter.company_email'] }}
+        </td>
+        <td>
+            <h1>Facture n°{{ order.reference }}</h1>
+            <p>Le {{ order.invoiceDate|date('d/m/Y') }}</p>           
+        </td>
+    </tr>
+</table>#}
+{% endblock header %}
+
+{# --- ADDRESSES --- #}
+{% block addresses %}
+<table class="order-doc-bloc order-doc-table">
+    <thead>
+        <tr>
+            {% if order.requiresShipment %}
+            <th>Adresse de livraison</th>
+            {% else %}
+            <th class="order-doc-blank">&nbsp;</th>
+            {% endif %}
+            <th class="order-doc-blank">&nbsp;</th>
+            <th>Adresse de facturation</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td width="42%" class="order-doc-address">
+                {% if order.requiresShipment %}
+                {{ render_address(order.deliveryAddress) }}
+                {% endif %}
+            </td>
+            <td width="16%">&nbsp;</td>
+            <td width="42%" class="order-doc-address">
+	            {{ render_address(order.deliveryAddress) }}
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% endblock addresses %}
+
+{# --- ITEMS --- #}
+{% block items %}
+<table class="order-doc-bloc order-doc-table order-doc-items">
+    <thead>
+        <tr>
+            <th>Désignation</th>
+            <th>Référence</th>
+            {#% if order.hasItemsDiscount %}<th>Remise</th>{% endif %#}
+            <th>Prix unit. H.T.</th>
+            <th>T.V.A.</th>
+            <th>Quantité</th>
+            <th>Total H.T.</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in order.items %}
+        <tr>
+            <td>
+            {% block item_designation %}
+                {{ item.designation }}
+                {% if item.options|length > 0 %}
+                <ul class="order-doc-item-options">
+                {% for option in item.options %}
+                    <li>{{ option_group_label(option.option)|trans }} : {{ option.designation }}</li>
+                {% endfor %}
+                </ul>
+                {% endif %}
+            {% endblock %}
+            </td>
+            <td>{{ item.reference }}</td>
+            {#% if order.hasItemsDiscount %}<td class="order-doc-number">{{ item.discount|number_format(2, ',', ' ') }} €</td>{% endif %#}
+            <td class="order-doc-number">{{ item.baseNetPrice|number_format(2, ',', ' ') }} €</td>
+            <td class="order-doc-number">{{ (item.tax.rate*100)|number_format(1, ',', ' ') }}%</td>
+            <td class="order-doc-number">{{ item.quantity }}</td>
+            <td class="order-doc-number">{{ item.totalNetPrice|number_format(2, ',', ' ') }} €</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock items %}
+
+{# --- TOTALS --- #}
+{% block totals %}
+<table class="order-doc-bloc order-doc-totals">
+    <tbody>
+        <tr>
+            <td>
+                <table class="order-doc-table">
+                    <thead>
+                        <tr>
+                            <th>Bases H.T.</th>
+                            {#% if order.totalDiscount > 0 %}<th>Remise</th>{% endif %#}
+                            <th>% T.V.A.</th>
+                            <th>Montant T.V.A.</th>
+                            {% if order.requiresShipment %}<th colspan="2">Port</th>{% endif %}
+                            <th colspan="2">Totaux</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set taxes = order.taxesAmounts %}
+                        <tr>
+                            <td class="order-doc-number" rowspan="{% if taxes|length > 1 %}{{ taxes|length }}{% else %}2{% endif %}">{{ order.netTotal|number_format(2, ',', ' ') }} €</td>
+                            {#% if order.totalDiscount > 0 %}<td class="order-doc-number" rowspan="{% if taxes|length > 1 %}{{ taxes|length }}{% else %}2{% endif %}">{{ order.totalDiscount|number_format(2, ',', ' ') }} €</td>{% endif %#}
+                            <td{% if taxes|length < 2 %} rowspan="2"{% endif %}>{% if taxes|length > 0 %}{{ (taxes|first).name }}{% endif %}</td>
+                            <td class="order-doc-number"{% if taxes|length < 2 %} rowspan="2"{% endif %}>{% if taxes|length > 0 %}{{ taxes|first.amount|number_format(2, ',', ' ') }} €{% endif %}</td>
+                            {% if order.requiresShipment %}
+                            <td><strong>H.T.</strong></td>
+                            <td class="order-doc-number">{{ order.netShippingCost|number_format(2, ',', ' ') }} €</td>
+                            {% endif %}
+                            <td><strong>H.T.</strong></td>
+                            <td class="order-doc-number">{{ order.netTotal|number_format(2, ',', ' ') }} €</td>
+                        </tr>
+                        <tr>
+                            {% if taxes|length > 1 %}
+                            <td>{{ (taxes|slice(1,1))[0].title }}</td>
+                            <td class="order-doc-number">{{ (taxes|slice(1,1)).amount|number_format(2, ',', ' ') }} €</td>
+                            {% endif %}
+                            {% if order.requiresShipment %}
+                            <td{% if taxes|length > 2 %} rowspan="{{ taxes|length - 1 }}"{% endif %}><strong>T.V.A.</strong></td>
+                            <td class="order-doc-number"{% if taxes|length > 2 %} rowspan="{{ taxes|length - 1 }}"{% endif %}>{{ order.shippingTaxAmount|number_format(2, ',', ' ') }} €</td>
+                            {% endif %}
+                            <td{% if taxes|length > 2 %} rowspan="{{ taxes|length - 1 }}"{% endif %}><strong>T.V.A.</strong></td>
+                            <td class="order-doc-number"{% if taxes|length > 2 %} rowspan="{{ taxes|length - 1 }}"{% endif %}>{{ taxes.total|number_format(2, ',', ' ') }} €</td>
+                        </tr>
+                        {% if taxes|length > 2 %}
+                        {% for tax in taxes|slice(2) %}
+                        <tr>
+                            <td>{{ tax.title }}</td>
+                            <td class="order-doc-number">{{ taxes[loop.index0].amount|number_format(2, ',', ' ') }} €</td>
+                        </tr>    
+                        {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </td>
+            <td class="order-doc-final-total">
+                <div class="order-doc-final-total-wrap">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Total T.T.C.</th>
+                                <td>{{ order.atiTotal|number_format(2, ',', ' ') }} €</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% endblock totals %}
+
+{# --- MISC --- #}
+{% block misc %}
+{#
+<table class="order-doc-bloc order-doc-inf">
+    <tbody>
+        <tr>
+            <td>{{ order.paiementMethod.title }}</td>
+        </tr>
+    </tbody>
+</table>
+<hr />
+<table class="order-doc-bloc order-doc-inf">
+    <tbody>
+        <tr>
+            <td>{{ order.comment|raw }}</td>
+        </tr>
+    </tbody>
+</table>
+#}
+{% endblock misc %}
+
+{# --- FOOTER --- #}
+{% block footer %}
+{#
+<div class="order-doc-bloc order-doc-mentions" style="text-align:center; font-size:10px;line-height:12px">
+{{ mentions|nl2br }}
+</div>
+#}
+{% endblock footer %}
+</div>
+</body>
+</html>
