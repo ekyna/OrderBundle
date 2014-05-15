@@ -40,7 +40,7 @@
                         {% if order.requiresShipment %}
                             {% set deliveryAddress = render_address(order.deliveryAddress) %}
                         {% else %}
-                            {% set deliveryAddress = 'ekyna_order.no_shipment'|trans %}
+                            {% set deliveryAddress = 'ekyna_order.field.no_shipment'|trans %}
                         {% endif %}
                         {{ show_row(deliveryAddress, 'textarea', 'ekyna_order.field.delivery_address', {'label_nb_col': 4}) }}
                     </div>
