@@ -5,17 +5,26 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+        <parameter key="ekyna_order.order_item.class">Ekyna\Bundle\OrderBundle\Entity\OrderItem</parameter>
+
+        <parameter key="ekyna_order.settings.class">Ekyna\Bundle\OrderBundle\Settings\OrderSettingsSchema</parameter>
+
         <parameter key="ekyna_order.order_updater.class">Ekyna\Bundle\OrderBundle\Updater\OrderUpdater</parameter>
         <parameter key="ekyna_order.order_state_resolver.class">Ekyna\Bundle\OrderBundle\Resolver\OrderStateResolver</parameter>
         <parameter key="ekyna_order.order_number_generator.class">Ekyna\Bundle\OrderBundle\Generator\NumberGenerator</parameter>
         <parameter key="ekyna_order.order_subscriber.class">Ekyna\Bundle\OrderBundle\Listener\OrderSubscriber</parameter>
 
-        <parameter key="ekyna_order.order_item.class">Ekyna\Bundle\OrderBundle\Entity\OrderItem</parameter>
-
         <parameter key="ekyna.payum.paypal.action.capture_order_using_express_checkout.class">Ekyna\Bundle\OrderBundle\Payum\Action\Paypal\CaptureOrderUsingExpressCheckoutAction</parameter>
+
+        <parameter key="ekyna_order.twig_extension.class">Ekyna\Bundle\OrderBundle\Twig\OrderExtension</parameter>
     </parameters>
 
     <services>
+        <!-- Settings Schema -->
+        <service id="ekyna_order.settings" class="%ekyna_order.settings.class%">
+            <tag name="ekyna_setting.schema" namespace="order" position="9" />
+        </service>
+
         <!-- Updater -->
         <service id="ekyna_order.order_updater" class="%ekyna_order.order_updater.class%" />
 
@@ -39,6 +48,12 @@
         <!-- Payum -->
         <service id="ekyna.payum.paypal.action.capture_order_using_express_checkout" class="%ekyna.payum.paypal.action.capture_order_using_express_checkout.class%">
             <argument type="service" id="payum.security.token_factory" />
+        </service>
+
+        <!-- Twig extensions -->
+        <service id="ekyna_order.twig_extension" class="%ekyna_order.twig_extension.class%">
+            <argument>%ekyna_order.document_logo%</argument>
+            <tag name="twig.extension" />
         </service>
     </services>
 

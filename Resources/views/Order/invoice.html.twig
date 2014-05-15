@@ -17,49 +17,63 @@
 
 {# --- HEADER --- #}
 {% block header %}
-{#<table class="order-doc-bloc order-doc-header">
+<table class="order-doc-bloc order-doc-header">
     <tr>
-        <td>
-            {% if companyLogo is not same as(false) %}
-            {{ render_image(companyLogo, {}, path('accueil'), {}, true) }}
-            {% endif %}
-            <br>
-            <strong>{{ companyAddress.street ~ ' - ' ~ companyAddress.postalCode ~ ' ' ~ companyAddress.city }}<br>
-			Tél. {{ companyAddress.phone ~ ' - Port. ' ~ companyAddress.mobile }}</strong><br>
-			Mail : {{ app['parameter.company_email'] }}
+        <td class="order-doc-header-logo">
+            <a href="{{ path('home') }}">
+                <img alt="{{ get_setting('general.site_name') }}" src="{{ app.request.getSchemeAndHttpHost() ~ asset(order_document_logo) }}" />
+            </a>
         </td>
-        <td>
-            <h1>Facture n°{{ order.reference }}</h1>
-            <p>Le {{ order.invoiceDate|date('d/m/Y') }}</p>           
+        <td class="order-doc-header-address">
+            {% set companyAddress = get_setting('general.site_address') %}
+            {{ companyAddress.street }}<br>
+            {% if companyAddress.supplement|length > 0 %}{{ companyAddress.supplement }}<br>{% endif %}
+            {{ companyAddress.postalCode ~ ' ' ~ companyAddress.city }}<br>
+            {% if companyAddress.phone|length > 0 %}Tél. {{ companyAddress.phone }}<br>{% endif %}
+            {% if companyAddress.mobile|length > 0 %}Port. {{ companyAddress.mobile }}<br>{% endif %}
+			Mail : {{ get_setting('general.admin_email') }}<br>
+			Web: {{ app.request.getSchemeAndHttpHost() }}
+        </td>
+        <td class="order-doc-header-customer">
+            <strong>{{ ('ekyna_core.gender.' ~ order.user.gender ~ '.short')|trans }} {{ order.user.lastname }} {{ order.user.firstname }}</strong><br>
+            <em>{{ order.user.email }}</em><br><br>
+            Le {{ order.createdAt|date('d/m/Y') }}.           
         </td>
     </tr>
-</table>#}
+</table>
 {% endblock header %}
+
+{# --- TITLE --- #}
+{% block title %}
+<div class="order-doc-bloc order-doc-title">
+    <h1>Facture n°{{ order.number }}</h1>
+</div>
+{% endblock title %}
 
 {# --- ADDRESSES --- #}
 {% block addresses %}
 <table class="order-doc-bloc order-doc-table">
     <thead>
         <tr>
+            <th>Adresse de facturation</th>
+            <th class="order-doc-blank">&nbsp;</th>
             {% if order.requiresShipment %}
             <th>Adresse de livraison</th>
             {% else %}
             <th class="order-doc-blank">&nbsp;</th>
             {% endif %}
-            <th class="order-doc-blank">&nbsp;</th>
-            <th>Adresse de facturation</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td width="42%" class="order-doc-address">
-                {% if order.requiresShipment %}
-                {{ render_address(order.deliveryAddress) }}
-                {% endif %}
+            <td class="order-doc-address">
+                {{ render_address(order.invoiceAddress) }}
             </td>
-            <td width="16%">&nbsp;</td>
-            <td width="42%" class="order-doc-address">
+            <td>&nbsp;</td>
+            <td class="order-doc-address">
+                {% if order.requiresShipment %}
 	            {{ render_address(order.deliveryAddress) }}
+                {% endif %}
             </td>
         </tr>
     </tbody>
@@ -201,11 +215,9 @@
 
 {# --- FOOTER --- #}
 {% block footer %}
-{#
-<div class="order-doc-bloc order-doc-mentions" style="text-align:center; font-size:10px;line-height:12px">
-{{ mentions|nl2br }}
+<div class="order-doc-bloc order-doc-mentions">
+{{ get_setting('order.document_footer')|raw }}
 </div>
-#}
 {% endblock footer %}
 </div>
 </body>

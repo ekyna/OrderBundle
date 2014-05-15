@@ -18,7 +18,9 @@ class EkynaOrderExtension extends AbstractExtension implements PrependExtensionI
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $this->configure($configs, 'ekyna_order', new Configuration(), $container);
+        list($config, $loader) = $this->configure($configs, 'ekyna_order', new Configuration(), $container);
+
+        $container->setParameter('ekyna_order.document_logo', $config['document_logo']);
     }
 
     /**

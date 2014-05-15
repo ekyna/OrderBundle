@@ -153,6 +153,16 @@ class Order implements OrderInterface
     }
 
     /**
+     * Returns the string representation.
+     * 
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getNumber();
+    }
+
+    /**
      * Update flag to trigger doctrine update vent listener
      */
     public function setUpdated()

@@ -21,6 +21,12 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('ekyna_order');
 
+        $rootNode
+            ->children()
+                ->scalarNode('document_logo')->defaultValue('/bundles/ekynaorder/img/document-logo.gif')->end()
+            ->end()
+        ;
+        
         $this->addPoolsSection($rootNode);
 
         return $treeBuilder;

@@ -1,4 +1,15 @@
 ekyna_order:
+    field:
+        ati_total: Total TTC
+        weight_total: Poids total
+        customer: Client
+        invoice_address: Addresse de facturation
+        delivery_address: Addresse de livraison
+        no_shipment: Sans livraison
+        details: Détails
+        net_unit: Prix Unit. HT
+        net_total: Total HT
+        document_footer: Pied de page des documents
     order:
         label:
             singular: Commande
