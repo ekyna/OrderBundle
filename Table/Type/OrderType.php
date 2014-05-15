@@ -37,7 +37,7 @@ class OrderType extends AbstractTableType
             ->addColumn('updatedAt', 'datetime', array(
                 'label' => 'ekyna_core.field.update_date',
             ))
-            ->addColumn('actions', 'actions', array(
+            /*->addColumn('actions', 'actions', array(
                 'buttons' => array(
                     array(
                         'label' => 'ekyna_core.button.edit',
@@ -58,7 +58,7 @@ class OrderType extends AbstractTableType
                         ),
                     ),
                 ),
-            ))
+            ))*/
             ->setDefaultSort('number')
             ->setCustomizeQueryBuilder(function(QueryBuilder $qb) {
                 $qb

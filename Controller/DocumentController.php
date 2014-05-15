@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Response;
 use Ekyna\Component\Sale\Order\OrderInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class DocumentController extends Controller
 {
@@ -18,6 +19,11 @@ class DocumentController extends Controller
         ));
         if (null === $order) {
             throw new NotFoundHttpException('Order not found.');
+        }
+
+        // Admin or owner security check
+        if(!($this->get('security.context')->isGranted('ROLE_ADMIN') || $order->getUser() == $this->getUser())) {
+            throw new AccessDeniedHttpException('You are not allowed to view this resource.');
         }
 
         $content = $this->renderView(

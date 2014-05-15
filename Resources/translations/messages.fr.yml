@@ -5,6 +5,8 @@ ekyna_order:
         customer: Client
         invoice_address: Addresse de facturation
         delivery_address: Addresse de livraison
+        invoice: Facture
+        invoice_pdf: Facture PDF
         no_shipment: Sans livraison
         details: Détails
         net_unit: Prix Unit. HT

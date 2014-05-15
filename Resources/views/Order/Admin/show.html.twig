@@ -6,18 +6,19 @@
 
 {% block actions %}
 {{ ui_link(path('ekyna_order_order_admin_list'), 'ekyna_core.button.back_to_list', 'default', 'sm', 'list') }}
-{{ ui_link(path('ekyna_order_order_admin_new'), 'ekyna_order.order.button.new', 'primary', 'sm', 'plus') }}
+{#{ ui_link(path('ekyna_order_order_admin_new'), 'ekyna_order.order.button.new', 'primary', 'sm', 'plus') }#}
 {% endblock %}
 
 {% block main %}
 <div class="actions">
-    {{ ui_link(path('ekyna_order_order_admin_edit', {'orderId': order.id}), 'ekyna_core.button.edit', 'warning', 'sm', 'pencil') }}
-    {{ ui_link(path('ekyna_order_order_admin_remove', {'orderId': order.id}), 'ekyna_core.button.remove', 'danger', 'sm', 'trash') }}
+    {{ ui_link(path('ekyna_order_invoice_download', {'orderId': order.id}), 'ekyna_order.field.invoice_pdf', 'default', 'sm', 'download', false, false, '_blank') }}
+    {#{ ui_link(path('ekyna_order_order_admin_edit', {'orderId': order.id}), 'ekyna_core.button.edit', 'warning', 'sm', 'pencil') }}
+    {{ ui_link(path('ekyna_order_order_admin_remove', {'orderId': order.id}), 'ekyna_core.button.remove', 'danger', 'sm', 'trash') }#}
 </div>
 <div class="show show-with-tabs">
     <ul class="nav nav-tabs">
 	    <li class="active"><a href="#orde-order-general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a></li>
-	    <li><a href="#orde-order-details" data-toggle="tab">{{ 'ekyna_order.field.details'|trans }}</a></li>
+	    <li><a href="#orde-order-invoice" data-toggle="tab">{{ 'ekyna_order.field.invoice'|trans }}</a></li>
 	</ul>
 	<div class="show-body">
 	    <div class="tab-content">
@@ -46,7 +47,7 @@
                     </div>
                 </div>
 		    </div>
-		    <div class="tab-pane" id="orde-order-details">
+		    <div class="tab-pane" id="orde-order-invoice">
 		        <iframe src="{{ path('ekyna_order_invoice_render', {'orderId': order.id}) }}" style="height:500px;"></iframe>
 		    </div>
 	    </div>

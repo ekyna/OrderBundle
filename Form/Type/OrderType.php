@@ -29,6 +29,7 @@ class OrderType extends AbstractType
             ->add('number', 'text', array(
                 'label' => 'ekyna_core.field.number',
                 'required' => true,
+                'disabled' => true,
             ))
         ;
     }
