@@ -8,7 +8,7 @@
 	{% stylesheets output='css/order-document.css' filter='cssrewrite, ?yui_css'
 	    'bundles/ekynaorder/css/order-document.css'
 	%}
-	<link href="{{ app.request.getSchemeAndHttpHost() ~ asset_url }}" rel="stylesheet" type="text/css" />
+	<link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
 	{%- endstylesheets %}
     {% endblock %}
 </head>
@@ -21,7 +21,7 @@
     <tr>
         <td class="order-doc-header-logo">
             <a href="{{ path('home') }}">
-                <img alt="{{ get_setting('general.site_name') }}" src="{{ app.request.getSchemeAndHttpHost() ~ asset(order_document_logo) }}" />
+                <img alt="{{ get_setting('general.site_name') }}" src="{{ asset(order_document_logo) }}" />
             </a>
         </td>
         <td class="order-doc-header-address">
