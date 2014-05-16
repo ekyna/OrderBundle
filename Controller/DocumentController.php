@@ -2,12 +2,12 @@
 
 namespace Ekyna\Bundle\OrderBundle\Controller;
 
+use Ekyna\Component\Sale\Order\OrderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Response;
-use Ekyna\Component\Sale\Order\OrderInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DocumentController extends Controller
 {
