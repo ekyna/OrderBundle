@@ -28,5 +28,6 @@ ekyna_order:
             show: Detail de la commande
             new: Nouvelle commande
             edit: Modifier la commande
+            remove: Supprimer la commande
         alert:
             no_order: Aucune commande configuré

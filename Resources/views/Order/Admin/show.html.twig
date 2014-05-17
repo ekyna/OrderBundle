@@ -5,15 +5,15 @@
 {% endblock %}
 
 {% block actions %}
-{{ ui_link(path('ekyna_order_order_admin_list'), 'ekyna_core.button.back_to_list', 'default', 'sm', 'list') }}
-{#{ ui_link(path('ekyna_order_order_admin_new'), 'ekyna_order.order.button.new', 'primary', 'sm', 'plus') }#}
+{{ admin_resource_btn(order, 'list') }}
+{{ admin_resource_btn(order, 'new') }}
 {% endblock %}
 
 {% block main %}
 <div class="actions">
-    {{ ui_link(path('ekyna_order_invoice_download', {'orderId': order.id}), 'ekyna_order.field.invoice_pdf', 'default', 'sm', 'download', false, false, '_blank') }}
-    {#{ ui_link(path('ekyna_order_order_admin_edit', {'orderId': order.id}), 'ekyna_core.button.edit', 'warning', 'sm', 'pencil') }}
-    {{ ui_link(path('ekyna_order_order_admin_remove', {'orderId': order.id}), 'ekyna_core.button.remove', 'danger', 'sm', 'trash') }#}
+    {{ ui_link(path('ekyna_order_invoice_download', {'orderId': order.id}), 'ekyna_order.field.invoice_pdf', {'icon': 'download'}, {'target': '_blank'}) }}
+    {{ admin_resource_btn(order, 'edit') }}
+    {{ admin_resource_btn(order, 'remove') }}
 </div>
 <div class="show show-with-tabs">
     <ul class="nav nav-tabs">

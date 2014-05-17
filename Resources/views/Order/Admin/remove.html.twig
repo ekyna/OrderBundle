@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block actions %}
-{{ ui_link(path('ekyna_order_order_admin_list'), 'ekyna_core.button.back_to_list', 'default', 'sm', 'list') }}
-{{ ui_link(path('ekyna_order_order_admin_new'), 'ekyna_order.order.button.new', 'primary', 'sm', 'plus') }}
+{{ admin_resource_btn(order, 'list') }}
+{{ admin_resource_btn(order, 'new') }}
 {% endblock %}
 
 {% block main %}
