@@ -37,7 +37,7 @@ class OrderType extends AbstractTableType
             ->addColumn('updatedAt', 'datetime', array(
                 'label' => 'ekyna_core.field.update_date',
             ))
-            /*->addColumn('actions', 'actions', array(
+            ->addColumn('actions', 'admin_actions', array(
                 'buttons' => array(
                     array(
                         'label' => 'ekyna_core.button.edit',
@@ -47,6 +47,7 @@ class OrderType extends AbstractTableType
                         'route_parameters_map' => array(
                             'orderId' => 'id'
                         ),
+                        'permission' => 'edit',
                     ),
                     array(
                         'label' => 'ekyna_core.button.remove',
@@ -56,9 +57,10 @@ class OrderType extends AbstractTableType
                         'route_parameters_map' => array(
                             'orderId' => 'id'
                         ),
+                        'permission' => 'delete',
                     ),
                 ),
-            ))*/
+            ))
             ->setDefaultSort('number')
             ->setCustomizeQueryBuilder(function(QueryBuilder $qb) {
                 $qb
