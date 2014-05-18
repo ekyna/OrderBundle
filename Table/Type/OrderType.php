@@ -41,7 +41,6 @@ class OrderType extends AbstractTableType
                 'buttons' => array(
                     array(
                         'label' => 'ekyna_core.button.edit',
-                        'icon' => 'pencil',
                         'class' => 'warning',
                         'route_name' => 'ekyna_order_order_admin_edit',
                         'route_parameters_map' => array(
@@ -51,7 +50,6 @@ class OrderType extends AbstractTableType
                     ),
                     array(
                         'label' => 'ekyna_core.button.remove',
-                        'icon' => 'trash',
                         'class' => 'danger',
                         'route_name' => 'ekyna_order_order_admin_remove',
                         'route_parameters_map' => array(
