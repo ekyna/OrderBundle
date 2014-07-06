@@ -36,3 +36,10 @@ ekyna_order_order_admin_remove:
     requirements:
         _method: GET|POST
         orderId:  \d+
+
+ekyna_order_order_admin_add_item:
+    path: /{orderId}/add-item
+    defaults: { _controller: "ekyna_order.order.controller:addItemAction" }
+    requirements:
+        _method: GET|POST
+        orderId:  \d+

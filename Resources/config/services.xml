@@ -24,7 +24,7 @@
 
         <parameter key="ekyna_order.order_items.form_type.class">Ekyna\Bundle\OrderBundle\Form\Type\OrderItemsType</parameter>
         <parameter key="ekyna_order.order_item.form_type.class">Ekyna\Bundle\OrderBundle\Form\Type\OrderItemType</parameter>
-        <parameter key="ekyna_order.add_product.form_type.class">Ekyna\Bundle\CartBundle\Form\Type\AddCartItemType</parameter>
+        <parameter key="ekyna_order.add_product.form_type.class">Ekyna\Bundle\OrderBundle\Form\Type\AddProductType</parameter>
         
         <parameter key="ekyna_order.twig_extension.class">Ekyna\Bundle\OrderBundle\Twig\OrderExtension</parameter>
     </parameters>

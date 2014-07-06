@@ -147,7 +147,6 @@ class OrderItemFactory implements OrderItemFactoryInterface
             ),
             array_merge(array(
                 'em'     => $this->entityManager,
-                'action' => $this->urlGenerator->generate('ekyna_order_add_item')
             ), $options)
         );
 

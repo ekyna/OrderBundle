@@ -11,4 +11,8 @@ use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
  */
 class OrderController extends ResourceController
 {
+    public function addItemAction(Request $request)
+    {
+        throw new \Exception('Not implemented.'); 
+    }
 }

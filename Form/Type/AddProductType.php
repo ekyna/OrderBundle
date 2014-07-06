@@ -85,7 +85,7 @@ class AddProductType extends AbstractType
         $resolver
             ->setDefaults(array(
                 'em'     => null,
-                'action' => null
+                'action' => ''
             ))
             ->setRequired(array('em', 'action'))
             ->setAllowedTypes(array(
