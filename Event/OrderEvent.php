@@ -2,21 +2,16 @@
 
 namespace Ekyna\Bundle\OrderBundle\Event;
 
+use Ekyna\Bundle\AdminBundle\Event\ResourceEvent;
 use Ekyna\Component\Sale\Order\OrderInterface;
-use Symfony\Component\EventDispatcher\Event;
 
 /**
  * OrderEvent.
  *
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
-class OrderEvent extends Event
+class OrderEvent extends ResourceEvent
 {
-    /**
-     * @var \Ekyna\Component\Sale\Order\OrderInterface
-     */
-    protected $order;
-
     /**
      * Constructor.
      * 
@@ -24,7 +19,7 @@ class OrderEvent extends Event
      */
     public function __construct(OrderInterface $order)
     {
-        $this->order = $order;
+        $this->setResource($order);
     }
 
     /**
@@ -34,6 +29,6 @@ class OrderEvent extends Event
      */
     public function getOrder()
     {
-        return $this->order;
+        return $this->getResource();
     }
 }

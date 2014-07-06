@@ -1,0 +1,26 @@
+{% extends 'EkynaCoreBundle:Form:form_div_layout.html.twig' %}
+
+{% block ekyna_order_order_item_widget %}
+{% spaceless %}
+    <div class="row">
+        <div class="col-md-8">
+            {{ form_row(form.designation) }} {# , {'label_col': 6, 'widget_col': 6} #}
+            {{ form_row(form.reference) }}
+            {{ form_row(form.product) }}
+        </div>
+        <div class="col-md-3">
+            {{ form_row(form.weight) }}
+            {{ form_row(form.price) }}
+            {{ form_row(form.tax) }}
+            {{ form_row(form.quantity) }}
+        </div>
+        <div class="col-md-1 child-controls">
+            <button class="btn btn-default btn-sm" data-role="move-up" type="button"><span class="glyphicon glyphicon-chevron-up"></span></button>
+            <button class="btn btn-default btn-danger btn-sm" data-role="remove" type="button"><span class="glyphicon glyphicon-remove"></span></button>
+            <button class="btn btn-default btn-sm" data-role="move-down" type="button"><span class="glyphicon glyphicon-chevron-down"></span></button>
+            {{ form_row(form.position) }}
+        </div>
+        {{ form_rest(form) }}
+    </div>
+{% endspaceless %}
+{% endblock ekyna_order_order_item_widget %}

@@ -55,25 +55,25 @@ class CaptureOrderUsingExpressCheckoutAction extends PaymentAwareAction
                 $order
             )->getTargetUrl();*/
 
-            $details['PAYMENTREQUEST_n_INVNUM'] = $payment->getId();
+            $details['PAYMENTREQUEST_0_INVNUM'] = $payment->getId();
             $details['PAYMENTREQUEST_0_CURRENCYCODE'] = 'EUR';
             $details['PAYMENTREQUEST_0_AMT'] = $order->getAtiTotal();
 
             $m = $itemTotal = 0;
 
             foreach($order->getItems() as $item) {
-                $details['L_PAYMENTREQUEST_n_NAME'.$m] = $item->getDesignation();
-                $details['L_PAYMENTREQUEST_n_AMT'.$m] = round($item->getBaseAtiPrice(), 2);
-                $details['L_PAYMENTREQUEST_n_QTY'.$m] = $item->getQuantity();
-                $itemTotal += $item->getTotalAtiPrice();
+                $details['L_PAYMENTREQUEST_0_NAME'.$m] = $item->getDesignation();
+                $details['L_PAYMENTREQUEST_0_AMT'.$m] = round($item->getBaseNetPrice(), 2);
+                $details['L_PAYMENTREQUEST_0_QTY'.$m] = $item->getQuantity();
+                $itemTotal += $item->getTotalNetPrice();
                 $m++;
             }
 
             $details['PAYMENTREQUEST_0_ITEMAMT'] = round($itemTotal, 2);
 
-            //$details['PAYMENTREQUEST_0_SHIPPINGAMT'] = $order->get();
+            $details['PAYMENTREQUEST_0_SHIPPINGAMT'] = $order->getNetShippingCost();
 
-            $details['PAYMENTREQUEST_n_TAXAMT'] = round($order->getAtiTotal() - $order->getNetTotal(), 2);
+            $details['PAYMENTREQUEST_0_TAXAMT'] = round($order->getAtiTotal() - $order->getNetTotal(), 2);
 
             $payment->setDetails($details);
         }

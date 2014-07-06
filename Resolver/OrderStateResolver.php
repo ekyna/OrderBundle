@@ -8,6 +8,11 @@ use Ekyna\Component\Sale\Order\OrderStates;
 use Ekyna\Component\Sale\Payment\PaymentStates;
 use Ekyna\Component\Sale\Shipment\ShipmentStates;
 
+/**
+ * OrderStateResolver.
+ *
+ * @author Etienne Dauvergne <contact@ekyna.com>
+ */
 class OrderStateResolver implements StateResolverInterface
 {
     /**

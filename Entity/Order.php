@@ -195,7 +195,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getNumber()
     {
@@ -217,7 +217,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getItemsCount()
     {
@@ -239,7 +239,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getTotalWeight()
     {
@@ -261,7 +261,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getCurrency()
     {
@@ -283,7 +283,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getNetTotal()
     {
@@ -305,7 +305,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getAtiTotal()
     {
@@ -357,7 +357,7 @@ class Order implements OrderInterface
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * {@inheritDoc}
 	 */
 	public function getType()
 	{
@@ -379,7 +379,7 @@ class Order implements OrderInterface
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * {@inheritDoc}
 	 */
 	public function getLocked()
 	{
@@ -401,7 +401,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getState()
     {
@@ -423,7 +423,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getPaymentState()
     {
@@ -445,7 +445,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getShipmentState()
     {
@@ -467,7 +467,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getCompletedAt()
     {
@@ -489,7 +489,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getCreatedAt()
     {
@@ -511,7 +511,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getUpdatedAt()
     {
@@ -533,7 +533,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getDeletedAt()
     {
@@ -553,20 +553,16 @@ class Order implements OrderInterface
     }
 
     /**
-     * Adds an item.
-     *
-     * @param \Ekyna\Component\Sale\Order\OrderItemInterface $orderItem
-     * 
-     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
+     * {@inheritDoc}
      */
     public function addItem(OrderItemInterface $orderItem)
     {
-        if($this->hasItem($orderItem)) {
+        if ($this->hasItem($orderItem)) {
             return $this;
         }
 
-        foreach($this->items as $item) {
-            if($item->equals($orderItem)) {
+        foreach ($this->items as $item) {
+            if ($item->equals($orderItem)) {
                 $item->merge($orderItem);
                 return $this;
             }
@@ -579,9 +575,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * Removes the item.
-     *
-     * @param \Ekyna\Component\Sale\Order\OrderItemInterface $orderItem
+     * {@inheritDoc}
      */
     public function removeItem(OrderItemInterface $orderItem)
     {
@@ -589,7 +583,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getItems()
     {
@@ -597,7 +591,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function requiresShipment()
     {
@@ -612,7 +606,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function isEmpty()
     {
@@ -661,7 +655,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getPayments()
     {
@@ -710,7 +704,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getShipments()
     {
@@ -732,7 +726,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getUser()
     {
@@ -754,7 +748,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getInvoiceAddress()
     {
@@ -776,7 +770,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritdoc} 
+     * {@inheritDoc} 
      */
     public function getDeliveryAddress()
     {

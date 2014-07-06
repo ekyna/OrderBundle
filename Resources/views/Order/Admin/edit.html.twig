@@ -10,6 +10,7 @@
 {% endblock %}
 
 {% block main %}
+{% form_theme form "EkynaOrderBundle:Form:form_div_layout.html.twig" %}
 <form action="{{ path('ekyna_order_order_admin_edit', {'orderId': order.id}) }}" {{ form_enctype(form) }} method="post" class="form-horizontal form-with-tabs">
     {% include "EkynaOrderBundle:Order/Admin:_form.html.twig" %}
     {{ ui_form_footer(form) }}

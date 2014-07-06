@@ -33,7 +33,7 @@ class NumberGenerator implements NumberGeneratorInterface
      */
     public function generate(OrderInterface $order, $type = OrderInterface::TYPE_ORDER)
     {
-        $date = new \Datetime();
+        $date = new \DateTime();
 
     	$qb = $this->repository->createQueryBuilder('o');
     	$qb
