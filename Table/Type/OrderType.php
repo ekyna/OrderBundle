@@ -3,24 +3,18 @@
 namespace Ekyna\Bundle\OrderBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
+use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
 use Ekyna\Component\Table\TableBuilderInterface;
-use Ekyna\Component\Table\AbstractTableType;
 use Ekyna\Component\Sale\Order\OrderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * OrderType
  *
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
-class OrderType extends AbstractTableType
+class OrderType extends ResourceTableType
 {
-    protected $entityClass;
-
-    public function __construct($class)
-    {
-        $this->entityClass = $class;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -59,22 +53,26 @@ class OrderType extends AbstractTableType
                     ),
                 ),
             ))
-            ->setDefaultSort('number')
-            ->setCustomizeQueryBuilder(function(QueryBuilder $qb) {
-                $qb
-                    ->andWhere($qb->expr()->eq('a.type', ':type'))
-                    ->setParameter('type', OrderInterface::TYPE_ORDER)
-                ;
-            });
         ;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getEntityClass()
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        return $this->entityClass;
+        parent::setDefaultOptions($resolver);
+
+        $resolver->setDefaults(array(
+            'default_sort' => array('number', 'desc'),
+            'customize_qb' => function(QueryBuilder $qb) {
+                $qb
+                    ->andWhere($qb->expr()->eq('a.type', ':type'))
+                    ->setParameter('type', OrderInterface::TYPE_ORDER)
+                    ->andWhere($qb->expr()->isNull('a.deletedAt'))
+                ;
+            },
+        ));
     }
 
     /**

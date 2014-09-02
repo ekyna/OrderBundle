@@ -84,13 +84,13 @@ class OrderItemType extends AbstractType
                     'widget_col' => 8
                 ),
             ))
-            ->add('tax', 'entity', array(
+            ->add('tax', 'ekyna_resource', array(
                 'label' => 'ekyna_core.field.tax',
                 'class' => 'Ekyna\Bundle\ProductBundle\Entity\Tax',
                 'multiple' => false,
                 'property' => 'name',
                 'empty_value' => 'ekyna_core.field.tax',
-                'add_route' => $options['admin_mode'] ? 'ekyna_product_tax_admin_new' : false,
+                'allow_new' => $options['admin_mode'],
                 'sizing' => 'sm',
                 'attr' => array(
                     'placeholder' => 'ekyna_core.field.tax',
