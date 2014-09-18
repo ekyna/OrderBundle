@@ -123,7 +123,7 @@ class OrderItem implements OrderItemInterface
     /**
      * Sets the order.
      *
-     * @param \Ekyna\Bundle\OrderBundle\Model\OrderInterface $order
+     * @param \Ekyna\Component\Sale\Order\OrderInterface $order
      * 
      * @return OrderItem
      */
@@ -186,6 +186,7 @@ class OrderItem implements OrderItemInterface
      */
     public function removeOption(OrderItemOptionInterface $option)
     {
+        $option->setOrderItem(null);
         $this->options->removeElement($option);
     }
 

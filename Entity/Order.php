@@ -579,6 +579,7 @@ class Order implements OrderInterface
      */
     public function removeItem(OrderItemInterface $orderItem)
     {
+        $orderItem->setOrder(null);
         $this->items->removeElement($orderItem);
     }
 
@@ -651,6 +652,7 @@ class Order implements OrderInterface
      */
     public function removePayment(OrderPaymentInterface $orderPayment)
     {
+        $orderPayment->setOrder(null);
         $this->payments->removeElement($orderPayment);
     }
 

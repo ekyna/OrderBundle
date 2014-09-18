@@ -30,7 +30,7 @@
         </many-to-one>
         <field name="extras" column="extras" type="json_array" />
 
-        <one-to-many field="options" target-entity="Ekyna\Bundle\OrderBundle\Entity\OrderItemOption" mapped-by="orderItem">
+        <one-to-many field="options" target-entity="Ekyna\Bundle\OrderBundle\Entity\OrderItemOption" mapped-by="orderItem" orphan-removal="true">
             <cascade>
                 <cascade-all/>
             </cascade>

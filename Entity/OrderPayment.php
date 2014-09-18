@@ -40,7 +40,7 @@ class OrderPayment extends Payment implements OrderPaymentInterface
      * 
      * @return \Ekyna\Bundle\OrderBundle\Entity\OrderPayment
      */
-    public function setOrder(Order $order)
+    public function setOrder(Order $order = null)
     {
         $this->order = $order;
 

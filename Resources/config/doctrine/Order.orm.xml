@@ -40,7 +40,7 @@
 
         <field name="completedAt" column="completed_at" type="datetime" nullable="true" />
 
-        <one-to-many field="items" target-entity="Ekyna\Bundle\OrderBundle\Entity\OrderItem" mapped-by="order">
+        <one-to-many field="items" target-entity="Ekyna\Bundle\OrderBundle\Entity\OrderItem" mapped-by="order" orphan-removal="true">
             <order-by>
                 <order-by-field name="position" direction="ASC" />
             </order-by>
@@ -49,7 +49,7 @@
             </cascade>
         </one-to-many>
 
-        <one-to-many field="payments" target-entity="Ekyna\Bundle\OrderBundle\Entity\OrderPayment" mapped-by="order">
+        <one-to-many field="payments" target-entity="Ekyna\Bundle\OrderBundle\Entity\OrderPayment" mapped-by="order" orphan-removal="true">
             <order-by>
                 <order-by-field name="createdAt" direction="ASC" />
             </order-by>
