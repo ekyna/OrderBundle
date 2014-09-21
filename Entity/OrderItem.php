@@ -19,7 +19,7 @@ class OrderItem implements OrderItemInterface
 {
     use \Ekyna\Component\Sale\PriceableTrait;
     use \Ekyna\Component\Sale\ReferenceableTrait;
-    use \Ekyna\Component\Sale\WeighableTrait;
+    use \Ekyna\Component\Sale\WeightableTrait;
 
     /**
      * @var integer
