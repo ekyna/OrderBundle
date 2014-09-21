@@ -612,11 +612,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * Adds a payment.
-     *
-     * @param \Ekyna\Component\Sale\Order\OrderPaymentInterface $orderPayment
-     * 
-     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
+     * {@inheritDoc}
      */
     public function addPayment(OrderPaymentInterface $orderPayment)
     {
