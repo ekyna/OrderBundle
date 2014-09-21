@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\OrderBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * OrderController

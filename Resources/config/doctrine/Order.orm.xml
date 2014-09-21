@@ -12,15 +12,6 @@
             <generator strategy="AUTO" />
         </id>
 
-        <many-to-one field="user" target-entity="Ekyna\Bundle\UserBundle\Entity\User">
-            <join-column name="user_id" referenced-column-name="id" nullable="true" />
-        </many-to-one>
-        <many-to-one field="invoiceAddress" target-entity="Ekyna\Bundle\UserBundle\Entity\Address">
-            <join-column name="invoice_address_id" referenced-column-name="id" nullable="true" />
-        </many-to-one>
-        <many-to-one field="deliveryAddress" target-entity="Ekyna\Bundle\UserBundle\Entity\Address">
-            <join-column name="delivery_address_id" referenced-column-name="id" nullable="true" />
-        </many-to-one>
 
         <field name="number" column="number" type="string" length="16" unique="true" nullable="true" />
 
@@ -39,25 +30,6 @@
         <field name="shipmentState" column="shipment_state" type="string" length="16" />
 
         <field name="completedAt" column="completed_at" type="datetime" nullable="true" />
-
-        <one-to-many field="items" target-entity="Ekyna\Bundle\OrderBundle\Entity\OrderItem" mapped-by="order" orphan-removal="true">
-            <order-by>
-                <order-by-field name="position" direction="ASC" />
-            </order-by>
-            <cascade>
-                <cascade-all/>
-            </cascade>
-        </one-to-many>
-
-        <one-to-many field="payments" target-entity="Ekyna\Bundle\OrderBundle\Entity\OrderPayment" mapped-by="order" orphan-removal="true">
-            <order-by>
-                <order-by-field name="createdAt" direction="ASC" />
-            </order-by>
-            <cascade>
-                <cascade-all/>
-            </cascade>
-        </one-to-many>
-
         <field name="createdAt" column="created_at" type="datetime">
             <gedmo:timestampable on="create" />
         </field>
@@ -65,6 +37,34 @@
             <gedmo:timestampable on="update" />
         </field>
         <field name="deletedAt" column="deleted_at" type="datetime" nullable="true" />
+
+        <one-to-many field="items" target-entity="Ekyna\Bundle\OrderBundle\Entity\OrderItem" mapped-by="order" orphan-removal="true">
+            <cascade>
+                <cascade-all/>
+            </cascade>
+            <order-by>
+                <order-by-field name="position" direction="ASC" />
+            </order-by>
+        </one-to-many>
+
+        <one-to-many field="payments" target-entity="Ekyna\Bundle\OrderBundle\Entity\OrderPayment" mapped-by="order" orphan-removal="true">
+            <cascade>
+                <cascade-all/>
+            </cascade>
+            <order-by>
+                <order-by-field name="createdAt" direction="ASC" />
+            </order-by>
+        </one-to-many>
+        <many-to-one field="user" target-entity="Ekyna\Bundle\UserBundle\Entity\User">
+            <join-column name="user_id" referenced-column-name="id" nullable="true" />
+        </many-to-one>
+        <many-to-one field="invoiceAddress" target-entity="Ekyna\Bundle\UserBundle\Entity\Address">
+            <join-column name="invoice_address_id" referenced-column-name="id" nullable="true" />
+        </many-to-one>
+        <many-to-one field="deliveryAddress" target-entity="Ekyna\Bundle\UserBundle\Entity\Address">
+            <join-column name="delivery_address_id" referenced-column-name="id" nullable="true" />
+        </many-to-one>
+
         <gedmo:soft-deleteable field-name="deletedAt" />
 
     </entity>

@@ -181,11 +181,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * Sets the number.
-     *
-     * @param string $number
-     * 
-     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
+     * {@inheritDoc}
      */
     public function setNumber($number)
     {
@@ -205,8 +201,7 @@ class Order implements OrderInterface
     /**
      * Sets the items count.
      *
-     * @param integer $itemCount
-     * 
+     * @param integer $count
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setItemsCount($count)
@@ -341,14 +336,10 @@ class Order implements OrderInterface
     {
         return 0;
     }
-    
-	/**
-	 * Sets the type.
-	 * 
-	 * @param string $type
-	 * 
-	 * @return \Ekyna\Bundle\OrderBundle\Entity\Order
-	 */
+
+    /**
+     * {@inheritDoc}
+     */
 	public function setType($type)
 	{
 		$this->type = $type;
@@ -364,13 +355,9 @@ class Order implements OrderInterface
 		return $this->type;
 	}
 
-	/**
-	 * Sets whether the order is locked.
-	 * 
-	 * @param boolean $locked
-	 * 
-	 * @return \Ekyna\Bundle\OrderBundle\Entity\Order
-	 */
+    /**
+     * {@inheritDoc}
+     */
 	public function setLocked($locked)
 	{
 		$this->locked = (bool) $locked;
@@ -475,13 +462,9 @@ class Order implements OrderInterface
     }
 
     /**
-     * Sets the "created at" datetime.
-     *
-     * @param \DateTime $createdAt
-     * 
-     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
+     * {@inheritDoc}
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
 
@@ -561,6 +544,7 @@ class Order implements OrderInterface
             return $this;
         }
 
+        /** @var OrderItemInterface $item */
         foreach ($this->items as $item) {
             if ($item->equals($orderItem)) {
                 $item->merge($orderItem);
@@ -596,6 +580,7 @@ class Order implements OrderInterface
      */
     public function requiresShipment()
     {
+        /** @var OrderItemInterface $item */
         foreach ($this->items as $item) {
             if (null !== $product = $item->getProduct()) {
                if ($product->getType() === ProductTypes::PHYSICAL) {
@@ -629,7 +614,7 @@ class Order implements OrderInterface
     /**
      * Adds a payment.
      *
-     * @param \Ekyna\Component\Sale\Order\OrderPaymentInterface $payment
+     * @param \Ekyna\Component\Sale\Order\OrderPaymentInterface $orderPayment
      * 
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
@@ -679,7 +664,7 @@ class Order implements OrderInterface
     /**
      * Adds a shipment.
      *
-     * @param \Ekyna\Component\Sale\Order\OrderShipmentInterface $shipment
+     * @param \Ekyna\Component\Sale\Order\OrderShipmentInterface $orderShipment
      * 
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */

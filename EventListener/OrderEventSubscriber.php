@@ -60,12 +60,14 @@ class OrderEventSubscriber implements EventSubscriberInterface
         $this->updater       = $updater;
         $this->stateResolver = $stateResolver;
         $this->generator     = $generator;
+        // TODO: event_dispatcher
     }
 
     /**
      * Pre content change event handler.
      * 
      * @param OrderEvent $event
+     * @throws LockedOrderException
      */
     public function onPreContentChange(OrderEvent $event)
     {
@@ -146,12 +148,14 @@ class OrderEventSubscriber implements EventSubscriberInterface
     {        
         $this->manager->persist($event->getOrder());
         $this->manager->flush();
+        $event->stopPropagation(); // Prevents from being persisted a second time in ResourceController
     }
 
     /**
      * Pre delete event handler.
      * 
      * @param OrderEvent $event
+     * @throws LockedOrderException
      */
     public function onPreDelete(OrderEvent $event)
     {
@@ -170,12 +174,14 @@ class OrderEventSubscriber implements EventSubscriberInterface
     {
         $this->manager->remove($event->getOrder());
         $this->manager->flush();
+        $event->stopPropagation(); // Prevents being removed a second time in ResourceController
     }
 
     /**
      * Payment initialize event handler.
      *
      * @param OrderEvent $event
+     * @throws LockedOrderException
      */
     public function onPaymentInitialize(OrderEvent $event)
     {
@@ -234,7 +240,8 @@ class OrderEventSubscriber implements EventSubscriberInterface
     /**
      * Resolves order states.
      *
-     * @param OrderEvent $event
+     * @param OrderInterface $order
+     * @param Event $event
      */
     private function resolveOrderStates(OrderInterface $order, Event $event)
     {
