@@ -18,12 +18,11 @@
     ],
     "require" : {
         "php" : ">=5.4",
-        "symfony/framework-bundle" : "~2.3",
         "ekyna/admin-bundle" : "0.1.*@dev",
         "ekyna/product-bundle" : "0.1.*@dev",
         "ekyna/payment-bundle" : "0.1.*@dev",
         "ekyna/shipment-bundle" : "0.1.*@dev",
-        "knplabs/knp-snappy-bundle": "dev-master"
+        "knplabs/knp-snappy-bundle": "~1.2"
     },
     "autoload" : {
         "psr-0" : {
