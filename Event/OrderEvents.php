@@ -3,8 +3,8 @@
 namespace Ekyna\Bundle\OrderBundle\Event;
 
 /**
- * OrderEvents.
- *
+ * Class OrderEvents
+ * @package Ekyna\Bundle\OrderBundle\Event
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
 final class OrderEvents

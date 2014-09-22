@@ -2,18 +2,34 @@
 
 namespace Ekyna\Bundle\OrderBundle\EventListener;
 
+use Ekyna\Bundle\AdminBundle\Event\ResourceMessage;
 use Ekyna\Bundle\OrderBundle\Event\OrderItemEvent;
 use Ekyna\Bundle\OrderBundle\Event\OrderEvents;
-use Ekyna\Bundle\OrderBundle\Exception\LockedOrderException;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * OrderItemEventSubscriber.
- *
- * @author Etienne Dauvergne <contact@ekyna.com>
+ * Class OrderItemEventSubscriber
+ * @package Ekyna\Bundle\OrderBundle\EventListener
+ * @author Étienne Dauvergne <contact@ekyna.com>
  */
 class OrderItemEventSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $dispatcher;
+
+    /**
+     * Constructor.
+     *
+     * @param EventDispatcherInterface $dispatcher
+     */
+    public function __construct(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
+
     /**
      * Pre item add event handler.
      *
@@ -23,8 +39,7 @@ class OrderItemEventSubscriber implements EventSubscriberInterface
     {
         $order = $event->getOrder();
         if ($order->getLocked()) {
-            $event->stopPropagation();
-            throw new LockedOrderException();
+            $event->addMessage(new ResourceMessage('ekyna_order.event.locked', ResourceMessage::TYPE_DANGER));
         }
     }
 
@@ -48,7 +63,7 @@ class OrderItemEventSubscriber implements EventSubscriberInterface
      */
     public function onPostItemAdd(OrderItemEvent $event)
     {
-        $event->getDispatcher()->dispatch(OrderEvents::CONTENT_CHANGE, $event);
+        $this->dispatcher->dispatch(OrderEvents::CONTENT_CHANGE, $event);
     }
 
     /**
@@ -60,8 +75,7 @@ class OrderItemEventSubscriber implements EventSubscriberInterface
     {
         $order = $event->getOrder();
         if ($order->getLocked()) {
-            $event->stopPropagation();
-            throw new LockedOrderException();
+            $event->addMessage(new ResourceMessage('ekyna_order.event.locked', ResourceMessage::TYPE_DANGER));
         }
     }
 
@@ -85,7 +99,7 @@ class OrderItemEventSubscriber implements EventSubscriberInterface
      */
     public function onPostItemRemove(OrderItemEvent $event)
     {
-        $event->getDispatcher()->dispatch(OrderEvents::CONTENT_CHANGE, $event);
+        $this->dispatcher->dispatch(OrderEvents::CONTENT_CHANGE, $event);
     }
 
     /**

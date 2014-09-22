@@ -28,7 +28,7 @@ class OrderItemOption implements OrderItemOptionInterface
     protected $orderItem;
 
     /**
-     * @var \Ekyna\Bundle\ProductBundle\Entity\Option
+     * @var \Ekyna\Component\Sale\Product\OptionInterface
      */
     protected $option;
 
@@ -44,11 +44,7 @@ class OrderItemOption implements OrderItemOptionInterface
     }
 
     /**
-     * Sets the order item.
-     *
-     * @param \Ekyna\Component\Sale\Order\OrderItemInterface $orderItem
-     * 
-     * @return OrderItemOption
+     * {@inheritdoc}
      */
     public function setOrderItem(OrderItemInterface $orderItem = null)
     {
@@ -66,11 +62,7 @@ class OrderItemOption implements OrderItemOptionInterface
     }
 
     /**
-     * Sets the option.
-     *
-     * @param \Ekyna\Component\Sale\Product\OptionInterface $option
-     * 
-     * @return OrderItemOption
+     * {@inheritdoc}
      */
     public function setOption(OptionInterface $option = null)
     {

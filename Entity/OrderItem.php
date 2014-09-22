@@ -47,7 +47,7 @@ class OrderItem implements OrderItemInterface
     protected $product;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection|OrderItemOptionInterface[]
      */
     protected $options;
 
@@ -121,11 +121,7 @@ class OrderItem implements OrderItemInterface
     }
 
     /**
-     * Sets the order.
-     *
-     * @param \Ekyna\Component\Sale\Order\OrderInterface $order
-     * 
-     * @return OrderItem
+     * {@inheritdoc}
      */
     public function setOrder(OrderInterface $order = null)
     {

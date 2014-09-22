@@ -6,8 +6,8 @@ use Ekyna\Bundle\AdminBundle\Event\ResourceEvent;
 use Ekyna\Component\Sale\Order\OrderInterface;
 
 /**
- * OrderEvent.
- *
+ * Class OrderEvent
+ * @package Ekyna\Bundle\OrderBundle\Event
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
 class OrderEvent extends ResourceEvent

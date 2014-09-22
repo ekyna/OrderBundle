@@ -31,3 +31,5 @@ ekyna_order:
             remove: Supprimer la commande
         alert:
             no_order: Aucune commande configuré
+    event:
+        locked: La commande est verrouillée et ne peut être modifiée.

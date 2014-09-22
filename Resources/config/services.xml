@@ -55,12 +55,14 @@
         <!-- Events subscriber -->
         <service id="ekyna_order.order_subscriber" class="%ekyna_order.order_subscriber.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="event_dispatcher" />
             <argument type="service" id="ekyna_order.order_updater" />
             <argument type="service" id="ekyna_order.order_state_resolver" />
             <argument type="service" id="ekyna_order.order_number_generator" />
             <tag name="kernel.event_subscriber" />
         </service>
         <service id="ekyna_order.order_item_subscriber" class="%ekyna_order.order_item_subscriber.class%">
+            <argument type="service" id="event_dispatcher" />
             <tag name="kernel.event_subscriber" />
         </service>
 

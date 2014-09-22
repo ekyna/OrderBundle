@@ -16,8 +16,8 @@ use Ekyna\Component\Sale\TaxesAmounts;
 use Ekyna\Component\Sale\Shipment\ShipmentStates;
 
 /**
- * Order
- *
+ * Class Order
+ * @package Ekyna\Bundle\OrderBundle\Entity
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
 class Order implements OrderInterface
@@ -103,17 +103,17 @@ class Order implements OrderInterface
     protected $deletedAt;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection|OrderItemInterface[]
      */
     protected $items;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection|OrderPaymentInterface[]
      */
     protected $payments;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection|OrderShipmentInterface[]
      */
     protected $shipments;
 
@@ -163,7 +163,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * Update flag to trigger doctrine update vent listener
+     * Update flag to trigger doctrine update event listener.
      */
     public function setUpdated()
     {
@@ -223,7 +223,6 @@ class Order implements OrderInterface
      * Sets the total weight.
      *
      * @param integer $weight
-     * 
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setTotalWeight($weight)
@@ -245,7 +244,6 @@ class Order implements OrderInterface
      * Sets the currency.
      *
      * @param string $currency
-     *
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setCurrency($currency)
@@ -267,7 +265,6 @@ class Order implements OrderInterface
      * Sets the "all taxes excluded" total.
      *
      * @param float $netTotal
-     * 
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setNetTotal($netTotal)
@@ -289,7 +286,6 @@ class Order implements OrderInterface
      * Sets the "all taxes included" total.
      *
      * @param float $atiTotal
-     * 
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setAtiTotal($atiTotal)
@@ -308,9 +304,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * Returns the taxes amounts.
-     *
-     * @return \Ekyna\Component\Sale\TaxesAmounts
+     * {@inheritDoc}
      */
     public function getTaxesAmounts()
     {
@@ -322,16 +316,25 @@ class Order implements OrderInterface
         return $taxesAmounts;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getNetShippingCost()
     {
         return 0;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getAtiShippingCost()
     {
         return 0;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getShippingTaxAmount()
     {
         return 0;
@@ -377,7 +380,6 @@ class Order implements OrderInterface
      * Sets the state.
      *
      * @param string $state
-     * 
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setState($state)
@@ -399,7 +401,6 @@ class Order implements OrderInterface
      * Sets the payment state.
      *
      * @param string $paymentState
-     * 
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setPaymentState($paymentState)
@@ -421,7 +422,6 @@ class Order implements OrderInterface
      * Sets the shipment state.
      *
      * @param string $shipmentState
-     * 
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setShipmentState($shipmentState)
@@ -443,7 +443,6 @@ class Order implements OrderInterface
      * Sets the "completed at" datetime.
      *
      * @param \DateTime $completedAt
-     * 
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setCompletedAt(\DateTime $completedAt = null)
@@ -483,7 +482,6 @@ class Order implements OrderInterface
      * Sets the "updated at" datetime.
      *
      * @param \DateTime $updatedAt
-     * 
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setUpdatedAt(\DateTime $updatedAt = null)
@@ -505,7 +503,6 @@ class Order implements OrderInterface
      * Sets the "deleted at" datetime.
      *
      * @param \DateTime $deletedAt
-     * 
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setDeletedAt(\DateTime $deletedAt = null)
@@ -527,7 +524,6 @@ class Order implements OrderInterface
      * Returns whether the order has the given item or not.
      *
      * @param \Ekyna\Component\Sale\Order\OrderItemInterface $orderItem
-     *
      * @return boolean
      */
     public function hasItem(OrderItemInterface $orderItem)
@@ -603,7 +599,6 @@ class Order implements OrderInterface
      * Returns whether the order has the given payment or not.
      *
      * @param \Ekyna\Component\Sale\Order\OrderPaymentInterface $orderPayment
-     *
      * @return boolean
      */
     public function hasPayment(OrderPaymentInterface $orderPayment)
@@ -649,7 +644,6 @@ class Order implements OrderInterface
      * Returns whether the order has the given shipment or not.
      *
      * @param \Ekyna\Component\Sale\Order\OrderShipmentInterface $orderShipment
-     *
      * @return boolean
      */
     public function hasShipment(OrderShipmentInterface $orderShipment)
@@ -661,7 +655,6 @@ class Order implements OrderInterface
      * Adds a shipment.
      *
      * @param \Ekyna\Component\Sale\Order\OrderShipmentInterface $orderShipment
-     * 
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function addShipment(OrderShipmentInterface $orderShipment)
@@ -698,7 +691,6 @@ class Order implements OrderInterface
      * Sets the user.
      *
      * @param \Ekyna\Bundle\UserBundle\Model\UserInterface $user
-     * 
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setUser(UserInterface $user = null)
@@ -720,7 +712,6 @@ class Order implements OrderInterface
      * Sets the invoice address.
      *
      * @param \Ekyna\Bundle\UserBundle\Model\AddressInterface $address
-     * 
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setInvoiceAddress(AddressInterface $address = null)
@@ -742,7 +733,6 @@ class Order implements OrderInterface
      * Sets the delivery address.
      *
      * @param \Ekyna\Bundle\UserBundle\Model\AddressInterface $address
-     * 
      * @return \Ekyna\Bundle\OrderBundle\Entity\Order
      */
     public function setDeliveryAddress(AddressInterface $address = null)
