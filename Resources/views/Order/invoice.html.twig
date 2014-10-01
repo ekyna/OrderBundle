@@ -5,7 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	{% block stylesheets -%}
-	{% stylesheets output='css/order-document.css' filter='cssrewrite, ?yui_css'
+	{% stylesheets output='css/order-document.css' filter='cssrewrite, ?yui_css' debug=false
 	    'bundles/ekynaorder/css/order-document.css'
 	%}
 	<link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
