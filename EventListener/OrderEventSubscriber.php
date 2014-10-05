@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\OrderBundle\EventListener;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Ekyna\Bundle\AdminBundle\Event\ResourceMessage;
+use Ekyna\Bundle\AdminBundle\Operator\ResourceOperatorInterface;
 use Ekyna\Bundle\OrderBundle\Event\OrderEvent;
 use Ekyna\Bundle\OrderBundle\Event\OrderEvents;
 use Ekyna\Bundle\OrderBundle\Model\StateResolverInterface;
@@ -28,9 +29,9 @@ use Symfony\Component\EventDispatcher\Event;
 class OrderEventSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var \Doctrine\Common\Persistence\ObjectManager
+     * @var ResourceOperatorInterface
      */
-    private $manager;
+    private $operator;
 
     /**
      * @var \Ekyna\Bundle\OrderBundle\Model\UpdaterInterface
@@ -55,21 +56,21 @@ class OrderEventSubscriber implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param ObjectManager $manager
+     * @param ResourceOperatorInterface $operator
      * @param EventDispatcherInterface $dispatcher
      * @param UpdaterInterface $updater
      * @param StateResolverInterface $stateResolver
      * @param NumberGeneratorInterface $generator
      */
     public function __construct(
-        ObjectManager $manager,
+        ResourceOperatorInterface $operator,
         EventDispatcherInterface $dispatcher,
         UpdaterInterface $updater,
         StateResolverInterface $stateResolver,
         NumberGeneratorInterface $generator
     )
     {
-        $this->manager = $manager;
+        $this->operator = $operator;
         $this->dispatcher = $dispatcher;
         $this->updater = $updater;
         $this->stateResolver = $stateResolver;
@@ -84,7 +85,7 @@ class OrderEventSubscriber implements EventSubscriberInterface
     public function onPreContentChange(OrderEvent $event)
     {
         if ($event->getOrder()->getLocked()) {
-            $event->addMessage(new ResourceMessage('ekyna_order.event.locked', ResourceMessage::TYPE_DANGER));
+            $event->addMessage(new ResourceMessage('ekyna_order.event.locked', ResourceMessage::TYPE_ERROR));
         }
     }
 
@@ -107,8 +108,7 @@ class OrderEventSubscriber implements EventSubscriberInterface
      */
     public function onPostContentChange(OrderEvent $event)
     {
-        // Dispatch a new event cause his propagation will be stopped.
-        $this->dispatcher->dispatch(OrderEvents::UPDATE, new OrderEvent($event->getOrder()));
+        $this->operator->update($event);
     }
 
     /**
@@ -138,31 +138,7 @@ class OrderEventSubscriber implements EventSubscriberInterface
      */
     public function onPostStateChange(OrderEvent $event)
     {
-        // Dispatch a new event cause his propagation will be stopped.
-        $this->dispatcher->dispatch(OrderEvents::UPDATE, new OrderEvent($event->getOrder()));
-    }
-
-    /**
-     * Pre update event handler.
-     *
-     * @param OrderEvent $event
-     */
-    public function onPreUpdate(OrderEvent $event)
-    {
-        // TODO: validation
-    }
-
-    /**
-     * Update event handler.
-     *
-     * @param OrderEvent $event
-     */
-    public function onUpdate(OrderEvent $event)
-    {
-        $this->manager->persist($event->getOrder());
-        $this->manager->flush();
-        // Prevents from being persisted a second time in ResourceController
-        $event->stopPropagation();
+        $this->operator->update($event);
     }
 
     /**
@@ -173,21 +149,8 @@ class OrderEventSubscriber implements EventSubscriberInterface
     public function onPreDelete(OrderEvent $event)
     {
         if ($event->getOrder()->getLocked()) {
-            $event->addMessage(new ResourceMessage('ekyna_order.event.locked', ResourceMessage::TYPE_DANGER));
+            $event->addMessage(new ResourceMessage('ekyna_order.event.locked', ResourceMessage::TYPE_ERROR));
         }
-    }
-
-    /**
-     * Remove event handler.
-     *
-     * @param OrderEvent $event
-     */
-    public function onDelete(OrderEvent $event)
-    {
-        $this->manager->remove($event->getOrder());
-        $this->manager->flush();
-        // Prevents being removed a second time in ResourceController
-        $event->stopPropagation();
     }
 
     /**
@@ -199,12 +162,12 @@ class OrderEventSubscriber implements EventSubscriberInterface
     {
         $order = $event->getOrder();
         if ($order->getLocked()) {
-            $event->addMessage(new ResourceMessage('ekyna_order.event.locked', ResourceMessage::TYPE_DANGER));
+            $event->addMessage(new ResourceMessage('ekyna_order.event.locked', ResourceMessage::TYPE_ERROR));
             return;
         }
         $order->setLocked(true);
-        // Dispatch a new event cause his propagation will be stopped.
-        $this->dispatcher->dispatch(OrderEvents::UPDATE, new OrderEvent($event->getOrder()));
+
+        $this->operator->update($event);
     }
 
     /**
@@ -217,8 +180,8 @@ class OrderEventSubscriber implements EventSubscriberInterface
         $order = $event->getOrder();
         if ($order->getLocked()) {
             $order->setLocked(false);
-            // Dispatch a new event cause his propagation will be stopped.
-            $this->dispatcher->dispatch(OrderEvents::UPDATE, new OrderEvent($event->getOrder()));
+
+            $this->operator->update($event);
         }
     }
 
@@ -285,16 +248,11 @@ class OrderEventSubscriber implements EventSubscriberInterface
                 array('onStateChange', 0),
                 array('onPostStateChange', -512),
             ),
-            OrderEvents::UPDATE => array(
-                array('onPreUpdate', 512),
-                array('onUpdate', 0),
-            ),
-            OrderEvents::DELETE => array(
-                array('onPreDelete', 512),
-                array('onDelete', 0),
-            ),
+            OrderEvents::PRE_DELETE => array('onPreDelete', 512),
+
             OrderEvents::PAYMENT_INITIALIZE => array('onPaymentInitialize', 0),
             OrderEvents::PAYMENT_COMPLETE => array('onPaymentComplete', 0),
+
             PaymentEvents::STATE_CHANGE => array('onPaymentStateChange', 0),
             ShipmentEvents::STATE_CHANGE => array('onShipmentStateChange', 0),
         );

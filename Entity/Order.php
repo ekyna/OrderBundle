@@ -377,10 +377,7 @@ class Order implements OrderInterface
 	}
 
     /**
-     * Sets the state.
-     *
-     * @param string $state
-     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
+     * {@inheritDoc}
      */
     public function setState($state)
     {
@@ -398,10 +395,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * Sets the payment state.
-     *
-     * @param string $paymentState
-     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
+     * {@inheritDoc}
      */
     public function setPaymentState($paymentState)
     {
@@ -419,10 +413,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * Sets the shipment state.
-     *
-     * @param string $shipmentState
-     * @return \Ekyna\Bundle\OrderBundle\Entity\Order
+     * {@inheritDoc}
      */
     public function setShipmentState($shipmentState)
     {

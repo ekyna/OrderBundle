@@ -46,7 +46,6 @@
                 <order-by-field name="position" direction="ASC" />
             </order-by>
         </one-to-many>
-
         <one-to-many field="payments" target-entity="Ekyna\Bundle\OrderBundle\Entity\OrderPayment" mapped-by="order" orphan-removal="true">
             <cascade>
                 <cascade-all/>

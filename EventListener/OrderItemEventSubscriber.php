@@ -39,7 +39,7 @@ class OrderItemEventSubscriber implements EventSubscriberInterface
     {
         $order = $event->getOrder();
         if ($order->getLocked()) {
-            $event->addMessage(new ResourceMessage('ekyna_order.event.locked', ResourceMessage::TYPE_DANGER));
+            $event->addMessage(new ResourceMessage('ekyna_order.event.locked', ResourceMessage::TYPE_ERROR));
         }
     }
 
@@ -75,7 +75,7 @@ class OrderItemEventSubscriber implements EventSubscriberInterface
     {
         $order = $event->getOrder();
         if ($order->getLocked()) {
-            $event->addMessage(new ResourceMessage('ekyna_order.event.locked', ResourceMessage::TYPE_DANGER));
+            $event->addMessage(new ResourceMessage('ekyna_order.event.locked', ResourceMessage::TYPE_ERROR));
         }
     }
 

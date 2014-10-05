@@ -9,9 +9,9 @@ use Ekyna\Component\Sale\Payment\PaymentStates;
 use Ekyna\Component\Sale\Shipment\ShipmentStates;
 
 /**
- * OrderStateResolver.
- *
- * @author Etienne Dauvergne <contact@ekyna.com>
+ * Class OrderStateResolver
+ * @package Ekyna\Bundle\OrderBundle\Resolver
+ * @author Étienne Dauvergne <contact@ekyna.com>
  */
 class OrderStateResolver implements StateResolverInterface
 {
@@ -20,7 +20,9 @@ class OrderStateResolver implements StateResolverInterface
      */
     public function resolve(OrderInterface $order)
     {
-        $orderState = $order->getState();
+        if ($order->isEmpty()) {
+            OrderStates::STATE_PENDING;
+        }
 
         $paymentState = $this->resolvePaymentsState($order);
         $shipmentState = $this->resolveShipmentsState($order);
@@ -58,29 +60,32 @@ class OrderStateResolver implements StateResolverInterface
         $statesCounts = array();
         $totalPaid = 0;
 
-        foreach ($order->getPayments() as $payment) {
-            if (in_array($payment->getState(), array(PaymentStates::STATE_SUCCESS, PaymentStates::STATE_COMPLETED))) {
-                $totalPaid += $payment->getAmount();
+        $payments = $order->getPayments();
+        if (0 < $payments->count()) {
+            foreach ($payments as $payment) {
+                if (in_array($payment->getState(), array(PaymentStates::STATE_SUCCESS, PaymentStates::STATE_COMPLETED))) {
+                    $totalPaid += $payment->getAmount();
+                }
+                if (array_key_exists($payment->getState(), $statesCounts)) {
+                    $statesCounts[$payment->getState()]++;
+                } else {
+                    $statesCounts[$payment->getState()] = 1;
+                }
+                $allCount++;
             }
-            if (array_key_exists($payment->getState(), $statesCounts)) {
-                $statesCounts[$payment->getState()]++;
-            } else {
-                $statesCounts[$payment->getState()] = 1;
-            }
-            $allCount++;
-        }
 
-        if ($totalPaid >= $order->getAtiTotal()) {
-            if (array_key_exists(PaymentStates::STATE_COMPLETED, $statesCounts) 
-                && $statesCounts[PaymentStates::STATE_COMPLETED] == $allCount) {
-                return PaymentStates::STATE_COMPLETED;
+            if ($totalPaid >= $order->getAtiTotal()) {
+                if (array_key_exists(PaymentStates::STATE_COMPLETED, $statesCounts)
+                    && $statesCounts[PaymentStates::STATE_COMPLETED] == $allCount) {
+                    return PaymentStates::STATE_COMPLETED;
+                }
+                return PaymentStates::STATE_SUCCESS;
             }
-            return PaymentStates::STATE_SUCCESS;
-        }
 
-        foreach ($statesCounts as $state => $count) {
-            if ($count == $allCount) {
-                return $state;
+            foreach ($statesCounts as $state => $count) {
+                if ($count == $allCount) {
+                    return $state;
+                }
             }
         }
 
@@ -96,8 +101,12 @@ class OrderStateResolver implements StateResolverInterface
      */
     protected function resolveShipmentsState(OrderInterface $order)
     {
-        if (! $order->requiresShipment()) {
-            return ShipmentStates::STATE_SHIPPED;
+        if (!$order->isEmpty()) {
+            if (! $order->requiresShipment()) {
+                return ShipmentStates::STATE_SHIPPED;
+            }
+
+            // TODO Shipments states
         }
 
         return ShipmentStates::STATE_PENDING;
