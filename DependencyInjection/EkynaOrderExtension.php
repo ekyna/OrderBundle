@@ -29,27 +29,16 @@ class EkynaOrderExtension extends AbstractExtension implements PrependExtensionI
     public function prepend(ContainerBuilder $container)
     {
         $bundles = $container->getParameter('kernel.bundles');
-        $config = array(
-            'bundles' => array('EkynaOrderBundle')
-        );
-        if (true === isset($bundles['AsseticBundle'])) {
-            $this->configureAsseticBundle($container, $config);
-        }
-    }
 
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $config
-     *
-     * @return void
-     */
-    protected function configureAsseticBundle(ContainerBuilder $container, array $config)
-    {
-        foreach (array_keys($container->getExtensions()) as $name) {
-            if ($name == 'assetic') {
-                $container->prependExtensionConfig($name, $config);
-                break;
-            }
+        $container->prependExtensionConfig('ekyna_user', array(
+            'account_enabled' => true,
+            'address_enabled' => true,
+        ));
+
+        if (true === isset($bundles['AsseticBundle'])) {
+            $container->prependExtensionConfig('assetic', array(
+                'bundles' => array('EkynaOrderBundle')
+            ));
         }
     }
 }
