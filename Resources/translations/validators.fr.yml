@@ -1,0 +1,5 @@
+ekyna_order:
+    order:
+        user_is_mandatory: Veuillez sélectionner un utilisateur.
+        invoice_address_is_mandatory: Veuillez sélectionner une adresse de facturation.
+        delivery_address_is_mandatory: Veuillez sélectionner une adresse de livraison.

@@ -9,11 +9,11 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Class OrderItemEventSubscriber
+ * Class OrderItemListener
  * @package Ekyna\Bundle\OrderBundle\EventListener
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
-class OrderItemEventSubscriber implements EventSubscriberInterface
+class OrderItemListener implements EventSubscriberInterface
 {
     /**
      * @var EventDispatcherInterface

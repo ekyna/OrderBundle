@@ -17,16 +17,17 @@ use Ekyna\Bundle\ShipmentBundle\Event\ShipmentEvents;
 use Ekyna\Component\Sale\Order\OrderInterface;
 use Ekyna\Component\Sale\Order\OrderPaymentInterface;
 use Ekyna\Component\Sale\Order\OrderStates;
+use Ekyna\Component\Sale\Order\OrderTypes;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Class OrderEventSubscriber
+ * Class OrderListener
  * @package Ekyna\Bundle\OrderBundle\EventListener
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
-class OrderEventSubscriber implements EventSubscriberInterface
+class OrderListener implements EventSubscriberInterface
 {
     /**
      * @var ResourceOperatorInterface
@@ -34,17 +35,17 @@ class OrderEventSubscriber implements EventSubscriberInterface
     private $operator;
 
     /**
-     * @var \Ekyna\Bundle\OrderBundle\Model\UpdaterInterface
+     * @var UpdaterInterface
      */
     private $updater;
 
     /**
-     * @var \Ekyna\Bundle\OrderBundle\Model\StateResolverInterface
+     * @var StateResolverInterface
      */
     private $stateResolver;
 
     /**
-     * @var \Ekyna\Bundle\OrderBundle\Model\NumberGeneratorInterface
+     * @var NumberGeneratorInterface
      */
     private $generator;
 
@@ -120,14 +121,42 @@ class OrderEventSubscriber implements EventSubscriberInterface
     {
         $order = $event->getOrder();
         if (in_array($order->getState(), array(OrderStates::STATE_ACCEPTED, OrderStates::STATE_COMPLETED))
-            && $order->getType() != OrderInterface::TYPE_ORDER
+            && $order->getType() != OrderTypes::TYPE_ORDER
         ) {
+            // Set type and created at
             $order
-                ->setType(OrderInterface::TYPE_ORDER)
-                ->setCreatedAt(new \DateTime());
+                ->setType(OrderTypes::TYPE_ORDER)
+                ->setCreatedAt(new \DateTime())
+            ;
+            // Generate number
             if (null === $order->getNumber()) {
                 $order->setNumber($this->generator->generate($order));
             }
+            // Clone and lock invoice address
+            $invoiceAddress = $order->getInvoiceAddress();
+            if (null !== $invoiceAddress && !$invoiceAddress->getLocked()) {
+                $invoiceAddress = clone $invoiceAddress;
+                $invoiceAddress
+                    ->setUser(null)
+                    ->setLocked(true)
+                ;
+                $order->setInvoiceAddress($invoiceAddress);
+            }
+            // Clone and lock delivery address
+            $deliveryAddress = $order->getDeliveryAddress();
+            if (null !== $deliveryAddress && !$deliveryAddress->getLocked()) {
+                $deliveryAddress = clone $deliveryAddress;
+                $deliveryAddress
+                    ->setUser(null)
+                    ->setLocked(true)
+                ;
+                $order->setDeliveryAddress($deliveryAddress);
+            }
+        }
+
+        // Set completed at
+        if ($order->getState() === OrderStates::STATE_COMPLETED && null === $order->getCompletedAt()) {
+            $order->setCompletedAt(new \DateTime());
         }
     }
 

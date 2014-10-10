@@ -19,7 +19,7 @@ class OrderPayment extends Payment implements OrderPaymentInterface
     protected $id;
 
     /**
-     * @var \Ekyna\Bundle\orderBundle\Entity\Order
+     * @var OrderInterface
      */
     protected $order;
 

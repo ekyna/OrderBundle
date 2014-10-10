@@ -4,18 +4,21 @@ namespace Ekyna\Bundle\OrderBundle\Entity;
 
 use Ekyna\Component\Sale\Order\OrderItemInterface;
 use Ekyna\Component\Sale\Order\OrderItemOptionInterface;
+use Ekyna\Component\Sale\PriceableTrait;
 use Ekyna\Component\Sale\Product\OptionInterface;
+use Ekyna\Component\Sale\ReferenceableTrait;
+use Ekyna\Component\Sale\WeightableTrait;
 
 /**
- * OrderItemOption.
- *
+ * Class OrderItemOption
+ * @package Ekyna\Bundle\OrderBundle\Entity
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
 class OrderItemOption implements OrderItemOptionInterface
 {
-    use \Ekyna\Component\Sale\PriceableTrait;
-    use \Ekyna\Component\Sale\ReferenceableTrait;
-    use \Ekyna\Component\Sale\WeightableTrait;
+    use PriceableTrait;
+    use ReferenceableTrait;
+    use WeightableTrait;
 
     /**
      * @var integer
@@ -23,12 +26,12 @@ class OrderItemOption implements OrderItemOptionInterface
     protected $id;
 
     /**
-     * @var \Ekyna\Bundle\OrderBundle\Entity\OrderItem
+     * @var OrderItemInterface
      */
     protected $orderItem;
 
     /**
-     * @var \Ekyna\Component\Sale\Product\OptionInterface
+     * @var OptionInterface
      */
     protected $option;
 

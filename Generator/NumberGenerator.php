@@ -5,23 +5,24 @@ namespace Ekyna\Bundle\OrderBundle\Generator;
 use Ekyna\Bundle\OrderBundle\Entity\OrderRepository;
 use Ekyna\Bundle\OrderBundle\Model\NumberGeneratorInterface;
 use Ekyna\Component\Sale\Order\OrderInterface;
+use Ekyna\Component\Sale\Order\OrderTypes;
 
 /**
- * NumberGenerator.
- *
+ * Class NumberGenerator
+ * @package Ekyna\Bundle\OrderBundle\Generator
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
 class NumberGenerator implements NumberGeneratorInterface
 {
     /**
-     * @var \Ekyna\Bundle\OrderBundle\Entity\OrderRepository
+     * @var OrderRepository
      */
     private $repository;
 
     /**
      * Constructor.
      * 
-     * @param \Ekyna\Bundle\OrderBundle\Entity\OrderRepository $repository
+     * @param OrderRepository $repository
      */
     public function __construct(OrderRepository $repository)
     {
@@ -31,10 +32,11 @@ class NumberGenerator implements NumberGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function generate(OrderInterface $order, $type = OrderInterface::TYPE_ORDER)
+    public function generate(OrderInterface $order, $type = OrderTypes::TYPE_ORDER)
     {
         $date = new \DateTime();
 
+        // TODO select only date
     	$qb = $this->repository->createQueryBuilder('o');
     	$qb
     	   ->where($qb->expr()->eq('o.type', ':type'))
@@ -45,14 +47,15 @@ class NumberGenerator implements NumberGeneratorInterface
     	   ->orderBy('o.number', 'DESC')
     	   ->setFirstResult(0)
     	   ->setMaxResults(1)
-    	   ->setParameter('type', OrderInterface::TYPE_ORDER)
+    	   ->setParameter('type', OrderTypes::TYPE_ORDER)
     	   ->setParameter('year', $date->format('Y'))
     	   ->setParameter('month', $date->format('m'))
     	   ->setParameter('id', $order->getId())
     	;
 
+        // TODO single result
     	if (1 == count($results = $qb->getQuery()->getResult())) {
-    	    return (string) intval($results[0]->getNumber()) + 1;
+    	    return (string) (intval($results[0]->getNumber()) + 1);
     	}
 
     	return sprintf('%s%s', $date->format('ym'), str_pad('1', 5, '0', STR_PAD_LEFT));

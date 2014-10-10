@@ -3,23 +3,26 @@
 namespace Ekyna\Bundle\OrderBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Ekyna\Component\Sale\PriceableTrait;
 use Ekyna\Component\Sale\Product\ProductInterface;
 use Ekyna\Component\Sale\Order\OrderInterface;
 use Ekyna\Component\Sale\Order\OrderItemInterface;
 use Ekyna\Component\Sale\Order\OrderItemOptionInterface;
+use Ekyna\Component\Sale\ReferenceableTrait;
 use Ekyna\Component\Sale\TaxAmount;
 use Ekyna\Component\Sale\TaxesAmounts;
+use Ekyna\Component\Sale\WeightableTrait;
 
 /**
- * OrderItem.
- *
+ * Class OrderItem
+ * @package Ekyna\Bundle\OrderBundle\Entity
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
 class OrderItem implements OrderItemInterface
 {
-    use \Ekyna\Component\Sale\PriceableTrait;
-    use \Ekyna\Component\Sale\ReferenceableTrait;
-    use \Ekyna\Component\Sale\WeightableTrait;
+    use PriceableTrait;
+    use ReferenceableTrait;
+    use WeightableTrait;
 
     /**
      * @var integer
@@ -37,12 +40,12 @@ class OrderItem implements OrderItemInterface
     protected $position;
 
     /**
-     * @var \Ekyna\Component\Sale\Order\OrderInterface
+     * @var OrderInterface
      */
     protected $order;
 
     /**
-     * @var \Ekyna\Component\Sale\Product\ProductInterface
+     * @var ProductInterface
      */
     protected $product;
 
@@ -77,11 +80,7 @@ class OrderItem implements OrderItemInterface
     }
 
     /**
-     * Sets the quantity.
-     *
-     * @param integer $quantity
-     * 
-     * @return OrderItem
+     * {@inheritdoc}
      */
     public function setQuantity($quantity)
     {
@@ -99,11 +98,7 @@ class OrderItem implements OrderItemInterface
     }
 
     /**
-     * Sets the position.
-     *
-     * @param integer $position
-     * 
-     * @return OrderItem
+     * {@inheritdoc}
      */
     public function setPosition($position)
     {
@@ -139,11 +134,7 @@ class OrderItem implements OrderItemInterface
     }
 
     /**
-     * Sets the product.
-     *
-     * @param \Ekyna\Component\Sale\Product\ProductInterface $product
-     * 
-     * @return OrderItem
+     * {@inheritdoc}
      */
     public function setProduct(ProductInterface $product = null)
     {
@@ -161,11 +152,7 @@ class OrderItem implements OrderItemInterface
     }
 
     /**
-     * Adds an option.
-     *
-     * @param \Ekyna\Component\Sale\Order\OrderItemOptionInterface $option
-     * 
-     * @return OrderItem
+     * {@inheritdoc}
      */
     public function addOption(OrderItemOptionInterface $option)
     {
@@ -176,9 +163,7 @@ class OrderItem implements OrderItemInterface
     }
 
     /**
-     * Removes an option.
-     *
-     * @param \Ekyna\Component\Sale\Order\OrderItemOptionInterface $option
+     * {@inheritdoc}
      */
     public function removeOption(OrderItemOptionInterface $option)
     {
@@ -211,7 +196,7 @@ class OrderItem implements OrderItemInterface
      */
     public function equals(OrderItemInterface $orderItem)
     {
-        if($this->hasSameProduct($orderItem)) {
+        if ($this->hasSameProduct($orderItem)) {
             return $this->hasSameOptions($orderItem);
         }
         return false;
@@ -220,7 +205,7 @@ class OrderItem implements OrderItemInterface
     /**
      * Returns whether the OrderItem has the same product as the given OrderItem or not.
      *
-     * @param \Ekyna\Component\Sale\Order\OrderItemInterface $orderItem
+     * @param OrderItemInterface $orderItem
      *
      * @return boolean
      */
@@ -232,7 +217,7 @@ class OrderItem implements OrderItemInterface
     /**
      * Returns whether the OrderItem has the same options as the given OrderItem or not.
      *
-     * @param \Ekyna\Component\Sale\Order\OrderItemInterface $orderItem
+     * @param OrderItemInterface $orderItem
      *
      * @return boolean
      */
@@ -248,18 +233,14 @@ class OrderItem implements OrderItemInterface
      */
     public function merge(OrderItemInterface $orderItem)
     {
-        if($this->equals($orderItem)) {
+        if ($this->equals($orderItem)) {
             $this->quantity += $orderItem->getQuantity();
         }
         return $this;
     }
 
     /**
-     * Sets the extra datas.
-     *
-     * @param integer $extras
-     *
-     * @return OrderItem
+     * {@inheritdoc}
      */
     public function setExtras($extras)
     {

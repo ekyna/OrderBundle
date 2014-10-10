@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<constraint-mapping
+    xmlns="http://symfony.com/schema/dic/constraint-mapping"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping
+                        http://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
+
+    <class name="Ekyna\Bundle\OrderBundle\Entity\Order">
+        <constraint name="Ekyna\Bundle\OrderBundle\Validator\Constraints\Order" />
+
+	    <property name="items">
+            <constraint name="Valid" />
+	    </property>
+	    <property name="payments">
+            <constraint name="Valid" />
+	    </property>
+	    <property name="shipments">
+            <constraint name="Valid" />
+	    </property>
+
+        <property name="currency">
+            <constraint name="NotBlank" />
+        </property>
+        <property name="type">
+            <constraint name="Choice">
+                <option name="callback">
+                    <value>Ekyna\Component\Sale\Order\OrderTypes</value>
+                    <value>getTypes</value></option>
+            </constraint>
+        </property>
+        <property name="state">
+            <constraint name="Choice">
+                <option name="callback">
+                    <value>Ekyna\Component\Sale\Order\OrderStates</value>
+                    <value>getStates</value></option>
+            </constraint>
+        </property>
+        <property name="paymentState">
+            <constraint name="Choice">
+                <option name="callback">
+                    <value>Ekyna\Component\Sale\Payment\PaymentStates</value>
+                    <value>getStates</value></option>
+            </constraint>
+        </property>
+        <property name="shipmentState">
+            <constraint name="Choice">
+                <option name="callback">
+                    <value>Ekyna\Component\Sale\Shipment\ShipmentStates</value>
+                    <value>getStates</value></option>
+            </constraint>
+        </property>
+    </class>
+
+    <class name="Ekyna\Bundle\OrderBundle\Entity\OrderItem">
+        <property name="tax">
+            <constraint name="NotNull" />
+        </property>
+        <property name="designation">
+            <constraint name="NotBlank" />
+        </property>
+        <property name="reference">
+            <constraint name="NotBlank" />
+        </property>
+        <property name="price">
+            <constraint name="GreaterThanOrEqual">
+                <option name="value">0</option>
+            </constraint>
+        </property>
+        <property name="weight">
+            <constraint name="GreaterThanOrEqual">
+                <option name="value">0</option>
+            </constraint>
+        </property>
+        <property name="quantity">
+            <constraint name="GreaterThanOrEqual">
+                <option name="value">1</option>
+            </constraint>
+        </property>
+        <property name="position">
+            <constraint name="GreaterThanOrEqual">
+                <option name="value">0</option>
+            </constraint>
+        </property>
+    </class>
+
+    <class name="Ekyna\Bundle\OrderBundle\Entity\OrderItemOption">
+        <property name="tax">
+            <constraint name="NotNull" />
+        </property>
+        <property name="designation">
+            <constraint name="NotBlank" />
+        </property>
+        <property name="reference">
+            <constraint name="NotBlank" />
+        </property>
+        <property name="price">
+            <constraint name="GreaterThanOrEqual">
+                <option name="value">0</option>
+            </constraint>
+        </property>
+        <property name="weight">
+            <constraint name="GreaterThanOrEqual">
+                <option name="value">0</option>
+            </constraint>
+        </property>
+    </class>
+
+</constraint-mapping>

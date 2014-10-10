@@ -3,16 +3,16 @@
 namespace Ekyna\Bundle\OrderBundle\Entity;
 
 use Ekyna\Bundle\AdminBundle\Doctrine\ORM\ResourceRepository;
-use Ekyna\Component\Sale\Order\OrderInterface;
+use Ekyna\Component\Sale\Order\OrderTypes;
 
 /**
- * OrderRepository.
- *
+ * Class OrderRepository
+ * @package Ekyna\Bundle\OrderBundle\Entity
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
 class OrderRepository extends ResourceRepository
 {
-    public function createNew($type = OrderInterface::TYPE_ORDER)
+    public function createNew($type = OrderTypes::TYPE_ORDER)
     {
         $order = parent::createNew();
         $order->setType($type);

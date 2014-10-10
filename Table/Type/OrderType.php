@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\OrderBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Component\Sale\Order\OrderTypes;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Sale\Order\OrderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -68,7 +69,7 @@ class OrderType extends ResourceTableType
             'customize_qb' => function(QueryBuilder $qb) {
                 $qb
                     ->andWhere($qb->expr()->eq('a.type', ':type'))
-                    ->setParameter('type', OrderInterface::TYPE_ORDER)
+                    ->setParameter('type', OrderTypes::TYPE_ORDER)
                     ->andWhere($qb->expr()->isNull('a.deletedAt'))
                 ;
             },

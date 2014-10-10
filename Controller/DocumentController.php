@@ -2,20 +2,34 @@
 
 namespace Ekyna\Bundle\OrderBundle\Controller;
 
-use Ekyna\Component\Sale\Order\OrderInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Ekyna\Bundle\CoreBundle\Controller\Controller;
+use Ekyna\Component\Sale\Order\OrderTypes;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Class DocumentController
+ * @package Ekyna\Bundle\OrderBundle\Controller
+ * @author Étienne Dauvergne <contact@ekyna.com>
+ */
 class DocumentController extends Controller
 {
+    /**
+     * Invoice (render) action.
+     *
+     * @param Request $request
+     * @return Response
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
+     */
     public function invoiceAction(Request $request)
     {
+        /** @var \Ekyna\Component\Sale\Order\OrderInterface $order */
         $order = $this->get('ekyna_order.order.repository')->findOneBy(array(
             'id' => $request->attributes->get('orderId', null), 
-            'type' => OrderInterface::TYPE_ORDER
+            'type' => OrderTypes::TYPE_ORDER
         ));
         if (null === $order) {
             throw new NotFoundHttpException('Order not found.');
@@ -26,12 +40,9 @@ class DocumentController extends Controller
             throw new AccessDeniedHttpException('You are not allowed to view this resource.');
         }
 
-        $content = $this->renderView(
-            'EkynaOrderBundle:Order:invoice.html.twig',
-            array(
-        	    'order' => $order,
-            )
-        );
+        $content = $this->renderView('EkynaOrderBundle:Order:invoice.html.twig', array(
+            'order' => $order,
+        ));
 
         $format = $request->attributes->get('_format', 'html');
         $headers = array(

@@ -29,7 +29,7 @@
         </one-to-many>
 
         <many-to-one field="order" target-entity="Ekyna\Bundle\OrderBundle\Entity\Order" inversed-by="items" orphan-removal="true">
-            <join-column name="order_id" referenced-column-name="id" on-delete="CASCADE" />
+            <join-column name="order_id" referenced-column-name="id" on-delete="CASCADE" nullable="true" />
             <gedmo:sortable-group />
         </many-to-one>
 
