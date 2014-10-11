@@ -44,7 +44,7 @@ class CaptureOrderUsingExpressCheckoutAction extends PaymentAwareAction
             $order = $payment->getOrder();
             $token = $request->getToken();
 
-            $details['INVNUM'] = $payment->getId();
+            $details['INVNUM'] = $payment->getCreatedAt()->format('ymd').$payment->getId();
             $details['RETURNURL'] = $token->getTargetUrl();
             $details['CANCELURL'] = $token->getTargetUrl();
             $details['NOSHIPPING'] = 1;
