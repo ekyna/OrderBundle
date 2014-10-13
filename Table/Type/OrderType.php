@@ -66,11 +66,11 @@ class OrderType extends ResourceTableType
 
         $resolver->setDefaults(array(
             'default_sort' => array('number', 'desc'),
-            'customize_qb' => function(QueryBuilder $qb) {
+            'customize_qb' => function(QueryBuilder $qb, $alias) {
                 $qb
-                    ->andWhere($qb->expr()->eq('a.type', ':type'))
+                    ->andWhere($qb->expr()->eq($alias.'.type', ':type'))
                     ->setParameter('type', OrderTypes::TYPE_ORDER)
-                    ->andWhere($qb->expr()->isNull('a.deletedAt'))
+                    ->andWhere($qb->expr()->isNull($alias.'.deletedAt'))
                 ;
             },
         ));
