@@ -25,7 +25,7 @@
 		    <div class="tab-pane active" id="orde-order-general">
 		        <div class="row">
                     <div class="col-md-6">{{ show_row(order.number, 'text', 'ekyna_core.field.number', {'label_nb_col': 4}) }}</div>
-                    <div class="col-md-6">{{ show_row(order.createdAt, 'datetime', 'ekyna_core.field.add_date', {'label_nb_col': 4}) }}</div>
+                    <div class="col-md-6">{{ show_row(order.createdAt, 'datetime', 'ekyna_core.field.created_at', {'label_nb_col': 4}) }}</div>
                 </div>
 		        <div class="row">
                     <div class="col-md-6">{{ show_row(order.atiTotal, 'number', 'ekyna_order.field.ati_total', {'label_nb_col': 4, 'append': '€'}) }}</div>

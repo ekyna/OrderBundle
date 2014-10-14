@@ -30,7 +30,7 @@ class OrderType extends ResourceTableType
                 ),
             ))
             ->addColumn('updatedAt', 'datetime', array(
-                'label' => 'ekyna_core.field.update_date',
+                'label' => 'ekyna_core.field.updated_at',
             ))
             ->addColumn('actions', 'admin_actions', array(
                 'buttons' => array(
