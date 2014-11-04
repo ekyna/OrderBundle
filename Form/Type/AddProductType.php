@@ -11,14 +11,22 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * AddProductType
- *
+ * Class AddProductType
+ * @package Ekyna\Bundle\OrderBundle\Form\Type
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
 class AddProductType extends AbstractType
 {
+    /**
+     * @var array
+     */
     protected $optionsConfiguration;
 
+    /**
+     * Constructor.
+     *
+     * @param array $optionsConfiguration
+     */
     public function __construct(array $optionsConfiguration)
     {
         $this->optionsConfiguration = $optionsConfiguration;
@@ -29,12 +37,10 @@ class AddProductType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $transformer = new ObjectToIdentifierTransformer($options['em']->getRepository('EkynaProductBundle:AbstractProduct'));
-
-        $builder->
-            add(
-                $builder->create('product', 'hidden')->addModelTransformer($transformer)
-            )
+        $builder
+            ->add('product', 'ekyna_core_hidden_entity', array(
+                'class' => 'EkynaProductBundle:AbstractProduct',
+            ))
             ->add('quantity', 'integer', array('attr' => array('min' => 1)))
             ->add('submit', 'submit', array(
         	    'label' => 'Ajouter au panier'
@@ -53,7 +59,7 @@ class AddProductType extends AbstractType
                     if(! array_key_exists($group, $this->optionsConfiguration)) {
                         throw new \RuntimeException(sprintf('Undefined option configuration "%s".', $group));
                     }
-                    $config = $this->optionsConfiguration[$group];
+                    //$config = $this->optionsConfiguration[$group];
                     $form->add('option-'.$group, 'entity', array(
                         'label' => $this->optionsConfiguration[$group]['label'],
                         'required' => false,

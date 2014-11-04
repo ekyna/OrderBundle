@@ -6,8 +6,8 @@ use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * OrderType.
- *
+ * Class OrderType
+ * @package Ekyna\Bundle\OrderBundle\Form\Type
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
 class OrderType extends ResourceFormType

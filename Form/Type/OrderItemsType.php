@@ -5,8 +5,8 @@ namespace Ekyna\Bundle\OrderBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 
 /**
- * OrderItemsType.
- *
+ * Class OrderItemsType
+ * @package Ekyna\Bundle\OrderBundle\Form\Type
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
 class OrderItemsType extends AbstractType
