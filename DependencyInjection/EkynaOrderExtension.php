@@ -31,8 +31,10 @@ class EkynaOrderExtension extends AbstractExtension implements PrependExtensionI
         $bundles = $container->getParameter('kernel.bundles');
 
         $container->prependExtensionConfig('ekyna_user', array(
-            'account_enabled' => true,
-            'address_enabled' => true,
+            'features' => array(
+                'account' => true,
+                'address' => true
+            ),
         ));
 
         if (true === isset($bundles['AsseticBundle'])) {
