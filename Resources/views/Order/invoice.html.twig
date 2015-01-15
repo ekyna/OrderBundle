@@ -35,7 +35,7 @@
 			Web: {{ app.request.getSchemeAndHttpHost() }}
         </td>
         <td class="order-doc-header-customer">
-            <strong>{{ ('ekyna_core.gender.' ~ order.user.gender ~ '.short')|trans }} {{ order.user.lastname }} {{ order.user.firstname }}</strong><br>
+            <strong>{{ ('ekyna_core.gender.' ~ order.user.gender ~ '.short')|trans }} {{ order.user.lastName }} {{ order.user.firstName }}</strong><br>
             <em>{{ order.user.email }}</em><br><br>
             Le {{ order.createdAt|date('d/m/Y') }}.           
         </td>
