@@ -31,9 +31,12 @@ class EkynaOrderExtension extends AbstractExtension implements PrependExtensionI
         $bundles = $container->getParameter('kernel.bundles');
 
         $container->prependExtensionConfig('ekyna_user', array(
-            'features' => array(
-                'account' => true,
-                'address' => true
+            'account' => array(
+                'enable'    => true,
+                'profile'   => true,
+                'register'  => true,
+                'resetting' => true,
+                'address'   => true,
             ),
         ));
 
