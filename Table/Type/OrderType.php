@@ -65,7 +65,7 @@ class OrderType extends ResourceTableType
         parent::setDefaultOptions($resolver);
 
         $resolver->setDefaults(array(
-            'default_sort' => array('number', 'desc'),
+            'default_sorts' => array('number desc'),
             'customize_qb' => function(QueryBuilder $qb, $alias) {
                 $qb
                     ->andWhere($qb->expr()->eq($alias.'.type', ':type'))

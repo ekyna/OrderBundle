@@ -52,7 +52,7 @@ class OrderSettingsSchema extends AbstractSchema
                 'label'       => 'ekyna_order.field.document_footer',
                 'attr' => array(
                     'class' => 'tinymce',
-                    'data-theme' => 'advanced',
+                    'data-theme' => 'simple',
                 ),
                 'constraints' => array(
                     new NotBlank()
