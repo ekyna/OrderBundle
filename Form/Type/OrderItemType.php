@@ -90,7 +90,11 @@ class OrderItemType extends ResourceFormType
                     'widget_col' => 8
                 ),
             ))
-            ->add('position', 'hidden', array('attr' => array('data-role' => 'position')))
+            ->add('position', 'hidden', array(
+                'attr' => array(
+                    'data-collection-role' => 'position'
+                )
+            ))
         ;
     }
 
