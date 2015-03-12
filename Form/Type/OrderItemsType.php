@@ -13,7 +13,7 @@ class OrderItemsType extends AbstractType
 {
     public function getParent()
     {
-        return 'bootstrap_collection';
+        return 'ekyna_core_collection';
     }
 
     public function getName()
