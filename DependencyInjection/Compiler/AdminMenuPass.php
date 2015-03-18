@@ -24,7 +24,7 @@ class AdminMenuPass implements CompilerPassInterface
             'name'     => 'orde',
             'label'    => 'ekyna_order.order.label.plural',
             'icon'     => 'shopping-cart',
-            'position' => 5,
+            'position' => 10,
         )));
         $pool->addMethodCall('createEntry', array('orde', array(
             'name'     => 'orders',
