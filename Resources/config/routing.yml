@@ -1,6 +1,6 @@
 ekyna_orde_order_admin:
     resource: "routing/admin/order.yml"
-    prefix:   /admin/orde/orders
+    prefix:   /admin/order/orders
 
 ekyna_orde_api:
     resource: "routing/api.yml"
