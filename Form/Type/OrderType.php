@@ -13,6 +13,25 @@ use Symfony\Component\Form\FormBuilderInterface;
 class OrderType extends ResourceFormType
 {
     /**
+     * @var string
+     */
+    protected $userClass;
+
+
+    /**
+     * Constructor.
+     *
+     * @param string $orderClass
+     * @param string $userClass
+     */
+    public function __construct($orderClass, $userClass)
+    {
+        parent::__construct($orderClass);
+
+        $this->userClass = $userClass;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -26,7 +45,7 @@ class OrderType extends ResourceFormType
             ->add('user', 'ekyna_core_entity_search', array(
                 'label' => 'ekyna_core.field.user',
                 'required' => true,
-                'entity'   => 'Ekyna\Bundle\UserBundle\Entity\User',
+                'entity'   => $this->userClass,
                 'search_route' => 'ekyna_user_user_admin_search',
                 'find_route'   => 'ekyna_user_user_admin_find',
                 'allow_clear'  => false,
@@ -36,7 +55,7 @@ class OrderType extends ResourceFormType
                 'type'            => 'ekyna_order_order_item',
                 'allow_add'       => true,
                 'allow_delete'    => true,
-                'allow_sort'      => true, // TODO ?
+                'allow_sort'      => true,
                 'add_button_text' => 'ekyna_core.button.add',
                 'sub_widget_col'  => 11,
                 'button_col'      => 1,
