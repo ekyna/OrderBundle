@@ -42,14 +42,7 @@ class OrderType extends ResourceFormType
                 'required' => true,
                 'disabled' => true,
             ))
-            ->add('user', 'ekyna_core_entity_search', array(
-                'label' => 'ekyna_core.field.user',
-                'required' => true,
-                'entity'   => $this->userClass,
-                'search_route' => 'ekyna_user_user_admin_search',
-                'find_route'   => 'ekyna_user_user_admin_find',
-                'allow_clear'  => false,
-            ))
+            ->add('user', 'ekyna_user_search')
             ->add('items', 'ekyna_core_collection', array(
                 'label'           => false,
                 'type'            => 'ekyna_order_order_item',
