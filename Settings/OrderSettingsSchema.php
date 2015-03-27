@@ -8,25 +8,12 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
- * OrderSettingsSchema.
- *
+ * Class OrderSettingsSchema
+ * @package Ekyna\Bundle\OrderBundle\Settings
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
 class OrderSettingsSchema extends AbstractSchema
 {
-    /**
-     * @var array
-     */
-    protected $defaults;
-
-    /**
-     * @param array $defaults
-     */
-    public function __construct(array $defaults = array())
-    {
-        $this->defaults = $defaults;
-    }
-
     /**
      * {@inheritdoc}
      */
