@@ -6,9 +6,93 @@
                         http://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
 
     <class name="Ekyna\Bundle\OrderBundle\Entity\Order">
-        <constraint name="Ekyna\Bundle\OrderBundle\Validator\Constraints\Order" />
+        <constraint name="Ekyna\Bundle\OrderBundle\Validator\Constraints\Order">
+            <option name="groups">
+                <value>Information</value>
+                <value>Order</value>
+            </option>
+        </constraint>
+
+        <property name="number">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>Order</value>
+                </option>
+            </constraint>
+        </property>
+        <property name="key">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>Order</value>
+                </option>
+            </constraint>
+        </property>
+
+        <property name="gender">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>Information</value>
+                    <value>Order</value>
+                </option>
+            </constraint>
+            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Gender">
+                <option name="groups">
+                    <value>Information</value>
+                    <value>Order</value>
+                </option>
+            </constraint>
+        </property>
+        <property name="firstName">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>Information</value>
+                    <value>Order</value>
+                </option>
+            </constraint>
+            <constraint name="Length">
+                <option name="min">2</option>
+                <option name="max">32</option>
+                <option name="groups">
+                    <value>Information</value>
+                    <value>Order</value>
+                </option>
+            </constraint>
+        </property>
+        <property name="lastName">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>Information</value>
+                    <value>Order</value>
+                </option>
+            </constraint>
+            <constraint name="Length">
+                <option name="min">2</option>
+                <option name="max">32</option>
+                <option name="groups">
+                    <value>Information</value>
+                    <value>Order</value>
+                </option>
+            </constraint>
+        </property>
+
+        <property name="invoiceAddress">
+            <constraint name="NotNull">
+                <option name="groups">
+                    <value>Information</value>
+                    <value>Order</value>
+                </option>
+            </constraint>
+            <constraint name="Valid" />
+        </property>
 
 	    <property name="items">
+            <constraint name="Count">
+                <option name="min">1</option>
+                <option name="groups">
+                    <value>Cart</value>
+                    <value>Order</value>
+                </option>
+            </constraint>
             <constraint name="Valid" />
 	    </property>
 	    <property name="payments">
@@ -24,37 +108,37 @@
         <property name="type">
             <constraint name="Choice">
                 <option name="callback">
-                    <value>Ekyna\Component\Sale\Order\OrderTypes</value>
-                    <value>getTypes</value></option>
+                    <value>Ekyna\Bundle\OrderBundle\Model\OrderTypes</value>
+                    <value>getConstants</value></option>
             </constraint>
         </property>
         <property name="state">
             <constraint name="Choice">
                 <option name="callback">
-                    <value>Ekyna\Component\Sale\Order\OrderStates</value>
-                    <value>getStates</value></option>
+                    <value>Ekyna\Bundle\OrderBundle\Model\OrderStates</value>
+                    <value>getConstants</value></option>
             </constraint>
         </property>
         <property name="paymentState">
             <constraint name="Choice">
                 <option name="callback">
-                    <value>Ekyna\Component\Sale\Payment\PaymentStates</value>
-                    <value>getStates</value></option>
+                    <value>Ekyna\Bundle\PaymentBundle\Model\PaymentStates</value>
+                    <value>getConstants</value></option>
             </constraint>
         </property>
         <property name="shipmentState">
             <constraint name="Choice">
                 <option name="callback">
-                    <value>Ekyna\Component\Sale\Shipment\ShipmentStates</value>
-                    <value>getStates</value></option>
+                    <value>Ekyna\Bundle\ShipmentBundle\Model\ShipmentStates</value>
+                    <value>getConstants</value></option>
             </constraint>
         </property>
     </class>
 
     <class name="Ekyna\Bundle\OrderBundle\Entity\OrderItem">
-        <property name="tax">
+        <!--<property name="tax">
             <constraint name="NotNull" />
-        </property>
+        </property>-->
         <property name="designation">
             <constraint name="NotBlank" />
         </property>
@@ -83,24 +167,23 @@
         </property>
     </class>
 
-    <class name="Ekyna\Bundle\OrderBundle\Entity\OrderItemOption">
-        <property name="tax">
+    <class name="Ekyna\Bundle\OrderBundle\Entity\Tax">
+        <constraint name="Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity">
+            <option name="fields">name</option>
+            <option name="message">ekyna_order.tax.name_already_exists</option>
+        </constraint>
+        <constraint name="Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity">
+            <option name="fields">rate</option>
+            <option name="message">ekyna_order.tax.rate_already_exists</option>
+        </constraint>
+        <property name="name">
+            <constraint name="NotBlank" />
+        </property>
+        <property name="rate">
             <constraint name="NotNull" />
-        </property>
-        <property name="designation">
-            <constraint name="NotBlank" />
-        </property>
-        <property name="reference">
-            <constraint name="NotBlank" />
-        </property>
-        <property name="price">
-            <constraint name="GreaterThanOrEqual">
-                <option name="value">0</option>
-            </constraint>
-        </property>
-        <property name="weight">
-            <constraint name="GreaterThanOrEqual">
-                <option name="value">0</option>
+            <constraint name="Range">
+                <option name="min">0</option>
+                <option name="max">1</option>
             </constraint>
         </property>
     </class>

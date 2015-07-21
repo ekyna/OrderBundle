@@ -3,6 +3,8 @@
 namespace Ekyna\Bundle\OrderBundle\Form\Type;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
+use Ekyna\Bundle\OrderBundle\Form\EventListener\OrderItemTypeSubscriber;
+use Ekyna\Bundle\OrderBundle\Helper\ItemHelperInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
@@ -13,42 +15,67 @@ use Symfony\Component\Form\FormBuilderInterface;
 class OrderItemType extends ResourceFormType
 {
     /**
+     * @var ItemHelperInterface
+     */
+    protected $itemHelper;
+
+
+    /**
+     * Constructor.
+     *
+     * @param string $class
+     * @param ItemHelperInterface $itemHelper
+     */
+    public function __construct($class, ItemHelperInterface $itemHelper)
+    {
+        parent::__construct($class);
+
+        $this->itemHelper = $itemHelper;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('designation', 'text', array(
+        $subscriber = new OrderItemTypeSubscriber($this->itemHelper, $this->getFields($options));
+        $builder->addEventSubscriber($subscriber);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+    	return 'ekyna_order_order_item';
+    }
+
+    /**
+     * Returns the fields definitions.
+     *
+     * @param array $options
+     * @return array
+     */
+    protected function getFields(array $options)
+    {
+        return array(
+            array('designation', 'text', array(
                 'label' => 'ekyna_core.field.designation',
                 'sizing' => 'sm',
                 'attr' => array(
                     'label_col' => 4,
                     'widget_col' => 8
                 )
-            ))
-            ->add('reference', 'text', array(
+            )),
+            array('reference', 'text', array(
                 'label' => 'ekyna_core.field.reference',
                 'sizing' => 'sm',
                 'attr' => array(
                     'label_col' => 4,
                     'widget_col' => 8
                 )
-            ))
-            ->add('product', 'entity', array(
-                'label' => 'Produit',
-                'class' => 'Ekyna\Bundle\ProductBundle\Entity\AbstractProduct',
-                'multiple' => false,
-                'required' => false,
-                'property' => 'designation',
-                'empty_value' => 'Produit',
-                'sizing' => 'sm',
-                'attr' => array(
-                    'placeholder' => 'Produit',
-                    'label_col' => 4,
-                    'widget_col' => 8
-                ),
-            ))
-            ->add('weight', 'integer', array(
+            )),
+            array('weight', 'integer', array(
                 'label' => 'ekyna_core.field.weight',
                 'sizing' => 'sm',
                 'attr' => array(
@@ -57,8 +84,8 @@ class OrderItemType extends ResourceFormType
                     'label_col' => 4,
                     'widget_col' => 8
                 ),
-            ))
-            ->add('price', 'number', array(
+            )),
+            array('price', 'number', array(
                 'label' => 'ekyna_core.field.price',
                 'precision' => 5,
                 'sizing' => 'sm',
@@ -67,19 +94,21 @@ class OrderItemType extends ResourceFormType
                     'label_col' => 4,
                     'widget_col' => 8
                 ),
-            ))
-            ->add('quantity', 'integer', array(
+            )),
+            array('quantity', 'integer', array(
                 'label' => 'ekyna_core.field.quantity',
                 'sizing' => 'sm',
                 'attr' => array(
+                    'min' => 1,
                     'label_col' => 4,
                     'widget_col' => 8
                 ),
-            ))
-            ->add('tax', 'ekyna_resource', array(
+            )),
+            array('tax', 'ekyna_resource', array(
                 'label' => 'ekyna_core.field.tax',
-                'class' => 'Ekyna\Bundle\ProductBundle\Entity\Tax',
+                'class' => 'Ekyna\Bundle\OrderBundle\Entity\Tax',
                 'multiple' => false,
+                'required' => false,
                 'property' => 'name',
                 'empty_value' => 'ekyna_core.field.tax',
                 'allow_new' => $options['admin_mode'],
@@ -89,20 +118,12 @@ class OrderItemType extends ResourceFormType
                     'label_col' => 4,
                     'widget_col' => 8
                 ),
-            ))
-            ->add('position', 'hidden', array(
+            )),
+            array('position', 'hidden', array(
                 'attr' => array(
                     'data-collection-role' => 'position'
                 )
             ))
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-    	return 'ekyna_order_order_item';
+        );
     }
 }

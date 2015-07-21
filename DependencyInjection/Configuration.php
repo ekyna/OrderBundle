@@ -7,8 +7,8 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 
 /**
- * Configuration
- *
+ * Class Configuration
+ * @package Ekyna\Bundle\OrderBundle\DependencyInjection
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
 class Configuration implements ConfigurationInterface
@@ -48,7 +48,7 @@ class Configuration implements ConfigurationInterface
                             ->isRequired()
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->scalarNode('templates')->defaultValue('EkynaOrderBundle:Order/Admin')->end()
+                                ->variableNode('templates')->defaultValue('EkynaOrderBundle:Admin/Order')->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\OrderBundle\Entity\Order')->end()
                                 ->scalarNode('controller')->defaultValue('Ekyna\Bundle\OrderBundle\Controller\Admin\OrderController')->end()
                                 ->scalarNode('repository')->defaultValue('Ekyna\Bundle\OrderBundle\Entity\OrderRepository')->end()
@@ -56,6 +56,22 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('table')->defaultValue('Ekyna\Bundle\OrderBundle\Table\Type\OrderType')->end()
                                 ->scalarNode('parent')->end()
                                 ->scalarNode('event')->defaultValue('Ekyna\Bundle\OrderBundle\Event\OrderEvent')->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('tax')
+                            ->isRequired()
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('templates')->defaultValue(array(
+                                    '_form.html' => 'EkynaOrderBundle:Admin/Tax:_form.html',
+                                    'show.html'  => 'EkynaOrderBundle:Admin/Tax:show.html',
+                                ))->end()
+                                ->scalarNode('parent')->end()
+                                ->scalarNode('entity')->defaultValue('Ekyna\Bundle\OrderBundle\Entity\Tax')->end()
+                                ->scalarNode('controller')->end()
+                                ->scalarNode('repository')->end()
+                                ->scalarNode('form')->defaultValue('Ekyna\Bundle\OrderBundle\Form\Type\TaxType')->end()
+                                ->scalarNode('table')->defaultValue('Ekyna\Bundle\OrderBundle\Table\Type\TaxType')->end()
                             ->end()
                         ->end()
                     ->end()

@@ -1,0 +1,270 @@
+{% spaceless %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	{% block stylesheets -%}
+	{% stylesheets output='css/order-document.css' filter='cssrewrite, ?yui_css' debug=false
+	    '@EkynaOrderBundle/Resources/asset/css/order-document.css'
+	%}
+	<link href="{{ app.request.schemeAndHttpHost ~ asset_url }}" rel="stylesheet" type="text/css" />
+	{%- endstylesheets %}
+    {% endblock %}
+</head>
+<body>
+<div class="order-doc-wrap">
+
+{# --- HEADER --- #}
+{% block header %}
+<table class="order-doc-bloc order-doc-header">
+    <tr>
+        <td class="order-doc-header-logo">
+            <a href="{{ path('home') }}">
+                <img alt="{{ get_setting('general.site_name') }}" src="{{ asset(order_document_logo) }}" />
+            </a>
+        </td>
+        <td class="order-doc-header-address">
+            {% set companyAddress = get_setting('general.site_address') %}
+            {{ companyAddress.street }}<br>
+            {% if companyAddress.supplement|length > 0 %}{{ companyAddress.supplement }}<br>{% endif %}
+            {{ companyAddress.postalCode ~ ' ' ~ companyAddress.city }}<br>
+            {% if companyAddress.phone|length > 0 %}Tél. {{ companyAddress.phone }}<br>{% endif %}
+            {% if companyAddress.mobile|length > 0 %}Port. {{ companyAddress.mobile }}<br>{% endif %}
+			Mail : {{ get_setting('general.admin_email') }}<br>
+			Web: {{ app.request.getSchemeAndHttpHost() }}
+        </td>
+        <td class="order-doc-header-customer">
+            <strong>{{ render_identity(order) }}</strong><br>
+            <em>{{ order.email }}</em><br><br>
+            Le {{ order.createdAt|date('d/m/Y') }}
+        </td>
+    </tr>
+</table>
+{% endblock header %}
+
+{# --- TITLE --- #}
+{% block title %}
+<div class="order-doc-bloc order-doc-title">
+    <h1>Facture n°{{ order.number }}</h1>
+</div>
+{% endblock title %}
+
+{# --- ADDRESSES --- #}
+{% block addresses %}
+<table class="order-doc-bloc order-doc-table">
+    <thead>
+        <tr>
+            <th>Adresse de facturation</th>
+            <th class="order-doc-blank">&nbsp;</th>
+            {% if order.requiresShipment %}
+            <th>Adresse de livraison</th>
+            {% else %}
+            <th class="order-doc-blank">&nbsp;</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="order-doc-address">
+                {{ render_address(order.invoiceAddress) }}
+            </td>
+            <td>&nbsp;</td>
+            <td class="order-doc-address">
+                {% if order.requiresShipment %}
+                    {% if order.sameAddress %}
+                        {{ 'ekyna_order.order.field.same_address'|trans }}
+                    {% else %}
+                        {{ render_address(order.deliveryAddress) }}
+                    {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% endblock addresses %}
+
+{# --- ITEMS --- #}
+{% block items %}
+<table class="order-doc-bloc order-doc-table order-doc-items">
+    <thead>
+        <tr>
+            <th>Désignation</th>
+            <th>Référence</th>
+            {#% if order.hasItemsDiscount %}<th>Remise</th>{% endif %#}
+            <th>Prix unit. H.T.</th>
+            <th>T.V.A.</th>
+            <th>Quantité</th>
+            <th>Total H.T.</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in order.items %}
+        <tr>
+            <td>
+                {% block item_designation %}{{ item.designation }}{% endblock %}
+            </td>
+            <td>
+                {{ item.reference }}
+            </td>
+            {#% if order.hasItemsDiscount %}<td class="order-doc-number">{{ item.discount|number_format(2, ',', ' ') }} €</td>{% endif %#}
+            <td class="order-doc-number">
+                {{ item.price|price }}
+            </td>
+            <td class="order-doc-number">
+                {% if item.tax is not sameas(null) %}
+                    {{ (item.tax.rate*100)|number_format(1, ',', ' ') }}%
+                {% else %}
+                    0%
+                {% endif %}
+            </td>
+            <td class="order-doc-number">
+                {{ item.quantity }}
+            </td>
+            <td class="order-doc-number">
+                {{ item|total|price }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock items %}
+
+{# --- TOTALS --- #}
+{% block totals %}
+<table class="order-doc-bloc order-doc-totals">
+    <tbody>
+        <tr>
+            <td>
+                <table class="order-doc-table">
+                    <thead>
+                        <tr>
+                            <th>Bases H.T.</th>
+                            {#% if order.totalDiscount > 0 %}<th>Remise</th>{% endif %#}
+                            <th>% T.V.A.</th>
+                            <th>Montant T.V.A.</th>
+                            {% if order.requiresShipment %}<th colspan="2">Port</th>{% endif %}
+                            <th colspan="2">Totaux</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set taxes = order|taxes %}
+                        <tr>
+                            <td class="order-doc-number" rowspan="{% if taxes|length > 1 %}{{ taxes|length }}{% else %}2{% endif %}">
+                                {{ order.netTotal|price }} {# TODO items total ? #}
+                            </td>
+                            {#% if order.totalDiscount > 0 %}<td class="order-doc-number" rowspan="{% if taxes|length > 1 %}{{ taxes|length }}{% else %}2{% endif %}">{{ order.totalDiscount|number_format(2, ',', ' ') }} €</td>{% endif %#}
+                            <td{% if taxes|length < 2 %} rowspan="2"{% endif %}>
+                                {% if taxes|length > 0 %}{{ taxes|first.name }}{% endif %}
+                            </td>
+                            <td class="order-doc-number"{% if taxes|length < 2 %} rowspan="2"{% endif %}>
+                                {% if taxes|length > 0 %}{{ taxes|first.amount|price }}{% endif %}
+                            </td>
+                            {% if order.requiresShipment %}
+                            <td>
+                                <strong>H.T.</strong>
+                            </td>
+                            <td class="order-doc-number">
+                                {{ order.netShippingCost|price }}
+                            </td>
+                            {% endif %}
+                            <td>
+                                <strong>H.T.</strong>
+                            </td>
+                            <td class="order-doc-number">
+                                {{ order.netTotal|price }}
+                            </td>
+                        </tr>
+                        <tr>
+                            {% if taxes|length > 1 %}
+                            <td>
+                                {{ taxes|slice(1,1)|first.name }}
+                            </td>
+                            <td class="order-doc-number">
+                                {{ taxes|slice(1,1)|first.amount|price }}
+                            </td>
+                            {% endif %}
+                            {% if order.requiresShipment %}
+                            <td{% if taxes|length > 2 %} rowspan="{{ taxes|length - 1 }}"{% endif %}>
+                                <strong>T.V.A.</strong>
+                            </td>
+                            <td class="order-doc-number"{% if taxes|length > 2 %} rowspan="{{ taxes|length - 1 }}"{% endif %}>
+                                {{ order.shippingTaxAmount|price }}
+                            </td>
+                            {% endif %}
+                            <td{% if taxes|length > 2 %} rowspan="{{ taxes|length - 1 }}"{% endif %}>
+                                <strong>T.V.A.</strong>
+                            </td>
+                            <td class="order-doc-number"{% if taxes|length > 2 %} rowspan="{{ taxes|length - 1 }}"{% endif %}>
+                                {{ taxes.total|price }}
+                            </td>
+                        </tr>
+                        {% if taxes|length > 2 %}
+                        {% for tax in taxes|slice(2) %}
+                        <tr>
+                            <td>
+                                {{ tax.title }}
+                            </td>
+                            <td class="order-doc-number">
+                                {{ taxes[loop.index0].amount|price }}
+                            </td>
+                        </tr>    
+                        {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </td>
+            <td class="order-doc-final-total">
+                <div class="order-doc-final-total-wrap">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>
+                                    Total T.T.C.
+                                </th>
+                                <td>
+                                    {{ order.atiTotal|price }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% endblock totals %}
+
+{# --- MISC --- #}
+{% block misc %}
+{#
+<table class="order-doc-bloc order-doc-inf">
+    <tbody>
+        <tr>
+            <td>{{ order.paiementMethod.title }}</td>
+        </tr>
+    </tbody>
+</table>
+<hr />
+<table class="order-doc-bloc order-doc-inf">
+    <tbody>
+        <tr>
+            <td>{{ order.comment|raw }}</td>
+        </tr>
+    </tbody>
+</table>
+#}
+{% endblock misc %}
+
+{# --- FOOTER --- #}
+{% block footer %}
+<div class="order-doc-bloc order-doc-mentions">
+    {{ get_setting('order.document_footer')|raw }}
+</div>
+{% endblock footer %}
+
+</div>
+</body>
+</html>
+{% endspaceless %}

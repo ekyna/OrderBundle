@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\OrderBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Ekyna\Bundle\UserBundle\Model\AddressInterface;
+use Ekyna\Bundle\UserBundle\Model\IdentityInterface;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Sale\Order\OrderInterface;
 use Ekyna\Component\Sale\Order\OrderItemInterface;
@@ -12,8 +13,6 @@ use Ekyna\Component\Sale\Order\OrderStates;
 use Ekyna\Component\Sale\Order\OrderShipmentInterface;
 use Ekyna\Component\Sale\Order\OrderTypes;
 use Ekyna\Component\Sale\Payment\PaymentStates;
-use Ekyna\Component\Sale\Product\ProductTypes;
-use Ekyna\Component\Sale\TaxesAmounts;
 use Ekyna\Component\Sale\Shipment\ShipmentStates;
 
 /**
@@ -21,7 +20,7 @@ use Ekyna\Component\Sale\Shipment\ShipmentStates;
  * @package Ekyna\Bundle\OrderBundle\Entity
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
-class Order implements OrderInterface
+class Order implements OrderInterface, IdentityInterface
 {
     /**
      * @var integer
@@ -34,14 +33,34 @@ class Order implements OrderInterface
     protected $number;
 
     /**
-     * @var integer
+     * @var string
      */
-    protected $itemsCount;
+    protected $key;
+
+    /**
+     * @var string
+     */
+    protected $gender;
+
+    /**
+     * @var string
+     */
+    protected $firstName;
+
+    /**
+     * @var string
+     */
+    protected $lastName;
+
+    /**
+     * @var string
+     */
+    protected $email;
 
     /**
      * @var integer
      */
-    protected $totalWeight;
+    protected $itemsCount;
 
     /**
      * @var string
@@ -57,6 +76,11 @@ class Order implements OrderInterface
      * @var float
      */
     protected $atiTotal;
+
+    /**
+     * @var integer
+     */
+    protected $totalWeight;
 
     /**
      * @var string
@@ -119,19 +143,24 @@ class Order implements OrderInterface
     protected $shipments;
 
     /**
-     * @var \Ekyna\Bundle\UserBundle\Model\UserInterface
+     * @var UserInterface
      */
     protected $user;
 
     /**
-     * @var \Ekyna\Bundle\UserBundle\Model\AddressInterface
+     * @var AddressInterface
      */
     protected $invoiceAddress;
 
     /**
-     * @var \Ekyna\Bundle\UserBundle\Model\AddressInterface
+     * @var AddressInterface
      */
     protected $deliveryAddress;
+
+    /**
+     * @var boolean
+     */
+    protected $sameAddress;
 
 
     /**
@@ -139,18 +168,23 @@ class Order implements OrderInterface
      */
     public function __construct()
     {
-        $this->type   = OrderTypes::TYPE_ORDER;
-        $this->locked = false;
+        $this->type          = OrderTypes::TYPE_ORDER;
+        $this->locked        = false;
+        $this->sameAddress   = true;
 
-        $this->currency = 'EUR';
-
-        $this->items     = new ArrayCollection();
-        $this->payments  = new ArrayCollection();
-        $this->shipments = new ArrayCollection();
+        $this->itemsCount    = 0;
+        $this->currency      = 'EUR';
+        $this->netTotal      = 0;
+        $this->atiTotal      = 0;
+        $this->totalWeight   = 0;
 
         $this->state         = OrderStates::STATE_NEW;
         $this->paymentState  = PaymentStates::STATE_PENDING;
         $this->shipmentState = ShipmentStates::STATE_PENDING;
+
+        $this->items         = new ArrayCollection();
+        $this->payments      = new ArrayCollection();
+        $this->shipments     = new ArrayCollection();
     }
 
     /**
@@ -200,6 +234,91 @@ class Order implements OrderInterface
     /**
      * {@inheritDoc}
      */
+    public function setKey($key)
+    {
+        $this->key = $key;
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getKey()
+    {
+        return $this->key;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setGender($gender)
+    {
+        $this->gender = $gender;
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getGender()
+    {
+        return $this->gender;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setItemsCount($count)
     {
         $this->itemsCount = $count;
@@ -213,24 +332,6 @@ class Order implements OrderInterface
     public function getItemsCount()
     {
         return $this->itemsCount;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setTotalWeight($weight)
-    {
-        $this->totalWeight = $weight;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getTotalWeight()
-    {
-        return $this->totalWeight;
     }
 
     /**
@@ -290,22 +391,9 @@ class Order implements OrderInterface
     /**
      * {@inheritDoc}
      */
-    public function getTaxesAmounts()
-    {
-        $taxesAmounts = new TaxesAmounts();
-        foreach($this->items as $item) {
-            $taxesAmounts->merge($item->getTotalTaxesAmounts());
-        }
-
-        return $taxesAmounts;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getNetShippingCost()
     {
-        return 0;
+        return 0; /* TODO */
     }
 
     /**
@@ -313,7 +401,7 @@ class Order implements OrderInterface
      */
     public function getAtiShippingCost()
     {
-        return 0;
+        return 0; /* TODO */
     }
 
     /**
@@ -321,7 +409,25 @@ class Order implements OrderInterface
      */
     public function getShippingTaxAmount()
     {
-        return 0;
+        return 0; /* TODO */
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTotalWeight($weight)
+    {
+        $this->totalWeight = $weight;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTotalWeight()
+    {
+        return $this->totalWeight;
     }
 
     /**
@@ -487,32 +593,47 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Sets the items.
+     *
+     * @param ArrayCollection|OrderItemInterface[] $items
+     * @return Order
      */
-    public function hasItem(OrderItemInterface $orderItem)
+    public function setItems($items)
     {
-        return $this->items->contains($orderItem);
+        foreach ($this->items as $item) {
+            $item->setOrder(null);
+        }
+        foreach ($items as $item) {
+            $item->setOrder($this);
+        }
+        $this->items = $items;
+        return $this;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function addItem(OrderItemInterface $orderItem)
+    public function hasItem(OrderItemInterface $item)
     {
-        if ($this->hasItem($orderItem)) {
-            return $this;
-        }
+        return $this->items->contains($item);
+    }
 
-        /** @var OrderItemInterface $item */
-        foreach ($this->items as $item) {
-            if ($item->equals($orderItem)) {
-                $item->merge($orderItem);
+    /**
+     * {@inheritDoc}
+     */
+    public function addItem(OrderItemInterface $item)
+    {
+        foreach ($this->items as $i) {
+            if ($i->equals($item)) {
+                $i->merge($item);
                 return $this;
             }
         }
 
-        $orderItem->setOrder($this);
-        $this->items->add($orderItem);
+        if (!$this->hasItem($item)) {
+            $item->setOrder($this);
+            $this->items->add($item);
+        }
 
         return $this;
     }
@@ -520,10 +641,22 @@ class Order implements OrderInterface
     /**
      * {@inheritDoc}
      */
-    public function removeItem(OrderItemInterface $orderItem)
+    public function removeItem(OrderItemInterface $item)
     {
-        $orderItem->setOrder(null);
-        $this->items->removeElement($orderItem);
+        foreach ($this->items as $i) {
+            if ($i->equals($item)) {
+                $i->setOrder(null);
+                $this->items->removeElement($i);
+                return $this;
+            }
+        }
+
+        if ($this->hasItem($item)) {
+            $item->setOrder(null);
+            $this->items->removeElement($item);
+        }
+
+        return $this;
     }
 
     /**
@@ -539,15 +672,7 @@ class Order implements OrderInterface
      */
     public function requiresShipment()
     {
-        /** @var OrderItemInterface $item */
-        foreach ($this->items as $item) {
-            if (null !== $product = $item->getProduct()) {
-               if ($product->getType() === ProductTypes::PHYSICAL) {
-                   return true;
-               } 
-            }
-        }
-        return false;
+        return 0 < $this->getTotalWeight();
     }
 
     /**
@@ -559,35 +684,53 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Sets the payments.
+     *
+     * @param ArrayCollection|OrderPaymentInterface[] $payments
+     * @return Order
      */
-    public function hasPayment(OrderPaymentInterface $orderPayment)
+    public function setPayments($payments)
     {
-        return $this->payments->contains($orderPayment);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addPayment(OrderPaymentInterface $orderPayment)
-    {
-        if($this->hasPayment($orderPayment)) {
-            return $this;
+        foreach($this->payments as $payment) {
+            $payment->setOrder(null);
         }
-
-        $orderPayment->setOrder($this);
-        $this->payments->add($orderPayment);
-
+        foreach($payments as $payment) {
+            $payment->setOrder($this);
+        }
+        $this->payments = $payments;
         return $this;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function removePayment(OrderPaymentInterface $orderPayment)
+    public function hasPayment(OrderPaymentInterface $payment)
     {
-        $orderPayment->setOrder(null);
-        $this->payments->removeElement($orderPayment);
+        return $this->payments->contains($payment);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addPayment(OrderPaymentInterface $payment)
+    {
+        if (!$this->hasPayment($payment)) {
+            $payment->setOrder($this);
+            $this->payments->add($payment);
+        }
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removePayment(OrderPaymentInterface $payment)
+    {
+        if ($this->hasPayment($payment)) {
+            $payment->setOrder(null);
+            $this->payments->removeElement($payment);
+        }
+        return $this;
     }
 
     /**
@@ -599,34 +742,53 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Sets the shipments.
+     *
+     * @param ArrayCollection|OrderShipmentInterface[] $shipments
+     * @return Order
      */
-    public function hasShipment(OrderShipmentInterface $orderShipment)
+    public function setShipments($shipments)
     {
-        return $this->shipments->contains($orderShipment);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addShipment(OrderShipmentInterface $orderShipment)
-    {
-        if($this->hasShipment($orderShipment)) {
-            return $this;
+        foreach ($this->shipments as $shipment) {
+            $shipment->setOrder(null);
         }
-
-        $orderShipment->setOrder($this);
-        $this->shipments->add($orderShipment);
-
+        foreach ($shipments as $shipment) {
+            $shipment->setOrder($this);
+        }
+        $this->shipments = $shipments;
         return $this;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function removeShipment(OrderShipmentInterface $orderShipment)
+    public function hasShipment(OrderShipmentInterface $shipment)
     {
-        $this->shipments->removeElement($orderShipment);
+        return $this->shipments->contains($shipment);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addShipment(OrderShipmentInterface $shipment)
+    {
+        if (!$this->hasShipment($shipment)) {
+            $shipment->setOrder($this);
+            $this->shipments->add($shipment);
+        }
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeShipment(OrderShipmentInterface $shipment)
+    {
+        if ($this->hasShipment($shipment)) {
+            $shipment->setOrder(null);
+            $this->shipments->removeElement($shipment);
+        }
+        return $this;
     }
 
     /**
@@ -684,10 +846,27 @@ class Order implements OrderInterface
     }
 
     /**
-     * {@inheritDoc} 
+     * {@inheritDoc}
      */
     public function getDeliveryAddress()
     {
         return $this->deliveryAddress;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setSameAddress($sameAddress)
+    {
+        $this->sameAddress = $sameAddress;
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSameAddress()
+    {
+        return $this->sameAddress;
     }
 }

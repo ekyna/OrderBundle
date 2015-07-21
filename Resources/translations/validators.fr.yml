@@ -3,3 +3,6 @@ ekyna_order:
         user_is_mandatory: Veuillez sélectionner un utilisateur.
         invoice_address_is_mandatory: Veuillez sélectionner une adresse de facturation.
         delivery_address_is_mandatory: Veuillez sélectionner une adresse de livraison.
+    tax:
+        name_already_exists: Une taxe portant ce nom existe déjà.
+        rate_already_exists: Une taxe avec ce taux existe déjà.

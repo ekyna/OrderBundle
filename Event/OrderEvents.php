@@ -9,15 +9,15 @@ namespace Ekyna\Bundle\OrderBundle\Event;
  */
 final class OrderEvents
 {
-    const ITEM_ADD           = 'ekyna_order.order.item_add';
-    const ITEM_REMOVE        = 'ekyna_order.order.item_remove';
-
     const STATE_CHANGE       = 'ekyna_order.order.state_change';
     const CONTENT_CHANGE     = 'ekyna_order.order.content_change';
 
+    const PRE_CREATE         = 'ekyna_order.order.pre_create';
+    const POST_CREATE        = 'ekyna_order.order.post_create';
+
+    const PRE_UPDATE         = 'ekyna_order.order.pre_update';
+    const POST_UPDATE        = 'ekyna_order.order.post_update';
+
     const PRE_DELETE         = 'ekyna_order.order.pre_delete';
     const POST_DELETE        = 'ekyna_order.order.post_delete';
-
-    const PAYMENT_INITIALIZE = 'ekyna_order.order.payment_initialize';
-    const PAYMENT_COMPLETE   = 'ekyna_order.order.payment_complete';
 }

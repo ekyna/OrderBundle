@@ -14,25 +14,10 @@ use Ekyna\Component\Sale\Order\OrderPaymentInterface;
 class OrderPayment extends Payment implements OrderPaymentInterface
 {
     /**
-     * @var integer
-     */
-    protected $id;
-
-    /**
      * @var OrderInterface
      */
     protected $order;
 
-
-    /**
-     * Returns the identifier.
-     * 
-     * @return number
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * {@inheritdoc}

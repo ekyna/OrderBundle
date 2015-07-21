@@ -40,7 +40,7 @@ class DocumentController extends Controller
             throw new AccessDeniedHttpException('You are not allowed to view this resource.');
         }
 
-        $content = $this->renderView('EkynaOrderBundle:Order:invoice.html.twig', array(
+        $content = $this->renderView('EkynaOrderBundle:Document:invoice.html.twig', array(
             'order' => $order,
         ));
 

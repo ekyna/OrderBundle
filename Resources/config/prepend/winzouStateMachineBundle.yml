@@ -1,0 +1,32 @@
+winzou_state_machine:
+    ekyna_order:
+        class:         Ekyna\Component\Sale\Order\OrderInterface
+        property_path: state
+        state_machine_class: Ekyna\Bundle\OrderBundle\Service\StateMachine
+        states:
+            new:        ~
+            pending:    ~
+            refused: ~
+            accepted:  ~
+            completed:     ~
+            refunded: ~
+            cancelled:  ~
+        transitions:
+            create:
+                from: [new]
+                to:   pending
+            refuse:
+                from: [new, pending, accepted]
+                to:   refused
+            accept:
+                from: [new, pending, refused]
+                to:   accepted
+            complete:
+                from: [new, pending, accepted]
+                to:   completed
+            refund:
+                from: [accepted, completed]
+                to:   refunded
+            cancel:
+                from: [new, pending]
+                to:   cancelled

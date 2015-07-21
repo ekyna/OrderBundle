@@ -22,36 +22,13 @@ class OrderValidator extends ConstraintValidator
         /* @var OrderInterface $order */
         /* @var Order $constraint */
 
-        if ($order->getType() === OrderTypes::TYPE_CART) {
-            if (null !== $order->getUser()) {
-                $this->validateAddresses($order, $constraint);
-            }
-        } else {
-            if (null === $order->getUser()) {
-                $this->context->addViolationAt(
-                    'user',
-                    $constraint->userIsMandatory
-                );
-            }
-            $this->validateAddresses($order, $constraint);
-        }
-    }
-
-    /**
-     * Validates the order addresses.
-     *
-     * @param OrderInterface $order
-     * @param Order $constraint
-     */
-    private function validateAddresses(OrderInterface $order, Order $constraint)
-    {
         if (null === $order->getInvoiceAddress()) {
             $this->context->addViolationAt(
                 'invoiceAddress',
                 $constraint->invoiceAddressIsMandatory
             );
         }
-        if ($order->requiresShipment() && null === $order->getDeliveryAddress()) {
+        if ($order->requiresShipment() && (!$order->getSameAddress() && null === $order->getDeliveryAddress())) {
             $this->context->addViolationAt(
                 'deliveryAddress',
                 $constraint->deliveryAddressIsMandatory

@@ -17,12 +17,4 @@ class OrderController extends ResourceController
     {
         throw new \Exception('Not implemented.'); 
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function createResourceEvent($resource)
-    {
-        return new OrderEvent($resource);
-    }
 }

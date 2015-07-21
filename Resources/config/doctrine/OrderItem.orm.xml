@@ -16,31 +16,22 @@
         <field name="reference" column="reference" type="string" length="32" />
         <field name="price" column="price" type="decimal" precision="10" scale="5" />
         <field name="weight" column="weight" type="integer" />
-        <field name="extras" column="extras" type="json_array" />
         <field name="quantity" column="quantity" type="integer" />
         <field name="position" column="position" type="integer">
             <gedmo:sortable-position />
         </field>
 
-        <one-to-many field="options" target-entity="Ekyna\Bundle\OrderBundle\Entity\OrderItemOption" mapped-by="orderItem">
-            <cascade>
-                <cascade-all/>
-            </cascade>
-        </one-to-many>
+        <field name="subjectType" column="subject_type" type="string" nullable="true" />
+        <field name="subjectData" column="subject_data" type="json_array" nullable="true" />
 
         <many-to-one field="order" target-entity="Ekyna\Bundle\OrderBundle\Entity\Order" inversed-by="items" orphan-removal="true">
             <join-column name="order_id" referenced-column-name="id" on-delete="CASCADE" nullable="true" />
             <gedmo:sortable-group />
         </many-to-one>
 
-        <many-to-one field="product" target-entity="Ekyna\Bundle\ProductBundle\Entity\AbstractProduct">
-            <join-column name="product_id" referenced-column-name="id" nullable="true" on-delete="RESTRICT" />
+        <many-to-one field="tax" target-entity="Ekyna\Bundle\OrderBundle\Entity\Tax">
+            <join-column name="tax_id" referenced-column-name="id" nullable="true" />
         </many-to-one>
-
-        <many-to-one field="tax" target-entity="Ekyna\Bundle\ProductBundle\Entity\Tax">
-            <join-column name="tax_id" referenced-column-name="id" nullable="false" />
-        </many-to-one>
-
 
     </entity>
 

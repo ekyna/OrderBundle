@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\OrderBundle\Form\Type;
 
 use Ekyna\Bundle\AdminBundle\Form\Type\ResourceFormType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class OrderType
@@ -43,22 +44,33 @@ class OrderType extends ResourceFormType
                 'disabled' => true,
             ))
             ->add('user', 'ekyna_user_search')
-            ->add('items', 'ekyna_core_collection', array(
-                'label'           => false,
-                'type'            => 'ekyna_order_order_item',
-                'allow_add'       => true,
-                'allow_delete'    => true,
-                'allow_sort'      => true,
-                'add_button_text' => 'ekyna_core.button.add',
-                'sub_widget_col'  => 11,
-                'button_col'      => 1,
-                'attr'            => array(
-                    'widget_col' => 12
+            ->add('identity', 'ekyna_user_identity')
+            ->add('email', 'email', array(
+                'label' => 'ekyna_core.field.email',
+            ))
+            ->add('invoiceAddress', 'ekyna_user_address', array(
+                'label' => 'ekyna_order.order.field.invoice_address',
+            ))
+            ->add('sameAddress', 'checkbox', array(
+                'label' => 'ekyna_order.order.field.same_address',
+                'required' => false,
+                'attr' => array(
+                    'align_with_widget' => true,
                 ),
-                'options'         => array(
-                    'label'    => false,
-                    'required' => false,
-                ),
+            ))
+            ->add('deliveryAddress', 'ekyna_user_address', array(
+                'label' => 'ekyna_order.order.field.delivery_address',
+                'required' => false,
+            ))
+            ->add('items', 'ekyna_order_order_items')
+        ;
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver
+            ->setDefaults(array(
+                'validation_groups' => array('Default', 'Order'),
             ))
         ;
     }

@@ -1,17 +1,4 @@
 ekyna_order:
-    field:
-        ati_total: Total TTC
-        weight_total: Poids total
-        customer: Client
-        invoice_address: Addresse de facturation
-        delivery_address: Addresse de livraison
-        invoice: Facture
-        invoice_pdf: Facture PDF
-        no_shipment: Sans livraison
-        details: Détails
-        net_unit: Prix Unit. HT
-        net_total: Total HT
-        document_footer: Pied de page des documents
     order:
         label:
             singular: Commande
@@ -29,7 +16,52 @@ ekyna_order:
             new: Nouvelle commande
             edit: Modifier la commande
             remove: Supprimer la commande
+        field:
+            customer: Client
+            addresses: Addresses
+            invoice_address: Addresse de facturation
+            delivery_address: Addresse de livraison
+            same_address: Même adresse
+            invoice: Facture
+            invoice_pdf: Facture PDF
+            no_shipment: Sans livraison
+            details: Détails
+            net_unit: Prix Unit. HT
+            net_total: Total HT
+            ati_total: Total TTC
+            weight_total: Poids total
+            document_footer: Pied de page des documents
         alert:
-            no_order: Aucune commande configuré
+            no_item: Aucune commande configuré
+        state:
+            new: Nouveau
+            pending: En attente
+            refused: Refusée
+            accepted: Acceptée
+            completed: Complétée
+            refuned: Remboursée
+            cancelled: Annulée
+        type:
+            cart: Panier
+            order: Commande
+            quote: Devis
+    tax:
+        label:
+            singular: Taxe
+            plural: Taxes
+        header:
+            list: Taxes <small>Liste des taxes</small>
+            show: Détail de la taxe<small>%name%</small>
+            new: Créer une nouvelle taxe
+            edit: Modifier la taxe <small>%name%</small>
+            remove: Supprimer la taxe <small>%name%</small>
+        button:
+            list: Liste des taxes
+            show: Détail de la taxe
+            new: Nouvelle taxe
+            edit: Modifier la taxe
+            remove: Supprimer la taxe
+        alert:
+            no_item: Aucune tax configuré
     event:
         locked: La commande est verrouillée et ne peut être modifiée.

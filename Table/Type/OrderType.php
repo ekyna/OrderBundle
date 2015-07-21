@@ -10,8 +10,8 @@ use Ekyna\Component\Sale\Order\OrderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * OrderType
- *
+ * Class OrderType
+ * @package Ekyna\Bundle\OrderBundle\Table\Type
  * @author Étienne Dauvergne <contact@ekyna.com>
  */
 class OrderType extends ResourceTableType
@@ -29,9 +29,27 @@ class OrderType extends ResourceTableType
                     'orderId' => 'id'
                 ),
             ))
-            ->addColumn('updatedAt', 'datetime', array(
-                'label' => 'ekyna_core.field.updated_at',
+            ->addColumn('email', 'anchor', array(
+                'label' => 'ekyna_core.field.email',
+                'sortable' => true,
+                'route_name' => 'ekyna_user_user_admin_show',
+                'route_parameters_map' => array('userId' => 'id'),
             ))
+            ->addColumn('firstName', 'text', array(
+                'label' => 'ekyna_core.field.first_name',
+                'sortable' => true,
+            ))
+            ->addColumn('lastName', 'text', array(
+                'label' => 'ekyna_core.field.last_name',
+                'sortable' => true,
+            ))
+            ->addColumn('atiTotal', 'number', array(
+                'label' => 'Total TTC',
+                'sortable' => true,
+            ))
+            /*->addColumn('updatedAt', 'datetime', array(
+                'label' => 'ekyna_core.field.updated_at',
+            ))*/
             ->addColumn('actions', 'admin_actions', array(
                 'buttons' => array(
                     array(

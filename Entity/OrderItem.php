@@ -2,16 +2,9 @@
 
 namespace Ekyna\Bundle\OrderBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Ekyna\Component\Sale\PriceableTrait;
-use Ekyna\Component\Sale\Product\ProductInterface;
 use Ekyna\Component\Sale\Order\OrderInterface;
 use Ekyna\Component\Sale\Order\OrderItemInterface;
-use Ekyna\Component\Sale\Order\OrderItemOptionInterface;
-use Ekyna\Component\Sale\ReferenceableTrait;
-use Ekyna\Component\Sale\TaxAmount;
-use Ekyna\Component\Sale\TaxesAmounts;
-use Ekyna\Component\Sale\WeightableTrait;
+use Ekyna\Component\Sale\Tax\TaxInterface;
 
 /**
  * Class OrderItem
@@ -20,14 +13,35 @@ use Ekyna\Component\Sale\WeightableTrait;
  */
 class OrderItem implements OrderItemInterface
 {
-    use PriceableTrait;
-    use ReferenceableTrait;
-    use WeightableTrait;
-
     /**
      * @var integer
      */
     protected $id;
+
+    /**
+     * @var string
+     */
+    protected $designation;
+
+    /**
+     * @var string
+     */
+    protected $reference;
+
+    /**
+     * @var float
+     */
+    protected $price;
+
+    /**
+     * @var TaxInterface
+     */
+    protected $tax;
+
+    /**
+     * @var float
+     */
+    protected $weight;
 
     /**
      * @var integer
@@ -45,19 +59,19 @@ class OrderItem implements OrderItemInterface
     protected $order;
 
     /**
-     * @var ProductInterface
+     * @var string
      */
-    protected $product;
-
-    /**
-     * @var ArrayCollection|OrderItemOptionInterface[]
-     */
-    protected $options;
+    protected $subjectType;
 
     /**
      * @var array
      */
-    protected $extras;
+    protected $subjectData;
+
+    /**
+     * @var object
+     */
+    protected $subject;
 
 
     /**
@@ -65,8 +79,10 @@ class OrderItem implements OrderItemInterface
      */
     public function __construct()
     {
-        $this->options = new ArrayCollection();
-        $this->extras = array();
+        $this->quantity = 1;
+        $this->position = 0;
+
+        $this->subjectData = array();
     }
 
     /**
@@ -82,10 +98,95 @@ class OrderItem implements OrderItemInterface
     /**
      * {@inheritdoc}
      */
+    public function setDesignation($designation)
+    {
+        $this->designation = $designation;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDesignation()
+    {
+        return $this->designation;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setReference($reference)
+    {
+        $this->reference = $reference;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getReference()
+    {
+        return $this->reference;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setPrice($price)
+    {
+        $this->price = floatval($price);
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setTax(TaxInterface $tax = null)
+    {
+        $this->tax = $tax;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTax()
+    {
+        return $this->tax;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setWeight($weight)
+    {
+        $this->weight = $weight;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWeight()
+    {
+        return $this->weight;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setQuantity($quantity)
     {
         $this->quantity = $quantity;
-
         return $this;
     }
 
@@ -103,7 +204,6 @@ class OrderItem implements OrderItemInterface
     public function setPosition($position)
     {
         $this->position = $position;
-
         return $this;
     }
 
@@ -121,7 +221,6 @@ class OrderItem implements OrderItemInterface
     public function setOrder(OrderInterface $order = null)
     {
         $this->order = $order;
-
         return $this;
     }
 
@@ -136,96 +235,16 @@ class OrderItem implements OrderItemInterface
     /**
      * {@inheritdoc}
      */
-    public function setProduct(ProductInterface $product = null)
-    {
-        $this->product = $product;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getProduct()
-    {
-        return $this->product;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addOption(OrderItemOptionInterface $option)
-    {
-        $option->setOrderItem($this);
-        $this->options->add($option);
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function removeOption(OrderItemOptionInterface $option)
-    {
-        $option->setOrderItem(null);
-        $this->options->removeElement($option);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOptionsIds()
-    {
-        $ids = array();
-        foreach($this->options as $option) {
-            $ids[] = $option->getOption()->getId();
-        }
-        return $ids;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function equals(OrderItemInterface $orderItem)
     {
-        if ($this->hasSameProduct($orderItem)) {
-            return $this->hasSameOptions($orderItem);
+        // By subject type and data
+        if (0 < strlen($this->subjectType) && !empty($this->subjectData)) {
+            return $orderItem->getSubjectType() === $this->subjectType
+            && $orderItem->getSubjectData() === $this->subjectData;
         }
-        return false;
-    }
 
-    /**
-     * Returns whether the OrderItem has the same product as the given OrderItem or not.
-     *
-     * @param OrderItemInterface $orderItem
-     *
-     * @return boolean
-     */
-    protected function hasSameProduct(OrderItemInterface $orderItem)
-    {
-        return $this->product->getId() === $orderItem->getProduct()->getId();
-    }
-
-    /**
-     * Returns whether the OrderItem has the same options as the given OrderItem or not.
-     *
-     * @param OrderItemInterface $orderItem
-     *
-     * @return boolean
-     */
-    protected function hasSameOptions(OrderItemInterface $orderItem)
-    {
-        $thisOptionsIds = $this->getOptionsIds();
-        $itemOptionsIds = $orderItem->getOptionsIds();
-        return (count($thisOptionsIds) === count($itemOptionsIds) && count(array_diff($thisOptionsIds, $itemOptionsIds)) === 0);
+        // By reference
+        return $orderItem->getReference() === $this->reference;
     }
 
     /**
@@ -234,7 +253,7 @@ class OrderItem implements OrderItemInterface
     public function merge(OrderItemInterface $orderItem)
     {
         if ($this->equals($orderItem)) {
-            $this->quantity += $orderItem->getQuantity();
+            $this->setQuantity($this->getQuantity() + $orderItem->getQuantity());
         }
         return $this;
     }
@@ -242,111 +261,51 @@ class OrderItem implements OrderItemInterface
     /**
      * {@inheritdoc}
      */
-    public function setExtras($extras)
+    public function setSubjectType($subjectType)
     {
-        $this->extras = $extras;
-    
+        $this->subjectType = $subjectType;
         return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getExtras()
+    public function getSubjectType()
     {
-        return $this->extras;
+        return $this->subjectType;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getBaseNetPrice()
+    public function setSubjectData(array $subjectData = array())
     {
-        $netPrice = $this->getNetPrice();
-        foreach ($this->options as $option) {
-            $netPrice += $option->getNetPrice();
-        }
-        return $netPrice;
+        $this->subjectData = $subjectData;
+        return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getBaseAtiPrice()
+    public function getSubjectData()
     {
-        $atiPrice = $this->getAtiPrice();
-        foreach ($this->options as $option) {
-            $atiPrice += $option->getAtiPrice();
-        }
-        return $atiPrice;
+        return $this->subjectData;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getBaseTaxAmount()
+    public function setSubject($subject)
     {
-        $taxAmount = $this->getTaxAmount();
-        foreach ($this->options as $option) {
-            $taxAmount += $option->getTaxAmount();
-        }
-        return $taxAmount;
+        $this->subject = $subject;
+        return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getBaseWeight()
+    public function getSubject()
     {
-        $weight = $this->getWeight();
-        foreach ($this->options as $option) {
-            $weight += $option->getWeight();
-        }
-        return $weight;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTotalNetPrice()
-    {
-        return $this->getBaseNetPrice() * $this->quantity;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTotalAtiPrice()
-    {
-        return $this->getBaseAtiPrice() * $this->quantity;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTotalTaxAmount()
-    {
-        return $this->getBaseTaxAmount() * $this->quantity;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTotalTaxesAmounts()
-    {
-        $amounts = new TaxesAmounts();
-        $amounts->addTaxAmount(new TaxAmount($this->tax, $this->getTaxAmount() * $this->quantity));
-        foreach ($this->options as $option) {
-            $amounts->addTaxAmount(new TaxAmount($option->getTax(), $option->getTaxAmount() * $this->quantity));
-        }
-        return $amounts;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTotalWeight()
-    {
-        return $this->getBaseWeight() * $this->quantity;
+        return $this->subject;
     }
 }
