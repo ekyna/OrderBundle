@@ -1,18 +1,8 @@
-{% extends "EkynaAdminBundle:Entity:sided.html.twig" %}
-
-{% block title %}
-<h1>{{ 'ekyna_order.order.header.new'|trans|raw }}</h1>
-{% endblock %}
-
-{% block actions %}
-{{ admin_resource_btn('ekyna_order.order', 'list') }}
-{% endblock %}
+{% extends "EkynaAdminBundle:Entity/Default:new.html.twig" %}
 
 {% block main %}
-<form action="{{ path('ekyna_order_order_admin_new') }}" {{ form_enctype(form) }} method="post" class="form-horizontal form-with-tabs">
-    {% include "EkynaOrderBundle:Admin/Order:_form.html.twig" %}
-    {{ ui_form_footer(form) }}
-</form>
+    {% form_theme form "EkynaOrderBundle:Form:form_div_layout.html.twig" %}
+    {{ parent() }}
 {% endblock %}
 
 {% block javascripts -%}

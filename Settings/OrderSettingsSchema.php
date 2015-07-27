@@ -36,7 +36,7 @@ class OrderSettingsSchema extends AbstractSchema
     {
         $builder
             ->add('document_footer', 'textarea', array(
-                'label'       => 'ekyna_order.field.document_footer',
+                'label'       => 'ekyna_order.order.field.document_footer',
                 'attr' => array(
                     'class' => 'tinymce',
                     'data-theme' => 'simple',
