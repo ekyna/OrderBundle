@@ -19,9 +19,9 @@ class OrderType extends ResourceTableType
     /**
      * {@inheritdoc}
      */
-    public function buildTable(TableBuilderInterface $tableBuilder, array $options = array())
+    public function buildTable(TableBuilderInterface $builder, array $options)
     {
-        $tableBuilder
+        $builder
             ->addColumn('number', 'anchor', array(
                 'label' => 'ekyna_core.field.number',
                 'route_name' => 'ekyna_order_order_admin_show',
