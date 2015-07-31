@@ -83,6 +83,24 @@
                 </option>
             </constraint>
             <constraint name="Valid" />
+            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Address">
+                <option name="groups">
+                    <value>Information</value>
+                    <value>Order</value>
+                </option>
+                <option name="user">identity</option>
+            </constraint>
+        </property>
+
+        <property name="deliveryAddress">
+            <constraint name="Valid" />
+            <constraint name="Ekyna\Bundle\UserBundle\Validator\Constraints\Address">
+                <option name="groups">
+                    <value>Information</value>
+                    <value>Order</value>
+                </option>
+                <option name="user">identity</option>
+            </constraint>
         </property>
 
 	    <property name="items">
