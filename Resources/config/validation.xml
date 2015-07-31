@@ -88,7 +88,7 @@
                     <value>Information</value>
                     <value>Order</value>
                 </option>
-                <option name="user">identity</option>
+                <option name="identity">true</option>
             </constraint>
         </property>
 
@@ -99,7 +99,7 @@
                     <value>Information</value>
                     <value>Order</value>
                 </option>
-                <option name="user">identity</option>
+                <option name="identity">true</option>
             </constraint>
         </property>
 
