@@ -65,12 +65,15 @@ class Generator implements GeneratorInterface
      */
     public function generateKey(OrderInterface $order, $type = OrderTypes::TYPE_ORDER)
     {
+        // TODO Why by type ? This may lead to conflict between orders and quotes ...
+
         $qb = $this->repository->createQueryBuilder('o');
         $query = $qb
             ->select('o.id')
             ->andWhere($qb->expr()->eq('o.type', ':type'))
             ->andWhere($qb->expr()->eq('o.key', ':key'))
             ->getQuery()
+            ->setMaxResults(1)
         ;
 
         do {

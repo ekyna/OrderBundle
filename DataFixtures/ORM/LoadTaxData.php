@@ -34,7 +34,7 @@ class LoadTaxData extends AbstractFixture implements FixtureInterface, OrderedFi
      */
     public function load(ObjectManager $om)
     {
-        $repo = $this->container->get('ekyna_agenda.event.repository');
+        $repo = $this->container->get('ekyna_order.tax.repository');
 
         $taxes = array(
             'Demo tax 20%' => 0.2,

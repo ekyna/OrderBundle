@@ -22,7 +22,7 @@ abstract class AbstractEventSubscriber implements EventSubscriberInterface
      */
     protected function isOrderLocked(OrderEvent $event)
     {
-        if ($event->getOrder()->getLocked()) {
+        if (!$event->getForce() && $event->getOrder()->getLocked()) {
             $event->addMessage(new ResourceMessage('ekyna_order.event.locked', ResourceMessage::TYPE_ERROR));
             return true;
         }

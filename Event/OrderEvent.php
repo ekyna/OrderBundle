@@ -13,6 +13,13 @@ use Ekyna\Component\Sale\Order\OrderInterface;
 class OrderEvent extends ResourceEvent
 {
     /**
+     * Whether to bypass locked state or not.
+     * @var bool
+     */
+    private $force = false;
+
+
+    /**
      * Constructor.
      * 
      * @param \Ekyna\Component\Sale\Order\OrderInterface $order
@@ -30,5 +37,27 @@ class OrderEvent extends ResourceEvent
     public function getOrder()
     {
         return $this->getResource();
+    }
+
+    /**
+     * Sets the force.
+     *
+     * @param boolean $force
+     * @return OrderEvent
+     */
+    public function setForce($force)
+    {
+        $this->force = (bool) $force;
+        return $this;
+    }
+
+    /**
+     * Returns the force.
+     *
+     * @return boolean
+     */
+    public function getForce()
+    {
+        return $this->force;
     }
 }

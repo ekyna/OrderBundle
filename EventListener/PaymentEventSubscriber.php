@@ -91,9 +91,10 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
         }
 
         if ($order->isEmpty()) {
-            throw new LogicException('Empty order related payment.');
+            throw new LogicException('Empty order.');
         }
 
+        var_dump($order->getLocked());
         if ($order->getLocked()) {
             $event->addMessage(new ResourceMessage('ekyna_order.event.locked', ResourceMessage::TYPE_ERROR));
             return;
@@ -102,8 +103,7 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
 
         $payment->setAmount($order->getAtiTotal()); // TODO remaining amount (minus paid amount)
 
-        $this->updateOrder($order, $event);
-        // TODO propagation stopped / errors ?
+        $this->updateOrder($order, $event, true);
     }
 
     /**
@@ -123,7 +123,6 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
         $this->stateResolver->resolve($order, $event);
 
         $this->updateOrder($order, $event);
-        // TODO propagation stopped / errors ?
     }
 
     /**
@@ -143,7 +142,6 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
         if ($order->getLocked()) {
             $order->setLocked(false);
             $this->updateOrder($order, $event);
-            // TODO propagation stopped / errors ?
         }
     }
 
@@ -195,12 +193,16 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
      * Updates the order.
      *
      * @param OrderInterface $order
-     * @param PaymentEvent $event
+     * @param PaymentEvent   $event
+     * @param bool           $force
      */
-    private function updateOrder(OrderInterface $order, PaymentEvent $event)
+    private function updateOrder(OrderInterface $order, PaymentEvent $event, $force = false)
     {
         $orderEvent = new OrderEvent($order);
+        $orderEvent->setForce($force);
+
         $this->operator->update($orderEvent);
+
         $event->addMessages($orderEvent->getMessages());
     }
 

@@ -11,7 +11,6 @@ use Symfony\Component\Validator\Constraint;
  */
 class Order extends Constraint
 {
-    public $userIsMandatory = 'ekyna_order.order.user_is_mandatory';
     public $invoiceAddressIsMandatory = 'ekyna_order.order.invoice_address_is_mandatory';
     public $deliveryAddressIsMandatory = 'ekyna_order.order.delivery_address_is_mandatory';
 

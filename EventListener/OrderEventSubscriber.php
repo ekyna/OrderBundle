@@ -2,7 +2,6 @@
 
 namespace Ekyna\Bundle\OrderBundle\EventListener;
 
-use Ekyna\Bundle\AdminBundle\Event\ResourceMessage;
 use Ekyna\Bundle\AdminBundle\Operator\ResourceOperatorInterface;
 use Ekyna\Bundle\OrderBundle\Event\OrderEvent;
 use Ekyna\Bundle\OrderBundle\Event\OrderEvents;
@@ -160,7 +159,6 @@ class OrderEventSubscriber extends AbstractEventSubscriber
                 }
             }
 
-            // TODO validation with 'Order' group
             $errorList = $this->validator->validate($order, array('Default', 'Order'));
             if ($errorList->count() > 0) {
                 throw new OrderException('Invalid order.');
