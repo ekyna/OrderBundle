@@ -60,7 +60,7 @@ class StateResolver implements StateResolverInterface
 
         if (in_array($paymentState, array(PaymentStates::STATE_PENDING, PaymentStates::STATE_AUTHORIZED, PaymentStates::STATE_COMPLETED))) {
             $newState = OrderStates::STATE_ACCEPTED;
-            if ($shipmentState == ShipmentStates::STATE_SHIPPED) {
+            if ($paymentState === PaymentStates::STATE_COMPLETED && $shipmentState == ShipmentStates::STATE_SHIPPED) {
                 $newState = OrderStates::STATE_COMPLETED;
             }
         } elseif ($paymentState == PaymentStates::STATE_FAILED) {
@@ -101,30 +101,39 @@ class StateResolver implements StateResolverInterface
      */
     private function resolvePaymentsState(OrderInterface $order)
     {
-        $completedTotal = 0;
-        $authorizedTotal = 0;
+        $completedTotal = $authorizedTotal = $refundTotal = $failedTotal = 0;
 
         $payments = $order->getPayments();
         if (0 < $payments->count()) {
+            // Gather state amounts
             foreach ($payments as $payment) {
                 if ($payment->getState() == PaymentStates::STATE_COMPLETED) {
                     $completedTotal += $payment->getAmount();
                 } else if ($payment->getState() == PaymentStates::STATE_AUTHORIZED) {
                     $authorizedTotal += $payment->getAmount();
+                } else if ($payment->getState() == PaymentStates::STATE_REFUNDED) {
+                    $refundTotal += $payment->getAmount();
+                } else if ($payment->getState() == PaymentStates::STATE_FAILED) {
+                    $failedTotal += $payment->getAmount();
                 }
             }
 
+            // State by amounts
             if ($completedTotal >= $order->getAtiTotal()) {
                 return PaymentStates::STATE_COMPLETED;
             } elseif ($authorizedTotal + $completedTotal >= $order->getAtiTotal()) {
                 return PaymentStates::STATE_AUTHORIZED;
+            } elseif ($refundTotal >= $order->getAtiTotal()) {
+                return PaymentStates::STATE_REFUNDED;
+            } elseif ($failedTotal >= $order->getAtiTotal()) {
+                return PaymentStates::STATE_FAILED;
             }
 
+            // Check for offline pending payment
             foreach ($payments as $payment) {
-                if (in_array($payment->getState(), array(PaymentStates::STATE_PENDING, PaymentStates::STATE_PROCESSING))) {
-                    if ($payment->getMethod()->getFactoryName() === 'offline') {
-                        return PaymentStates::STATE_PENDING;
-                    }
+                if (in_array($payment->getState(), array(PaymentStates::STATE_PENDING, PaymentStates::STATE_PROCESSING))
+                    && $payment->getMethod()->getFactoryName() === 'offline') {
+                    return PaymentStates::STATE_PENDING;
                 }
             }
         }
