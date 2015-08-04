@@ -31,6 +31,9 @@ ekyna_order:
             ati_total: Total TTC
             weight_total: Poids total
             document_footer: Pied de page des documents
+            state: Statut
+            payment_state: Statut paiement
+            shipment_state: Statut livraison
         alert:
             no_item: Aucune commande configuré
         state:
@@ -39,7 +42,7 @@ ekyna_order:
             refused: Refusée
             accepted: Acceptée
             completed: Complétée
-            refuned: Remboursée
+            refunded: Remboursée
             cancelled: Annulée
         type:
             cart: Panier

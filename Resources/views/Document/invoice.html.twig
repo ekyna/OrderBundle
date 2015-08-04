@@ -103,7 +103,7 @@
         {% for item in order.items %}
         <tr>
             <td>
-                {% block item_designation %}{{ item.designation }}{% endblock %}
+                {% block item_designation %}{{ item.designation|nl2br|raw }}{% endblock %}
             </td>
             <td>
                 {{ item.reference }}

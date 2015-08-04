@@ -1,76 +1,145 @@
 {% extends "EkynaAdminBundle:Entity:sided.html.twig" %}
 
 {% block title %}
-<h1>{{ 'ekyna_order.order.header.show'|trans({'%number%': order.number})|raw }}</h1>
+    <h1>{{ 'ekyna_order.order.header.show'|trans({'%number%': order.number})|raw }}</h1>
 {% endblock %}
 
 {% block actions %}
-{{ admin_resource_btn(order, 'list') }}
-{{ admin_resource_btn(order, 'new') }}
+    {{ admin_resource_btn(order, 'list') }}
+    {{ admin_resource_btn(order, 'new') }}
 {% endblock %}
 
 {% block main %}
-<div class="actions">
-    {{ ui_link(path('ekyna_order_invoice_download', {'orderId': order.id}), 'ekyna_order.order.field.invoice_pdf', {'icon': 'download'}, {'target': '_blank'}) }}
-    {{ admin_resource_btn(order, 'edit') }}
-    {{ admin_resource_btn(order, 'remove') }}
-</div>
-<div class="show show-with-tabs">
-    <ul class="nav nav-tabs">
-	    <li class="active"><a href="#orde-order-general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a></li>
-	    <li><a href="#orde-order-invoice" data-toggle="tab">{{ 'ekyna_order.order.field.invoice'|trans }}</a></li>
-	</ul>
-	<div class="show-body">
-	    <div class="tab-content">
-		    <div class="tab-pane active" id="orde-order-general">
-		        <div class="row">
-                    <div class="col-md-6">{{ show_row(order.number, 'text', 'ekyna_core.field.number', {'label_nb_col': 4}) }}</div>
-                    <div class="col-md-6">{{ show_row(order.createdAt, 'datetime', 'ekyna_core.field.created_at', {'label_nb_col': 4}) }}</div>
-                </div>
-		        <div class="row">
-                    <div class="col-md-6">{{ show_row(order.atiTotal, 'number', 'ekyna_order.order.field.ati_total', {'label_nb_col': 4, 'append': '€'}) }}</div>
-                    <div class="col-md-6">{{ show_row(order.totalWeight, 'number', 'ekyna_order.order.field.weight_total', {'label_nb_col': 4, 'append': 'g', 'precision': 0}) }}</div>
-                </div>
-                {{ show_row(order.user, 'entity', 'ekyna_order.order.field.customer', {'field': 'email', 'route': 'ekyna_user_user_admin_show', 'route_params_map': {'userId': 'id'}}) }}
-                <div class="row">
-                    <div class="col-md-6">{{ show_row(render_identity(order), 'text', 'ekyna_core.field.identity', {'label_nb_col': 4}) }}</div>
-                    <div class="col-md-6">{{ show_row(order.email, 'text', 'ekyna_core.field.email', {'label_nb_col': 4}) }}</div>
-                </div>
-		        <div class="row">
-                    <div class="col-md-6">
-                        <div class="row show-row">
-                            <div class="col-md-4 show-label">{{ 'ekyna_order.order.field.invoice_address'|trans }}</div>
-                            <div class="col-md-8">
-                                <div class="show-widget show-widget-block">
-                                    {{ render_address(order.invoiceAddress) }}
+    <div class="actions">
+        {{ ui_link(path('ekyna_order_invoice_download', {'orderId': order.id}), 'ekyna_order.order.field.invoice_pdf', {'icon': 'download'}, {'target': '_blank'}) }}
+        {{ admin_resource_btn(order, 'edit') }}
+        {{ admin_resource_btn(order, 'remove') }}
+    </div>
+    <div class="show show-with-tabs">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#orde-order-general" data-toggle="tab">{{ 'ekyna_core.field.general'|trans }}</a>
+            </li>
+            <li>
+                <a href="#orde-order-invoice" data-toggle="tab">{{ 'ekyna_order.order.field.invoice'|trans }}</a>
+            </li>
+        </ul>
+        <div class="show-body">
+            <div class="tab-content">
+                <div class="tab-pane active" id="orde-order-general">
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ show_row(order.number, 'text', 'ekyna_core.field.number', {'label_nb_col': 4}) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ show_row(render_order_state(order), 'text', 'ekyna_order.order.field.state', {'label_nb_col': 4}) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ show_row(order.atiTotal, 'number', 'ekyna_order.order.field.ati_total', {'label_nb_col': 4, 'append': '€'}) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ show_row(render_payment_state(order.paymentState), 'text', 'ekyna_order.order.field.payment_state', {'label_nb_col': 4}) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ show_row(order.totalWeight, 'number', 'ekyna_order.order.field.weight_total', {'label_nb_col': 4, 'append': 'g', 'precision': 0}) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ show_row(render_shipment_state(order.shipmentState), 'text', 'ekyna_order.order.field.shipment_state', {'label_nb_col': 4}) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ show_row(order.user, 'entity', 'ekyna_order.order.field.customer', {'label_nb_col': 4, 'field': 'email', 'route': 'ekyna_user_user_admin_show', 'route_params_map': {'userId': 'id'}}) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ show_row(order.createdAt, 'datetime', 'ekyna_core.field.created_at', {'label_nb_col': 4}) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ show_row(order.email, 'text', 'ekyna_core.field.email', {'label_nb_col': 4}) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ show_row(render_identity(order), 'text', 'ekyna_core.field.identity', {'label_nb_col': 4}) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row show-row">
+                                <div class="col-md-4 show-label">
+                                    {{ 'ekyna_order.order.field.invoice_address'|trans }}
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="show-widget show-widget-block">
+                                        {{ render_address(order.invoiceAddress) }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row show-row">
-                            <div class="col-md-4 show-label">{{ 'ekyna_order.order.field.delivery_address'|trans }}</div>
-                            <div class="col-md-8">
-                                <div class="show-widget show-widget-block">
-                                    {% if order.requiresShipment %}
-                                        {% if order.sameAddress %}
-                                            {{ 'ekyna_order.order.field.same_address'|trans }}
+                        <div class="col-md-6">
+                            <div class="row show-row">
+                                <div class="col-md-4 show-label">
+                                    {{ 'ekyna_order.order.field.delivery_address'|trans }}
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="show-widget show-widget-block">
+                                        {% if order.requiresShipment %}
+                                            {% if order.sameAddress %}
+                                                {{ 'ekyna_order.order.field.same_address'|trans }}
+                                            {% else %}
+                                                {{ render_address(order.deliveryAddress) }}
+                                            {% endif %}
                                         {% else %}
-                                            {{ render_address(order.deliveryAddress) }}
+                                            {{ 'ekyna_order.order.field.no_shipment'|trans }}
                                         {% endif %}
-                                    {% else %}
-                                        {{ 'ekyna_order.order.field.no_shipment'|trans }}
-                                    {% endif %}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <h4 class="sub-header">
+                        {{ 'ekyna_payment.payment.label.singular'|trans }}
+                    </h4>
+                    {% if order.payments|length %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th>{{ 'ekyna_payment.payment.field.method'|trans }}</th>
+                                <th>{{ 'ekyna_payment.payment.field.amount'|trans }}</th>
+                                <th>{{ 'ekyna_payment.payment.field.currency'|trans }}</th>
+                                <th>{{ 'ekyna_payment.payment.field.state'|trans }}</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for payment in order.payments %}
+                            <tr data-id="1">
+                                <td>{{ payment.method.paymentName }}</td>
+                                <td>{{ payment.amount|price }}</td>
+                                <td>{{ payment.currency }}</td>
+                                <td>{{ render_payment_state(payment) }}</td>
+                                <td class="actions">
+                                    {{ render_payment_actions(payment, 'ekyna_order_order_admin_payment_transition', {'orderId': order.id, 'paymentId': payment.id}) }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
+
                 </div>
-		    </div>
-		    <div class="tab-pane" id="orde-order-invoice">
-		        <iframe src="{{ path('ekyna_order_invoice_render', {'orderId': order.id}) }}" style="height:500px;"></iframe>
-		    </div>
-	    </div>
-	</div>
-</div>
+                <div class="tab-pane" id="orde-order-invoice">
+                    <iframe src="{{ path('ekyna_order_invoice_render', {'orderId': order.id}) }}"
+                            style="height:500px;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

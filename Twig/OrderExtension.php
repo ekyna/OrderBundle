@@ -2,9 +2,11 @@
 
 namespace Ekyna\Bundle\OrderBundle\Twig;
 
+use Ekyna\Bundle\OrderBundle\Model\OrderStates;
 use Ekyna\Bundle\OrderBundle\Service\CalculatorInterface;
 use Ekyna\Component\Sale\Order\OrderInterface;
 use Ekyna\Component\Sale\Order\OrderItemInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class OrderExtension
@@ -13,6 +15,11 @@ use Ekyna\Component\Sale\Order\OrderItemInterface;
  */
 class OrderExtension extends \Twig_Extension
 {
+    /**
+     * @var TranslatorInterface
+     */
+    protected $translator;
+
     /**
      * @var CalculatorInterface
      */
@@ -26,11 +33,16 @@ class OrderExtension extends \Twig_Extension
     /**
      * Constructor.
      * 
+     * @param TranslatorInterface $translator
      * @param CalculatorInterface $calculator
      * @param string              $documentLogo
      */
-    public function __construct(CalculatorInterface $calculator, $documentLogo)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        CalculatorInterface $calculator,
+        $documentLogo
+    ) {
+        $this->translator = $translator;
         $this->calculator   = $calculator;
         $this->documentLogo = $documentLogo;
     }
@@ -57,6 +69,44 @@ class OrderExtension extends \Twig_Extension
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getFunctions()
+    {
+        return array(
+            new \Twig_SimpleFunction('get_order_state',  array($this, 'getOrderState'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('render_order_state',  array($this, 'renderOrderState'), array('is_safe' => array('html'))),
+        );
+    }
+
+    /**
+     * Renders the translated order state.
+     *
+     * @param string $state
+     * @return string
+     */
+    public function getOrderState($state)
+    {
+        return $this->translator->trans(OrderStates::getLabel($state));
+    }
+
+    /**
+     * Renders the order state label.
+     *
+     * @param string|OrderInterface $stateOrOrder
+     * @return string
+     */
+    public function renderOrderState($stateOrOrder)
+    {
+        $state = $stateOrOrder instanceof OrderInterface ? $stateOrOrder->getState() : $stateOrOrder;
+        return sprintf(
+            '<span class="label label-%s">%s</span>',
+            OrderStates::getTheme($state),
+            $this->getOrderState($state)
+        );
+    }
+    
     /**
      * Returns the total.
      *

@@ -1,5 +1,5 @@
 ekyna_order_order_admin_home:
-    path: /
+    path: ""
     defaults: { _controller: "ekyna_order.order.controller:homeAction" }
     requirements:
         _method: GET
@@ -21,25 +21,27 @@ ekyna_order_order_admin_show:
     defaults: { _controller: "ekyna_order.order.controller:showAction" }
     requirements:
         _method: GET
-        orderId:  \d+
+        orderId: \d+
 
 ekyna_order_order_admin_edit:
     path: /{orderId}/edit
     defaults: { _controller: "ekyna_order.order.controller:editAction" }
     requirements:
         _method: GET|POST
-        orderId:  \d+
+        orderId: \d+
 
 ekyna_order_order_admin_remove:
     path: /{orderId}/remove
     defaults: { _controller: "ekyna_order.order.controller:removeAction" }
     requirements:
         _method: GET|POST
-        orderId:  \d+
+        orderId: \d+
 
-ekyna_order_order_admin_add_item:
-    path: /{orderId}/add-item
-    defaults: { _controller: "ekyna_order.order.controller:addItemAction" }
+ekyna_order_order_admin_payment_transition:
+    path: /{orderId}/payment/{paymentId}/transition/{transition}
+    defaults: { _controller: "ekyna_order.order.controller:paymentTransitionAction" }
     requirements:
         _method: GET|POST
-        orderId:  \d+
+        orderId: \d+
+        paymentId: \d+
+        transtion: \w+

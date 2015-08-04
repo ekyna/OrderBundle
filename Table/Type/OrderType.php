@@ -4,6 +4,9 @@ namespace Ekyna\Bundle\OrderBundle\Table\Type;
 
 use Doctrine\ORM\QueryBuilder;
 use Ekyna\Bundle\AdminBundle\Table\Type\ResourceTableType;
+use Ekyna\Bundle\OrderBundle\Model\OrderStates;
+use Ekyna\Bundle\PaymentBundle\Model\PaymentStates;
+use Ekyna\Bundle\ShipmentBundle\Model\ShipmentStates;
 use Ekyna\Component\Sale\Order\OrderTypes;
 use Ekyna\Component\Table\TableBuilderInterface;
 use Ekyna\Component\Sale\Order\OrderInterface;
@@ -44,12 +47,21 @@ class OrderType extends ResourceTableType
                 'sortable' => true,
             ))
             ->addColumn('atiTotal', 'number', array(
-                'label' => 'Total TTC',
+                'label' => 'ekyna_order.order.field.ati_total',
                 'sortable' => true,
             ))
-            /*->addColumn('updatedAt', 'datetime', array(
-                'label' => 'ekyna_core.field.updated_at',
-            ))*/
+            ->addColumn('state', 'choice', array(
+                'label' => 'ekyna_order.order.field.state',
+                'choices' => OrderStates::getChoices(),
+            ))
+            ->addColumn('paymentState', 'choice', array(
+                'label' => 'ekyna_order.order.field.payment_state',
+                'choices' => PaymentStates::getChoices(),
+            ))
+            ->addColumn('shipmentState', 'choice', array(
+                'label' => 'ekyna_order.order.field.shipment_state',
+                'choices' => ShipmentStates::getChoices(),
+            ))
             ->addColumn('actions', 'admin_actions', array(
                 'buttons' => array(
                     array(
@@ -71,6 +83,33 @@ class OrderType extends ResourceTableType
                         'permission' => 'delete',
                     ),
                 ),
+            ))
+            ->addFilter('number', 'text', array(
+                'label' => 'ekyna_core.field.number',
+            ))
+            ->addFilter('email', 'text', array(
+                'label' => 'ekyna_core.field.email',
+            ))
+            ->addFilter('firstName', 'text', array(
+                'label' => 'ekyna_core.field.first_name',
+            ))
+            ->addFilter('lastName', 'text', array(
+                'label' => 'ekyna_core.field.last_name',
+            ))
+            ->addFilter('atiTotal', 'number', array(
+                'label' => 'ekyna_order.order.field.ati_total',
+            ))
+            ->addFilter('state', 'choice', array(
+                'label' => 'ekyna_order.order.field.state',
+                'choices' => OrderStates::getChoices(),
+            ))
+            ->addFilter('paymentState', 'choice', array(
+                'label' => 'ekyna_order.order.field.payment_state',
+                'choices' => PaymentStates::getChoices(),
+            ))
+            ->addFilter('shipmentState', 'choice', array(
+                'label' => 'ekyna_order.order.field.shipment_state',
+                'choices' => ShipmentStates::getChoices(),
             ))
         ;
     }

@@ -110,6 +110,7 @@
 
         <!-- Twig extensions -->
         <service id="ekyna_order.twig_extension" class="Ekyna\Bundle\OrderBundle\Twig\OrderExtension">
+            <argument type="service" id="translator" />
             <argument type="service" id="ekyna_order.order.calculator" />
             <argument>%ekyna_order.document_logo%</argument>
             <tag name="twig.extension" />

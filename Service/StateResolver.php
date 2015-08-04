@@ -65,7 +65,9 @@ class StateResolver implements StateResolverInterface
             }
         } elseif ($paymentState == PaymentStates::STATE_FAILED) {
             $newState = OrderStates::STATE_REFUSED;
-        } elseif (in_array($paymentState, array(PaymentStates::STATE_CANCELLED, PaymentStates::STATE_REFUNDED))) {
+        } elseif ($paymentState == PaymentStates::STATE_REFUNDED) {
+            $newState = OrderStates::STATE_REFUNDED;
+        } elseif ($paymentState == PaymentStates::STATE_CANCELLED) {
             $newState = OrderStates::STATE_CANCELLED;
         } else {
             $newState = OrderStates::STATE_PENDING;
