@@ -24,4 +24,14 @@ class EkynaOrderBundle extends AbstractBundle
         $container->addCompilerPass(new AdminMenuPass());
         $container->addCompilerPass(new ItemProviderPass());
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getModelInterfaces()
+    {
+        return array(
+            'Ekyna\Component\Sale\Order\OrderInterface' => 'ekyna_order.order.class',
+        );
+    }
 }

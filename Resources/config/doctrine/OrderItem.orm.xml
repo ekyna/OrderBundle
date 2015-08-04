@@ -24,7 +24,7 @@
         <field name="subjectType" column="subject_type" type="string" nullable="true" />
         <field name="subjectData" column="subject_data" type="json_array" nullable="true" />
 
-        <many-to-one field="order" target-entity="Ekyna\Bundle\OrderBundle\Entity\Order" inversed-by="items" orphan-removal="true">
+        <many-to-one field="order" target-entity="Ekyna\Component\Sale\Order\OrderInterface" inversed-by="items" orphan-removal="true">
             <join-column name="order_id" referenced-column-name="id" on-delete="CASCADE" nullable="true" />
             <gedmo:sortable-group />
         </many-to-one>
