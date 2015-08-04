@@ -43,7 +43,9 @@ class OrderType extends ResourceFormType
                 'required' => true,
                 'disabled' => true,
             ))
-            ->add('user', 'ekyna_user_search')
+            ->add('user', 'ekyna_user_search', array(
+                'required' => false,
+            ))
             ->add('identity', 'ekyna_user_identity')
             ->add('email', 'email', array(
                 'label' => 'ekyna_core.field.email',
