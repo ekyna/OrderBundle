@@ -211,4 +211,10 @@
         </property>
     </class>
 
+    <class name="Ekyna\Bundle\OrderBundle\Entity\OrderPayment">
+        <property name="order">
+            <constraint name="NotNull" />
+        </property>
+    </class>
+
 </constraint-mapping>

@@ -3,8 +3,10 @@
 namespace Ekyna\Bundle\OrderBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Ekyna\Bundle\CoreBundle\Model\TimestampableTrait;
 use Ekyna\Bundle\UserBundle\Model\AddressInterface;
 use Ekyna\Bundle\UserBundle\Model\IdentityInterface;
+use Ekyna\Bundle\UserBundle\Model\IdentityTrait;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Sale\Order\OrderInterface;
 use Ekyna\Component\Sale\Order\OrderItemInterface;
@@ -22,6 +24,9 @@ use Ekyna\Component\Sale\Shipment\ShipmentStates;
  */
 class Order implements OrderInterface, IdentityInterface
 {
+    use TimestampableTrait,
+        IdentityTrait;
+
     /**
      * @var integer
      */
@@ -36,21 +41,6 @@ class Order implements OrderInterface, IdentityInterface
      * @var string
      */
     protected $key;
-
-    /**
-     * @var string
-     */
-    protected $gender;
-
-    /**
-     * @var string
-     */
-    protected $firstName;
-
-    /**
-     * @var string
-     */
-    protected $lastName;
 
     /**
      * @var string
@@ -111,16 +101,6 @@ class Order implements OrderInterface, IdentityInterface
      * @var \DateTime
      */
     protected $completedAt;
-
-    /**
-     * @var \DateTime
-     */
-    protected $createdAt;
-
-    /**
-     * @var \DateTime
-     */
-    protected $updatedAt;
 
     /**
      * @var \DateTime
@@ -246,57 +226,6 @@ class Order implements OrderInterface, IdentityInterface
     public function getKey()
     {
         return $this->key;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setGender($gender)
-    {
-        $this->gender = $gender;
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getGender()
-    {
-        return $this->gender;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setFirstName($firstName)
-    {
-        $this->firstName = $firstName;
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getFirstName()
-    {
-        return $this->firstName;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setLastName($lastName)
-    {
-        $this->lastName = $lastName;
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getLastName()
-    {
-        return $this->lastName;
     }
 
     /**
@@ -541,42 +470,6 @@ class Order implements OrderInterface, IdentityInterface
     /**
      * {@inheritDoc}
      */
-    public function setCreatedAt(\DateTime $createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUpdatedAt(\DateTime $updatedAt = null)
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function setDeletedAt(\DateTime $deletedAt = null)
     {
         $this->deletedAt = $deletedAt;
@@ -684,10 +577,7 @@ class Order implements OrderInterface, IdentityInterface
     }
 
     /**
-     * Sets the payments.
-     *
-     * @param ArrayCollection|OrderPaymentInterface[] $payments
-     * @return Order
+     * {@inheritDoc}
      */
     public function setPayments($payments)
     {
@@ -742,10 +632,21 @@ class Order implements OrderInterface, IdentityInterface
     }
 
     /**
-     * Sets the shipments.
-     *
-     * @param ArrayCollection|OrderShipmentInterface[] $shipments
-     * @return Order
+     * {@inheritDoc}
+     */
+    public function findPaymentById($paymentId)
+    {
+        $paymentId = intval($paymentId);
+        foreach ($this->payments as $payment) {
+            if ($payment->getId() === $paymentId) {
+                return $payment;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function setShipments($shipments)
     {
@@ -797,6 +698,20 @@ class Order implements OrderInterface, IdentityInterface
     public function getShipments()
     {
         return $this->shipments;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function findShipmentById($shipmentId)
+    {
+        $shipmentId = intval($shipmentId);
+        foreach ($this->shipments as $shipment) {
+            if ($shipment->getId() === $shipmentId) {
+                return $shipment;
+            }
+        }
+        return null;
     }
 
     /**

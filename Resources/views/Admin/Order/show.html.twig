@@ -43,6 +43,7 @@
                             {{ show_row(render_payment_state(order.paymentState), 'text', 'ekyna_order.order.field.payment_state', {'label_nb_col': 4}) }}
                         </div>
                     </div>
+                    {% if order.requiresShipment() %}
                     <div class="row">
                         <div class="col-md-6">
                             {{ show_row(order.totalWeight, 'number', 'ekyna_order.order.field.weight_total', {'label_nb_col': 4, 'append': 'g', 'precision': 0}) }}
@@ -51,6 +52,7 @@
                             {{ show_row(render_shipment_state(order.shipmentState), 'text', 'ekyna_order.order.field.shipment_state', {'label_nb_col': 4}) }}
                         </div>
                     </div>
+                    {% endif %}
                     <div class="row">
                         <div class="col-md-6">
                             {{ show_row(order.user, 'entity', 'ekyna_order.order.field.customer', {'label_nb_col': 4, 'field': 'email', 'route': 'ekyna_user_user_admin_show', 'route_params_map': {'userId': 'id'}}) }}
@@ -103,6 +105,9 @@
                     </div>
 
                     <h4 class="sub-header">
+                        <a href="{{ path('ekyna_order_order_admin_payment_new', {'orderId': order.id}) }}" class="btn btn-success btn-xs pull-right">
+                            {{ 'ekyna_order.payment.button.new'|trans }}
+                        </a>
                         {{ 'ekyna_payment.payment.label.singular'|trans }}
                     </h4>
                     {% if order.payments|length %}
@@ -125,6 +130,14 @@
                                 <td>{{ payment.currency }}</td>
                                 <td>{{ render_payment_state(payment) }}</td>
                                 <td class="actions">
+                                    {% if payment.state == 'new' %}
+                                    <a href="{{ path('ekyna_order_order_admin_payment_edit', {'orderId': order.id, 'paymentId': payment.id}) }}" class="btn btn-warning btn-xs">
+                                        {{ 'ekyna_core.button.edit'|trans }}
+                                    </a>
+                                    <a href="{{ path('ekyna_order_order_admin_payment_remove', {'orderId': order.id, 'paymentId': payment.id}) }}" class="btn btn-danger btn-xs">
+                                        {{ 'ekyna_core.button.remove'|trans }}
+                                    </a>
+                                    {% endif %}
                                     {{ render_payment_actions(payment, 'ekyna_order_order_admin_payment_transition', {'orderId': order.id, 'paymentId': payment.id}) }}
                                 </td>
                             </tr>
@@ -136,8 +149,7 @@
 
                 </div>
                 <div class="tab-pane" id="orde-order-invoice">
-                    <iframe src="{{ path('ekyna_order_invoice_render', {'orderId': order.id}) }}"
-                            style="height:500px;"></iframe>
+                    <iframe src="{{ path('ekyna_order_invoice_render', {'orderId': order.id}) }}" style="height:500px;"></iframe>
                 </div>
             </div>
         </div>

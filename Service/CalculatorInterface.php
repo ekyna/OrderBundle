@@ -91,6 +91,22 @@ interface CalculatorInterface
     public function calculateOrderItemsCount(OrderInterface $order);
 
     /**
+     * Calculates the order paid total.
+     *
+     * @param OrderInterface $order
+     * @return float
+     */
+    public function calculateOrderPaidTotal(OrderInterface $order);
+
+    /**
+     * Calculates the order remaining total.
+     *
+     * @param OrderInterface $order
+     * @return float
+     */
+    public function calculateOrderRemainingTotal(OrderInterface $order);
+
+    /**
      * Updates the order totals.
      *
      * @param \Ekyna\Component\Sale\Order\OrderInterface $order

@@ -69,6 +69,7 @@
         </service>
         <service id="ekyna_order.order_payment_subscriber" class="Ekyna\Bundle\OrderBundle\EventListener\PaymentEventSubscriber">
             <argument type="service" id="ekyna_order.order.operator" />
+            <argument type="service" id="ekyna_order.order.calculator" />
             <argument type="service" id="ekyna_order.order.state_resolver" />
             <argument type="service" id="sm.factory" />
             <argument type="service" id="router" />

@@ -54,6 +54,7 @@ class OrderExtension extends \Twig_Extension
     {
         return array(
         	'order_document_logo' => $this->documentLogo,
+            'order_states' => OrderStates::getConstants(),
         );
     }
 

@@ -37,11 +37,34 @@ ekyna_order_order_admin_remove:
         _method: GET|POST
         orderId: \d+
 
+ekyna_order_order_admin_payment_new:
+    path: /{orderId}/payments/new
+    defaults: { _controller: "ekyna_order.order.controller:newPaymentAction" }
+    requirements:
+        _method: GET|POST
+        orderId: \d+
+
+ekyna_order_order_admin_payment_edit:
+    path: /{orderId}/payments/{paymentId}/edit
+    defaults: { _controller: "ekyna_order.order.controller:editPaymentAction" }
+    requirements:
+        _method: GET|POST
+        orderId: \d+
+        paymentId: \d+
+
 ekyna_order_order_admin_payment_transition:
-    path: /{orderId}/payment/{paymentId}/transition/{transition}
-    defaults: { _controller: "ekyna_order.order.controller:paymentTransitionAction" }
+    path: /{orderId}/payments/{paymentId}/transition/{transition}
+    defaults: { _controller: "ekyna_order.order.controller:transitionPaymentAction" }
     requirements:
         _method: GET|POST
         orderId: \d+
         paymentId: \d+
         transtion: \w+
+
+ekyna_order_order_admin_payment_remove:
+    path: /{orderId}/payments/{paymentId}/remove
+    defaults: { _controller: "ekyna_order.order.controller:removePaymentAction" }
+    requirements:
+        _method: GET|POST
+        orderId: \d+
+        paymentId: \d+

@@ -1,0 +1,19 @@
+{% extends "EkynaAdminBundle:Entity/Default:new.html.twig" %}
+
+
+{% block title %}
+    <h1>{{ 'ekyna_order.payment.header.new'|trans|raw }}</h1>
+{% endblock title %}
+
+{% block actions %}
+    {{ admin_resource_btn(order, 'show', {'label': 'ekyna_core.button.back'}) }}
+{% endblock actions %}
+
+{% block stylesheets -%}
+    {{ parent() }}
+    {% stylesheets output='css/payment.css' filter='cssrewrite, ?yui_css'
+        '@EkynaPaymentBundle/Resources/asset/css/payment.css'
+    %}
+    <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    {% endstylesheets %}
+{%- endblock stylesheets %}

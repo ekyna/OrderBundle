@@ -19,10 +19,10 @@ winzou_state_machine:
                 from: [new, pending, accepted]
                 to:   refused
             accept:
-                from: [new, pending, refused]
+                from: [new, pending, refused, refunded]
                 to:   accepted
             complete:
-                from: [new, pending, accepted]
+                from: [new, pending, accepted, refused, refunded]
                 to:   completed
             refund:
                 from: [accepted, completed]

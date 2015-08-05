@@ -4,6 +4,7 @@ namespace Ekyna\Bundle\OrderBundle\Service;
 
 use Ekyna\Component\Sale\Order\OrderInterface;
 use Ekyna\Component\Sale\Order\OrderItemInterface;
+use Ekyna\Component\Sale\Payment\PaymentStates;
 use Ekyna\Component\Sale\Tax\TaxAmount;
 use Ekyna\Component\Sale\Tax\TaxesAmounts;
 
@@ -113,6 +114,32 @@ class Calculator implements CalculatorInterface
             $count += $item->getQuantity();
         }
         return $count;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function calculateOrderPaidTotal(OrderInterface $order)
+    {
+        $total = 0;
+        foreach ($order->getPayments() as $payment) {
+            if (in_array($payment->getState(), array(PaymentStates::STATE_AUTHORIZED, PaymentStates::STATE_COMPLETED))) {
+                $total += $payment->getAmount();
+            }
+        }
+        return $total;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function calculateOrderRemainingTotal(OrderInterface $order)
+    {
+        $amount = $this->calculateOrderTotal($order, true) - $this->calculateOrderPaidTotal($order);
+        if (0 > $amount) {
+            $amount = 0;
+        }
+        return $amount;
     }
 
     /**

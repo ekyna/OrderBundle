@@ -2,7 +2,6 @@
 
 namespace Ekyna\Bundle\OrderBundle\EventListener;
 
-use Ekyna\Bundle\AdminBundle\Event\ResourceMessage;
 use Ekyna\Bundle\OrderBundle\Event\OrderItemEvent;
 use Ekyna\Bundle\OrderBundle\Event\OrderEvents;
 use Ekyna\Bundle\OrderBundle\Event\OrderItemEvents;
@@ -123,6 +122,7 @@ class OrderItemEventSubscriber extends AbstractEventSubscriber
      */
     public function onPostRemove(OrderItemEvent $event)
     {
+        // TODO remove => OrderEventSubscriber listen to OrderItemEvent::REMOVE
         $this->dispatcher->dispatch(OrderEvents::CONTENT_CHANGE, $event);
     }
 

@@ -17,6 +17,7 @@ interface GeneratorInterface
      * 
      * @param OrderInterface $order
      * @param string         $type
+     * @return GeneratorInterface
      */
     public function generateNumber(OrderInterface $order, $type = OrderTypes::TYPE_ORDER);
 
@@ -24,7 +25,7 @@ interface GeneratorInterface
      * Returns a unique order key.
      *
      * @param OrderInterface $order
-     * @param string         $type
+     * @return GeneratorInterface
      */
-    public function generateKey(OrderInterface $order, $type = OrderTypes::TYPE_ORDER);
+    public function generateKey(OrderInterface $order);
 }

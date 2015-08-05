@@ -7,6 +7,7 @@ use Ekyna\Bundle\AdminBundle\Operator\ResourceOperatorInterface;
 use Ekyna\Bundle\OrderBundle\Entity\OrderPayment;
 use Ekyna\Bundle\OrderBundle\Event\OrderEvent;
 use Ekyna\Bundle\OrderBundle\Exception\LogicException;
+use Ekyna\Bundle\OrderBundle\Service\CalculatorInterface;
 use Ekyna\Bundle\OrderBundle\Service\StateResolverInterface;
 use Ekyna\Bundle\PaymentBundle\Event\PaymentEvent;
 use Ekyna\Bundle\PaymentBundle\Event\PaymentEvents;
@@ -28,6 +29,11 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
      * @var ResourceOperatorInterface
      */
     private $operator;
+
+    /**
+     * @var CalculatorInterface
+     */
+    private $calculator;
 
     /**
      * @var StateResolverInterface
@@ -54,6 +60,7 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
      * Constructor.
      *
      * @param ResourceOperatorInterface $operator
+     * @param CalculatorInterface       $calculator
      * @param StateResolverInterface    $stateResolver
      * @param FactoryInterface          $factory
      * @param UrlGeneratorInterface     $urlGenerator
@@ -61,12 +68,14 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
      */
     public function __construct(
         ResourceOperatorInterface $operator,
+        CalculatorInterface       $calculator,
         StateResolverInterface    $stateResolver,
         FactoryInterface          $factory,
         UrlGeneratorInterface     $urlGenerator,
         SecurityContextInterface  $securityContext
     ) {
         $this->operator        = $operator;
+        $this->calculator      = $calculator;
         $this->stateResolver   = $stateResolver;
         $this->factory         = $factory;
         $this->urlGenerator    = $urlGenerator;
@@ -101,7 +110,9 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
         }
         $order->setLocked(true);
 
-        $payment->setAmount($order->getAtiTotal()); // TODO remaining amount (minus paid amount)
+        $payment->setAmount(
+            $this->calculator->calculateOrderRemainingTotal($order)
+        );
 
         $this->updateOrder($order, $event, true);
     }
