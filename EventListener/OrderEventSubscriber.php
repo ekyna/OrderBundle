@@ -185,15 +185,9 @@ class OrderEventSubscriber extends AbstractEventSubscriber
         }
 
         $order = $event->getOrder();
-        if ($order->getType() === OrderTypes::TYPE_CART) {
-            return;
-        }
 
         // Generate number and key
         $this->generateNumberAndKey($order);
-
-        // Handle identity
-        $this->handleIdentity($order);
 
         // Handle addresses
         $this->handleAddresses($order);
@@ -211,15 +205,9 @@ class OrderEventSubscriber extends AbstractEventSubscriber
         }
 
         $order = $event->getOrder();
-        if ($order->getType() === OrderTypes::TYPE_CART) {
-            return;
-        }
 
         // Generate number and key
         $this->generateNumberAndKey($order);
-
-        // Handle identity
-        $this->handleIdentity($order);
 
         // Handle addresses
         $this->handleAddresses($order);
@@ -265,37 +253,6 @@ class OrderEventSubscriber extends AbstractEventSubscriber
                 if (null === $deliveryAddress->getUser()) {
                     $this->addressOperator->delete($deliveryAddress);
                 }
-            }
-        }
-    }
-
-    /**
-     * Handle the identity.
-     *
-     * @param OrderInterface $order
-     * @throws OrderException
-     */
-    private function handleIdentity(OrderInterface $order)
-    {
-        if (null === $order->getEmail()
-            || null === $order->getGender()
-            || null === $order->getFirstName()
-            || null === $order->getLastName()
-        ) {
-            if (null === $user = $order->getUser()) {
-                throw new OrderException('User is not set.');
-            }
-            if (null === $order->getEmail()) {
-                $order->setEmail($user->getEmail());
-            }
-            if (null === $order->getGender()) {
-                $order->setGender($user->getGender());
-            }
-            if (null === $order->getFirstName()) {
-                $order->setFirstName($user->getFirstName());
-            }
-            if (null === $order->getLastName()) {
-                $order->setLastName($user->getLastName());
             }
         }
     }
