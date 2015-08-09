@@ -103,7 +103,6 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
             throw new LogicException('Empty order.');
         }
 
-        var_dump($order->getLocked());
         if ($order->getLocked()) {
             $event->addMessage(new ResourceMessage('ekyna_order.event.locked', ResourceMessage::TYPE_ERROR));
             return;
@@ -133,7 +132,7 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
 
         $this->stateResolver->resolve($order, $event);
 
-        $this->updateOrder($order, $event);
+        $this->updateOrder($order, $event, true);
     }
 
     /**
