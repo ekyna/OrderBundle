@@ -6,6 +6,7 @@ use Ekyna\Bundle\AdminBundle\Event\ResourceEvent;
 use Ekyna\Bundle\OrderBundle\Event\OrderEvent;
 use Ekyna\Bundle\OrderBundle\Event\OrderEvents;
 use Ekyna\Bundle\OrderBundle\Exception\LogicException;
+use Ekyna\Bundle\PaymentBundle\Event\PaymentEvent;
 use Ekyna\Component\Sale\Order\OrderInterface;
 use Ekyna\Component\Sale\Order\OrderStates;
 use Ekyna\Component\Sale\Payment\PaymentStates;
@@ -89,6 +90,9 @@ class StateResolver implements StateResolverInterface
                 $sm->apply($transition);
 
                 $orderEvent = $event instanceof OrderEvent ? $event : new OrderEvent($order);
+                if ($event instanceof PaymentEvent) {
+                    $orderEvent->setForce(true);
+                }
                 $this->dispatcher->dispatch(OrderEvents::STATE_CHANGE, $orderEvent);
                 if (!$event instanceof OrderEvent) {
                     $event->addMessages($orderEvent->getMessages());

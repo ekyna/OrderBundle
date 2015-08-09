@@ -54,7 +54,7 @@ class CaptureOrderUsingExpressCheckoutAction extends AbstractCapturePaymentActio
 
         $details['PAYMENTREQUEST_0_SHIPPINGAMT'] = $order->getNetShippingCost();
 
-        $details['PAYMENTREQUEST_0_TAXAMT'] = round($order->getAtiTotal() - $order->getNetTotal(), 2);
+        $details['PAYMENTREQUEST_0_TAXAMT'] = round($order->getAtiTotal() - $order->getNetTotal(), 2); // TODO remaining total :s
 
         $payment->setDetails($details);
     }

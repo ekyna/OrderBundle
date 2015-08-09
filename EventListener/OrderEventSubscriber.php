@@ -185,6 +185,9 @@ class OrderEventSubscriber extends AbstractEventSubscriber
         }
 
         $order = $event->getOrder();
+        if ($order->getType() === OrderTypes::TYPE_CART) {
+            return;
+        }
 
         // Generate number and key
         $this->generateNumberAndKey($order);
@@ -208,6 +211,9 @@ class OrderEventSubscriber extends AbstractEventSubscriber
         }
 
         $order = $event->getOrder();
+        if ($order->getType() === OrderTypes::TYPE_CART) {
+            return;
+        }
 
         // Generate number and key
         $this->generateNumberAndKey($order);
