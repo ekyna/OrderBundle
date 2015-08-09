@@ -10,6 +10,8 @@ use Ekyna\Bundle\OrderBundle\Exception\OrderException;
 use Ekyna\Bundle\OrderBundle\Service\CalculatorInterface;
 use Ekyna\Bundle\OrderBundle\Service\GeneratorInterface;
 use Ekyna\Bundle\OrderBundle\Service\StateResolverInterface;
+use Ekyna\Bundle\UserBundle\Model\AddressInterface;
+use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Sale\Order\OrderInterface;
 use Ekyna\Component\Sale\Order\OrderStates;
 use Ekyna\Component\Sale\Order\OrderTypes;
@@ -328,20 +330,41 @@ class OrderEventSubscriber extends AbstractEventSubscriber
         if (in_array($order->getType(), array(OrderTypes::TYPE_ORDER, OrderTypes::TYPE_QUOTE))) {
             // Clone invoice address if needed
             $invoiceAddress = $order->getInvoiceAddress();
-            if (null !== $invoiceAddress->getUser()) {
+            if (null !== $user = $invoiceAddress->getUser()) {
                 $invoiceAddress = clone $invoiceAddress;
+                $this->handleAddressIdentity($invoiceAddress, $user);
                 $invoiceAddress->setUser(null);
                 $order->setInvoiceAddress($invoiceAddress);
             }
             // Clone delivery address if needed
             if (!$order->getSameAddress()) {
                 $deliveryAddress = $order->getDeliveryAddress();
-                if (null !== $deliveryAddress->getUser()) {
+                if (null !== $user = $deliveryAddress->getUser()) {
                     $deliveryAddress = clone $deliveryAddress;
+                    $this->handleAddressIdentity($deliveryAddress, $user);
                     $deliveryAddress->setUser(null);
                     $order->setDeliveryAddress($deliveryAddress);
                 }
             }
+        }
+    }
+
+    /**
+     * Fills the address identity fields if needed.
+     *
+     * @param AddressInterface $address
+     * @param UserInterface $user
+     */
+    private function handleAddressIdentity(AddressInterface $address, UserInterface $user)
+    {
+        if (null === $address->getGender()) {
+            $address->setGender($user->getGender());
+        }
+        if (null === $address->getFirstName()) {
+            $address->setFirstName($user->getFirstName());
+        }
+        if (null === $address->getLastName()) {
+            $address->setLastName($user->getLastName());
         }
     }
 
