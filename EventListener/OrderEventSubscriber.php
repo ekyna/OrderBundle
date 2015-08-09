@@ -52,6 +52,11 @@ class OrderEventSubscriber extends AbstractEventSubscriber
      */
     private $validator;
 
+    /**
+     * @var bool
+     */
+    private $debug;
+
 
     /**
      * Constructor.
@@ -62,6 +67,7 @@ class OrderEventSubscriber extends AbstractEventSubscriber
      * @param StateResolverInterface    $stateResolver
      * @param GeneratorInterface        $generator
      * @param ValidatorInterface        $validator
+     * @param bool                      $debug
      */
     public function __construct(
         ResourceOperatorInterface $orderOperator,
@@ -69,7 +75,8 @@ class OrderEventSubscriber extends AbstractEventSubscriber
         CalculatorInterface       $calculator,
         StateResolverInterface    $stateResolver,
         GeneratorInterface        $generator,
-        ValidatorInterface        $validator
+        ValidatorInterface        $validator,
+        $debug = false
     ) {
         $this->orderOperator   = $orderOperator;
         $this->addressOperator = $addressOperator;
@@ -77,6 +84,7 @@ class OrderEventSubscriber extends AbstractEventSubscriber
         $this->stateResolver   = $stateResolver;
         $this->generator       = $generator;
         $this->validator       = $validator;
+        $this->debug           = $debug;
     }
 
     /**
@@ -139,7 +147,11 @@ class OrderEventSubscriber extends AbstractEventSubscriber
 
             $errorList = $this->validator->validate($order, array('Default', 'Order'));
             if ($errorList->count() > 0) {
-                throw new OrderException('Invalid order.');
+                $messages = [];
+                foreach ($errorList as $error) {
+                    $messages[] = $error->getMessage();
+                }
+                throw new OrderException('Invalid order : ' . implode('<br>', $messages));
             }
         }
 

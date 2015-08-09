@@ -60,6 +60,7 @@
             <argument type="service" id="ekyna_order.order.state_resolver" />
             <argument type="service" id="ekyna_order.order.generator" />
             <argument type="service" id="validator" />
+            <argument>%kernel.debug%</argument>
             <tag name="kernel.event_subscriber" />
         </service>
         <service id="ekyna_order.order_item_subscriber" class="Ekyna\Bundle\OrderBundle\EventListener\OrderItemEventSubscriber">
