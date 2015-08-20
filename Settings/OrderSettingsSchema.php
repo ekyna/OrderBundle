@@ -35,12 +35,9 @@ class OrderSettingsSchema extends AbstractSchema
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('document_footer', 'textarea', array(
+            ->add('document_footer', 'tinymce', array(
                 'label'       => 'ekyna_order.order.field.document_footer',
-                'attr' => array(
-                    'class' => 'tinymce',
-                    'data-theme' => 'simple',
-                ),
+                'theme'       => 'simple',
                 'constraints' => array(
                     new NotBlank()
                 )
@@ -61,7 +58,7 @@ class OrderSettingsSchema extends AbstractSchema
      */
     public function getShowTemplate()
     {
-        return 'EkynaOrderBundle:Settings:show.html.twig';
+        return 'EkynaOrderBundle:Admin/Settings:show.html.twig';
     }
 
     /**
@@ -69,7 +66,7 @@ class OrderSettingsSchema extends AbstractSchema
      */
     public function getFormTemplate()
     {
-        return 'EkynaOrderBundle:Settings:form.html.twig';
+        return 'EkynaOrderBundle:Admin/Settings:form.html.twig';
     }
 
     public function getName()

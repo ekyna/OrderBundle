@@ -6,6 +6,7 @@ use Ekyna\Bundle\CoreBundle\Controller\Controller;
 use Ekyna\Component\Sale\Order\OrderTypes;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -40,28 +41,34 @@ class DocumentController extends Controller
             throw new AccessDeniedHttpException('You are not allowed to view this resource.');
         }
 
+        $response = new Response();
+        $response->setLastModified($order->getUpdatedAt());
+        if ($response->isNotModified($request)) {
+            return $response;
+        }
+
         $content = $this->renderView('EkynaOrderBundle:Document:invoice.html.twig', array(
             'order' => $order,
         ));
 
         $format = $request->attributes->get('_format', 'html');
-        $headers = array(
-            'Content-Type' => 'text/html',
-        );
-
-        if ('pdf' == $format) {
-            $content = $this->get('knp_snappy.pdf')->getOutputFromHtml($content);
-            $headers['Content-Type'] = 'application/pdf';
-        }
-        /* elseif ('jpg' == $format) {
-            $content = $this->get('knp_snappy.image')->getOutputFromHtml($content);
-            $headers['Content-Type'] = 'image/jpg';
-        }*/
-
-        if ($request->attributes->get('_download', false)) {
-            $headers['Content-Disposition'] = sprintf('attachment; filename="order-%s.%s"', $order->getNumber(), $format);
+        if ('html' === $format) {
+            $response->setContent($content);
+        } elseif ('pdf' === $format) {
+            $response->setContent($this->get('knp_snappy.pdf')->getOutputFromHtml($content));
+            $response->headers->add(array('Content-Type' => 'application/pdf'));
+        } else {
+            throw new NotFoundHttpException('Unsupported format.');
         }
 
-        return new Response($content, 200, $headers);
+        if ($request->query->get('_download', false)) {
+            $filename = sprintf('order-%s.%s', $order->getNumber(), $format);
+            $contentDisposition = $response->headers->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename
+            );
+            $response->headers->set('Content-Disposition', $contentDisposition);
+        }
+
+        return $response;
     }
 }
