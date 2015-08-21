@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\OrderBundle\Provider;
 
 use Ekyna\Component\Sale\Order\OrderItemInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Interface ItemProviderInterface
@@ -61,7 +62,25 @@ interface ItemProviderInterface
     public function supports($subjectOrOrderItem);
 
     /**
+     * Returns the provider name.
+     *
      * @return string
      */
     public function getName();
+
+    /**
+     * Sets the order item class.
+     *
+     * @param string $orderItemClass
+     * @return AbstractItemProvider
+     */
+    public function setOrderItemClass($orderItemClass);
+
+    /**
+     * Sets the url generator.
+     *
+     * @param UrlGeneratorInterface $urlGenerator
+     * @return AbstractItemProvider
+     */
+    public function setUrlGenerator(UrlGeneratorInterface $urlGenerator);
 }

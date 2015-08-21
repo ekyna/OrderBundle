@@ -189,6 +189,9 @@ class OrderEventSubscriber extends AbstractEventSubscriber
         // Generate number and key
         $this->generateNumberAndKey($order);
 
+        // Handle identity
+        $this->handleIdentity($order);
+
         // Handle addresses
         $this->handleAddresses($order);
     }
@@ -208,6 +211,9 @@ class OrderEventSubscriber extends AbstractEventSubscriber
 
         // Generate number and key
         $this->generateNumberAndKey($order);
+
+        // Handle identity
+        $this->handleIdentity($order);
 
         // Handle addresses
         $this->handleAddresses($order);
@@ -253,6 +259,29 @@ class OrderEventSubscriber extends AbstractEventSubscriber
                 if (null === $deliveryAddress->getUser()) {
                     $this->addressOperator->delete($deliveryAddress);
                 }
+            }
+        }
+    }
+
+    /**
+     * handle the identity.
+     *
+     * @param OrderInterface $order
+     */
+    private function handleIdentity(OrderInterface $order)
+    {
+        if (null !== $user = $order->getUser()) {
+            if (0 == strlen($order->getEmail())) {
+                $order->setEmail($user->getEmail());
+            }
+            if (0 == strlen($order->getGender())) {
+                $order->setGender($user->getGender());
+            }
+            if (0 == strlen($order->getFirstName())) {
+                $order->setFirstName($user->getFirstName());
+            }
+            if (0 == strlen($order->getLastName())) {
+                $order->setLastName($user->getLastName());
             }
         }
     }

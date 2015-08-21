@@ -22,11 +22,23 @@ class ItemProviderPass implements CompilerPassInterface
             return;
         }
 
-        $registry = $container->getDefinition('ekyna_order.item_provider_registry');
+        $registryDefinition = $container->getDefinition('ekyna_order.item_provider_registry');
 
         $providers = $container->findTaggedServiceIds('ekyna_order.item_provider');
         foreach ($providers as $id => $attributes) {
-            $registry->addMethodCall('addProvider', array(new Reference($id)));
+            $providerDefinition = $container->getDefinition($id);
+            // Inject order item repository
+            $providerDefinition->addMethodCall(
+                'setOrderItemClass',
+                array($container->getParameter('ekyna_order.order_item.class'))
+            );
+            // Inject url generator
+            $providerDefinition->addMethodCall(
+                'setUrlGenerator',
+                array(new Reference('router'))
+            );
+            // Register the provider
+            $registryDefinition->addMethodCall('addProvider', array(new Reference($id)));
         }
     }
 }
