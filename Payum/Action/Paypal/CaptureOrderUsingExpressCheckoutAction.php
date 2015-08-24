@@ -2,7 +2,7 @@
 
 namespace Ekyna\Bundle\OrderBundle\Payum\Action\Paypal;
 
-use Ekyna\Bundle\OrderBundle\Entity\OrderPayment;
+use Ekyna\Component\Sale\Order\OrderPaymentInterface;
 use Ekyna\Bundle\PaymentBundle\Payum\Action\AbstractCapturePaymentAction;
 use Ekyna\Component\Sale\Payment\PaymentInterface;
 use Payum\Core\Security\TokenInterface;
@@ -17,7 +17,7 @@ class CaptureOrderUsingExpressCheckoutAction extends AbstractCapturePaymentActio
     /**
      * {@inheritdoc}
      *
-     * @param OrderPayment $payment
+     * @param OrderPaymentInterface $payment
      */
     protected function composeDetails(PaymentInterface $payment, TokenInterface $token)
     {
@@ -64,6 +64,6 @@ class CaptureOrderUsingExpressCheckoutAction extends AbstractCapturePaymentActio
      */
     protected function supportsPayment($payment)
     {
-        return $payment instanceof OrderPayment;
+        return $payment instanceof OrderPaymentInterface;
     }
 }

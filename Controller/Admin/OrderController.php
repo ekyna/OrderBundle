@@ -3,7 +3,6 @@
 namespace Ekyna\Bundle\OrderBundle\Controller\Admin;
 
 use Ekyna\Bundle\AdminBundle\Controller\ResourceController;
-use Ekyna\Bundle\OrderBundle\Entity\OrderPayment;
 use Ekyna\Bundle\OrderBundle\Event\OrderEvent;
 use Ekyna\Bundle\OrderBundle\Event\OrderEvents;
 use Ekyna\Bundle\PaymentBundle\Model\PaymentTransitionTrait;
@@ -44,7 +43,9 @@ class OrderController extends ResourceController
             return $this->redirect($redirectPath);
         }
 
-        $payment = new OrderPayment();
+        $paymentClass = $this->container->getParameter('ekyna_order.order_payment.class');
+        /** @var \Ekyna\Component\Sale\Order\OrderPaymentInterface $payment */
+        $payment = new $paymentClass;
         $payment
             ->setOrder($order)
             ->setAmount($amount)
