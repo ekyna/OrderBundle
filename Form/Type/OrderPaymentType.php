@@ -3,6 +3,7 @@
 namespace Ekyna\Bundle\OrderBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -26,6 +27,19 @@ class OrderPaymentType extends AbstractType
     public function __construct($dataClass)
     {
         $this->dataClass = $dataClass;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        if ($options['admin_mode']) {
+            $builder->add('notes', 'text', array(
+                'label'    => 'ekyna_order.payment.field.notes',
+                'required' => false,
+            ));
+        }
     }
 
     /**

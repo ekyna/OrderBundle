@@ -186,6 +186,11 @@ class OrderEventSubscriber extends AbstractEventSubscriber
 
         $order = $event->getOrder();
 
+        // Only for orders and quotes
+        if (!in_array($order->getType(), array(OrderTypes::TYPE_ORDER, OrderTypes::TYPE_QUOTE))) {
+            return;
+        }
+
         // Generate number and key
         $this->generateNumberAndKey($order);
 
@@ -208,6 +213,11 @@ class OrderEventSubscriber extends AbstractEventSubscriber
         }
 
         $order = $event->getOrder();
+
+        // Only for orders and quotes
+        if (!in_array($order->getType(), array(OrderTypes::TYPE_ORDER, OrderTypes::TYPE_QUOTE))) {
+            return;
+        }
 
         // Generate number and key
         $this->generateNumberAndKey($order);
@@ -385,11 +395,6 @@ class OrderEventSubscriber extends AbstractEventSubscriber
      */
     private function generateNumberAndKey(OrderInterface $order)
     {
-        // Only for orders and quotes
-        if (!in_array($order->getType(), array(OrderTypes::TYPE_ORDER, OrderTypes::TYPE_QUOTE))) {
-            return;
-        }
-
         $this->generator
             ->generateNumber($order)
             ->generateKey($order)

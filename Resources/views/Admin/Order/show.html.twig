@@ -118,6 +118,7 @@
                                 <th>{{ 'ekyna_payment.payment.field.method'|trans }}</th>
                                 <th>{{ 'ekyna_payment.payment.field.amount'|trans }}</th>
                                 <th>{{ 'ekyna_payment.payment.field.currency'|trans }}</th>
+                                <th>{{ 'ekyna_order.payment.field.notes'|trans }}</th>
                                 <th>{{ 'ekyna_payment.payment.field.state'|trans }}</th>
                                 <th></th>
                             </tr>
@@ -128,12 +129,13 @@
                                 <td>{{ payment.method.paymentName }}</td>
                                 <td>{{ payment.amount|price }}</td>
                                 <td>{{ payment.currency }}</td>
+                                <td>{{ payment.notes }}</td>
                                 <td>{{ render_payment_state(payment) }}</td>
                                 <td class="actions">
-                                    {% if payment.state == 'new' %}
                                     <a href="{{ path('ekyna_order_order_admin_payment_edit', {'orderId': order.id, 'paymentId': payment.id}) }}" class="btn btn-warning btn-xs">
                                         {{ 'ekyna_core.button.edit'|trans }}
                                     </a>
+                                    {% if payment.state == 'new' %}
                                     <a href="{{ path('ekyna_order_order_admin_payment_remove', {'orderId': order.id, 'paymentId': payment.id}) }}" class="btn btn-danger btn-xs">
                                         {{ 'ekyna_core.button.remove'|trans }}
                                     </a>

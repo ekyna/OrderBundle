@@ -40,7 +40,6 @@ class OrderType extends ResourceFormType
         $builder
             ->add('number', 'text', array(
                 'label' => 'ekyna_core.field.number',
-                'required' => true,
                 'disabled' => true,
             ))
             ->add('user', 'ekyna_user_search', array(

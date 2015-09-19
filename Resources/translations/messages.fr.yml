@@ -17,9 +17,9 @@ ekyna_order:
             remove: Supprimer la commande
         field:
             customer: Client
-            addresses: Addresses
-            invoice_address: Addresse de facturation
-            delivery_address: Addresse de livraison
+            addresses: Adresses
+            invoice_address: Adresse de facturation
+            delivery_address: Adresse de livraison
             same_address: Même adresse
             invoice: Facture
             invoice_pdf: Facture PDF
@@ -59,6 +59,8 @@ ekyna_order:
             new: Créer un nouveau paiement
             edit: Modifier le paiement
             remove: Supprimer le paiement
+        field:
+            notes: Notes
         button:
             new: Nouveau paiement
             edit: Modifier le paiement

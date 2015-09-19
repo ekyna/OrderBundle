@@ -97,9 +97,6 @@ class OrderController extends ResourceController
         if (null === $payment = $order->findPaymentById($request->attributes->get('paymentId'))) {
             throw new NotFoundHttpException('Payment not found.');
         }
-        if ($payment->getState() !== PaymentStates::STATE_NEW) {
-            throw new NotFoundHttpException('Payment is not new.');
-        }
 
         $redirectPath = $this->generateResourcePath($order);
         $action = $this->generateUrl('ekyna_order_order_admin_payment_edit', array(

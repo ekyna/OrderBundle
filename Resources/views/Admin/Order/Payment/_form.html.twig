@@ -6,7 +6,12 @@
     {{ bootstrap_set_col_size('md') }}
     <div class="tab-content">
         <div class="tab-pane active" id="orde-payment-general">
-            {{ form_widget(form) }}
+            {{ form_row(form.amount) }}
+            {{ form_row(form.method) }}
+            {% if form.notes %}
+                {{ form_row(form.notes) }}
+            {% endif %}
+            {#{{ form_widget(form) }}#}
         </div>
     </div>
     {{ form_rest(form) }}

@@ -9,7 +9,6 @@ use Ekyna\Bundle\PaymentBundle\Model\PaymentStates;
 use Ekyna\Bundle\ShipmentBundle\Model\ShipmentStates;
 use Ekyna\Component\Sale\Order\OrderTypes;
 use Ekyna\Component\Table\TableBuilderInterface;
-use Ekyna\Component\Sale\Order\OrderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -36,7 +35,7 @@ class OrderType extends ResourceTableType
                 'label' => 'ekyna_core.field.email',
                 'sortable' => true,
                 'route_name' => 'ekyna_user_user_admin_show',
-                'route_parameters_map' => array('userId' => 'id'),
+                'route_parameters_map' => array('userId' => 'user.id'), // TODO check if no user ?
             ))
             ->addColumn('firstName', 'text', array(
                 'label' => 'ekyna_core.field.first_name',

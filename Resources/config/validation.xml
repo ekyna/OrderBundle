@@ -13,7 +13,7 @@
             </option>
         </constraint>
 
-        <property name="number">
+        <!--<property name="number">
             <constraint name="NotBlank">
                 <option name="groups">
                     <value>Order</value>
@@ -26,7 +26,7 @@
                     <value>Order</value>
                 </option>
             </constraint>
-        </property>
+        </property>-->
 
         <property name="user">
             <constraint name="Valid" />

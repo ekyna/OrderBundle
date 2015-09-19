@@ -18,6 +18,11 @@ class OrderPayment extends Payment implements OrderPaymentInterface
      */
     protected $order;
 
+    /**
+     * @var string
+     */
+    protected $notes;
+
 
     /**
      * {@inheritdoc}
@@ -35,5 +40,27 @@ class OrderPayment extends Payment implements OrderPaymentInterface
     public function getOrder()
     {
         return $this->order;
+    }
+
+    /**
+     * Returns the notes.
+     *
+     * @return string
+     */
+    public function getNotes()
+    {
+        return $this->notes;
+    }
+
+    /**
+     * Sets the notes.
+     *
+     * @param string $notes
+     * @return OrderPayment
+     */
+    public function setNotes($notes)
+    {
+        $this->notes = $notes;
+        return $this;
     }
 }
