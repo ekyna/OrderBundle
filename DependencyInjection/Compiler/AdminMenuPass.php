@@ -23,24 +23,24 @@ class AdminMenuPass implements CompilerPassInterface
 
         $pool = $container->getDefinition('ekyna_admin.menu.pool');
 
-        $pool->addMethodCall('createGroup', array(array(
+        $pool->addMethodCall('createGroup', [[
             'name'     => 'order',
             'label'    => 'ekyna_order.order.label.plural',
             'icon'     => 'shopping-cart',
             'position' => 10,
-        )));
-        $pool->addMethodCall('createEntry', array('order', array(
+        ]]);
+        $pool->addMethodCall('createEntry', ['order', [
             'name'     => 'orders',
             'route'    => 'ekyna_order_order_admin_home',
             'label'    => 'ekyna_order.order.label.plural',
             'resource' => 'ekyna_order_order',
-        )));
-        $pool->addMethodCall('createEntry', array('order', array(
+        ]]);
+        $pool->addMethodCall('createEntry', ['order', [
             'name'     => 'taxes',
             'route'    => 'ekyna_order_tax_admin_home',
             'label'    => 'ekyna_order.tax.label.plural',
             'resource' => 'ekyna_order_tax',
             'position' => 99,
-        )));
+        ]]);
     }
 }

@@ -19,7 +19,7 @@ class ItemProviderRegistry implements ItemProviderRegistryInterface
      */
     public function __construct()
     {
-        $this->providers = array();
+        $this->providers = [];
     }
 
     /**

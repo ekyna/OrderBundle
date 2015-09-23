@@ -30,8 +30,8 @@ class EkynaOrderBundle extends AbstractBundle
      */
     protected function getModelInterfaces()
     {
-        return array(
+        return [
             'Ekyna\Component\Sale\Order\OrderInterface' => 'ekyna_order.order.class',
-        );
+        ];
     }
 }

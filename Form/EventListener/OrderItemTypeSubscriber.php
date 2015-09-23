@@ -61,8 +61,8 @@ class OrderItemTypeSubscriber implements EventSubscriberInterface
      */
     static public function getSubscribedEvents()
     {
-        return array(
-            FormEvents::PRE_SET_DATA => array('onPreSetData', 0),
-        );
+        return [
+            FormEvents::PRE_SET_DATA => ['onPreSetData', 0],
+        ];
     }
 }

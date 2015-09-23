@@ -74,7 +74,7 @@
             <argument type="service" id="ekyna_order.order.state_resolver" />
             <argument type="service" id="sm.factory" />
             <argument type="service" id="router" />
-            <argument type="service" id="security.context" />
+            <argument type="service" id="security.authorization_checker" />
             <tag name="kernel.event_subscriber" />
         </service>
         <service id="ekyna_order.order_shipment_subscriber" class="Ekyna\Bundle\OrderBundle\EventListener\ShipmentEventSubscriber">

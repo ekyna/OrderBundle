@@ -18,12 +18,12 @@ class TaxType extends ResourceFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text', array(
+            ->add('name', 'text', [
                 'label' => 'ekyna_core.field.name',
-            ))
-            ->add('rate', 'number', array(
+            ])
+            ->add('rate', 'number', [
                 'label' => 'ekyna_core.field.rate',
-            ))
+            ])
         ;
     }
 

@@ -36,11 +36,11 @@ class LoadTaxData extends AbstractFixture implements FixtureInterface, OrderedFi
     {
         $repo = $this->container->get('ekyna_order.tax.repository');
 
-        $taxes = array(
+        $taxes = [
             'Demo tax 20%' => 0.2,
             'Demo tax 10%' => 0.1,
             'Demo tax 5%' => 0.05,
-        );
+        ];
 
         foreach ($taxes as $name => $rate) {
             /** @var \Ekyna\Bundle\OrderBundle\Entity\Tax $tax */

@@ -62,10 +62,10 @@ class Configuration implements ConfigurationInterface
                             ->isRequired()
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->variableNode('templates')->defaultValue(array(
+                                ->variableNode('templates')->defaultValue([
                                     '_form.html' => 'EkynaOrderBundle:Admin/Tax:_form.html',
                                     'show.html'  => 'EkynaOrderBundle:Admin/Tax:show.html',
-                                ))->end()
+                                ])->end()
                                 ->scalarNode('parent')->end()
                                 ->scalarNode('entity')->defaultValue('Ekyna\Bundle\OrderBundle\Entity\Tax')->end()
                                 ->scalarNode('controller')->end()

@@ -1,38 +1,35 @@
 ekyna_order_tax_admin_home:
     path: ""
     defaults: { _controller: "ekyna_order.tax.controller:homeAction" }
-    requirements:
-        _method: GET
+    methods: [GET]
 
 ekyna_order_tax_admin_list:
     path: /list
     defaults: { _controller: "ekyna_order.tax.controller:listAction" }
-    requirements:
-        _method: GET|POST
+    methods: [GET|POST]
 
 ekyna_order_tax_admin_new:
     path: /new
     defaults: { _controller: "ekyna_order.tax.controller:newAction" }
-    requirements:
-        _method: GET|POST
+    methods: [GET|POST]
 
 ekyna_order_tax_admin_show:
     path: /{taxId}/show
     defaults: { _controller: "ekyna_order.tax.controller:showAction" }
+    methods: [GET]
     requirements:
-        _method: GET
         taxId: \d+
 
 ekyna_order_tax_admin_edit:
     path: /{taxId}/edit
     defaults: { _controller: "ekyna_order.tax.controller:editAction" }
+    methods: [GET|POST]
     requirements:
-        _method: GET|POST
         taxId: \d+
 
 ekyna_order_tax_admin_remove:
     path: /{taxId}/remove
     defaults: { _controller: "ekyna_order.tax.controller:removeAction" }
+    methods: [GET|POST]
     requirements:
-        _method: GET|POST
         taxId: \d+

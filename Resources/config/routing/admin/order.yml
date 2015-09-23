@@ -1,62 +1,59 @@
 ekyna_order_order_admin_home:
     path: ""
     defaults: { _controller: "ekyna_order.order.controller:homeAction" }
-    requirements:
-        _method: GET
+    methods: [GET]
 
 ekyna_order_order_admin_list:
     path: /list
     defaults: { _controller: "ekyna_order.order.controller:listAction" }
-    requirements:
-        _method: GET|POST
+    methods: [GET|POST]
 
 ekyna_order_order_admin_new:
     path: /new
     defaults: { _controller: "ekyna_order.order.controller:newAction" }
-    requirements:
-        _method: GET|POST
+    methods: [GET|POST]
 
 ekyna_order_order_admin_show:
     path: /{orderId}/show
     defaults: { _controller: "ekyna_order.order.controller:showAction" }
+    methods: [GET]
     requirements:
-        _method: GET
         orderId: \d+
 
 ekyna_order_order_admin_edit:
     path: /{orderId}/edit
     defaults: { _controller: "ekyna_order.order.controller:editAction" }
+    methods: [GET|POST]
     requirements:
-        _method: GET|POST
         orderId: \d+
 
 ekyna_order_order_admin_remove:
     path: /{orderId}/remove
     defaults: { _controller: "ekyna_order.order.controller:removeAction" }
+    methods: [GET|POST]
     requirements:
-        _method: GET|POST
         orderId: \d+
 
 ekyna_order_order_admin_payment_new:
     path: /{orderId}/payments/new
     defaults: { _controller: "ekyna_order.order.controller:newPaymentAction" }
+    methods: [GET|POST]
     requirements:
-        _method: GET|POST
         orderId: \d+
 
 ekyna_order_order_admin_payment_edit:
     path: /{orderId}/payments/{paymentId}/edit
     defaults: { _controller: "ekyna_order.order.controller:editPaymentAction" }
+    methods: [GET|POST]
     requirements:
-        _method: GET|POST
         orderId: \d+
         paymentId: \d+
 
 ekyna_order_order_admin_payment_transition:
     path: /{orderId}/payments/{paymentId}/transition/{transition}
     defaults: { _controller: "ekyna_order.order.controller:transitionPaymentAction" }
+    methods: [GET|POST]
     requirements:
-        _method: GET|POST
         orderId: \d+
         paymentId: \d+
         transtion: \w+
@@ -64,7 +61,7 @@ ekyna_order_order_admin_payment_transition:
 ekyna_order_order_admin_payment_remove:
     path: /{orderId}/payments/{paymentId}/remove
     defaults: { _controller: "ekyna_order.order.controller:removePaymentAction" }
+    methods: [GET|POST]
     requirements:
-        _method: GET|POST
         orderId: \d+
         paymentId: \d+

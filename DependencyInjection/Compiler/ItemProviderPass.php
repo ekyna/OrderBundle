@@ -30,15 +30,15 @@ class ItemProviderPass implements CompilerPassInterface
             // Inject order item repository
             $providerDefinition->addMethodCall(
                 'setOrderItemClass',
-                array($container->getParameter('ekyna_order.order_item.class'))
+                [$container->getParameter('ekyna_order.order_item.class')]
             );
             // Inject url generator
             $providerDefinition->addMethodCall(
                 'setUrlGenerator',
-                array(new Reference('router'))
+                [new Reference('router')]
             );
             // Register the provider
-            $registryDefinition->addMethodCall('addProvider', array(new Reference($id)));
+            $registryDefinition->addMethodCall('addProvider', [new Reference($id)]);
         }
     }
 }

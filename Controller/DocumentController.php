@@ -28,16 +28,16 @@ class DocumentController extends Controller
     public function invoiceAction(Request $request)
     {
         /** @var \Ekyna\Component\Sale\Order\OrderInterface $order */
-        $order = $this->get('ekyna_order.order.repository')->findOneBy(array(
+        $order = $this->get('ekyna_order.order.repository')->findOneBy([
             'id' => $request->attributes->get('orderId', null), 
             'type' => OrderTypes::TYPE_ORDER
-        ));
+        ]);
         if (null === $order) {
             throw new NotFoundHttpException('Order not found.');
         }
 
         // Admin or owner security check
-        if(!($this->get('security.context')->isGranted('ROLE_ADMIN') || $order->getUser() == $this->getUser())) {
+        if(!($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN') || $order->getUser() == $this->getUser())) {
             throw new AccessDeniedHttpException('You are not allowed to view this resource.');
         }
 
@@ -47,16 +47,16 @@ class DocumentController extends Controller
             return $response;
         }
 
-        $content = $this->renderView('EkynaOrderBundle:Document:invoice.html.twig', array(
+        $content = $this->renderView('EkynaOrderBundle:Document:invoice.html.twig', [
             'order' => $order,
-        ));
+        ]);
 
         $format = $request->attributes->get('_format', 'html');
         if ('html' === $format) {
             $response->setContent($content);
         } elseif ('pdf' === $format) {
             $response->setContent($this->get('knp_snappy.pdf')->getOutputFromHtml($content));
-            $response->headers->add(array('Content-Type' => 'application/pdf'));
+            $response->headers->add(['Content-Type' => 'application/pdf']);
         } else {
             throw new NotFoundHttpException('Unsupported format.');
         }

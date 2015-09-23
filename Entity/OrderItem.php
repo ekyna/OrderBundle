@@ -82,7 +82,7 @@ class OrderItem implements OrderItemInterface
         $this->quantity = 1;
         $this->position = 0;
 
-        $this->subjectData = array();
+        $this->subjectData = [];
     }
 
     /**
@@ -278,7 +278,7 @@ class OrderItem implements OrderItemInterface
     /**
      * {@inheritdoc}
      */
-    public function setSubjectData(array $subjectData = array())
+    public function setSubjectData(array $subjectData = [])
     {
         $this->subjectData = $subjectData;
         return $this;

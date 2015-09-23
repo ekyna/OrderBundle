@@ -4,7 +4,7 @@ namespace Ekyna\Bundle\OrderBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class AddItemType
@@ -19,10 +19,10 @@ class AddItemType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('quantity', 'integer', array('attr' => array('min' => 1)))
-            ->add('submit', 'submit', array(
+            ->add('quantity', 'integer', ['attr' => ['min' => 1]])
+            ->add('submit', 'submit', [
                 'label' => 'Ajouter au panier'
-            ))
+            ])
             ->setAction($options['action'])
         ;
     }
@@ -30,12 +30,12 @@ class AddItemType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(array(
+            ->setDefaults([
                 'data_class' => 'Ekyna\Bundle\OrderBundle\Model\AddOrderItem',
-            ))
+            ])
         ;
     }
 

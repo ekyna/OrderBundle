@@ -133,7 +133,7 @@ class OrderEventSubscriber extends AbstractEventSubscriber
         $order = $event->getOrder();
 
         // If new state is Accepted or Completed and type is not order
-        if (in_array($order->getState(), array(OrderStates::STATE_ACCEPTED, OrderStates::STATE_COMPLETED))
+        if (in_array($order->getState(), [OrderStates::STATE_ACCEPTED, OrderStates::STATE_COMPLETED])
             && $order->getType() != OrderTypes::TYPE_ORDER
         ) {
             // Transform to an order
@@ -147,7 +147,7 @@ class OrderEventSubscriber extends AbstractEventSubscriber
             $this->generateNumberAndKey($order);
             $this->handleAddresses($order);
 
-            $errorList = $this->validator->validate($order, array('Default', 'Order'));
+            $errorList = $this->validator->validate($order, ['Default', 'Order']);
             if ($errorList->count() > 0) {
                 $messages = [];
                 foreach ($errorList as $error) {
@@ -187,7 +187,7 @@ class OrderEventSubscriber extends AbstractEventSubscriber
         $order = $event->getOrder();
 
         // Only for orders and quotes
-        if (!in_array($order->getType(), array(OrderTypes::TYPE_ORDER, OrderTypes::TYPE_QUOTE))) {
+        if (!in_array($order->getType(), [OrderTypes::TYPE_ORDER, OrderTypes::TYPE_QUOTE])) {
             return;
         }
 
@@ -215,7 +215,7 @@ class OrderEventSubscriber extends AbstractEventSubscriber
         $order = $event->getOrder();
 
         // Only for orders and quotes
-        if (!in_array($order->getType(), array(OrderTypes::TYPE_ORDER, OrderTypes::TYPE_QUOTE))) {
+        if (!in_array($order->getType(), [OrderTypes::TYPE_ORDER, OrderTypes::TYPE_QUOTE])) {
             return;
         }
 
@@ -329,7 +329,7 @@ class OrderEventSubscriber extends AbstractEventSubscriber
         }
 
         // If type is order or quote, clone the addresses.
-        if (in_array($order->getType(), array(OrderTypes::TYPE_ORDER, OrderTypes::TYPE_QUOTE))) {
+        if (in_array($order->getType(), [OrderTypes::TYPE_ORDER, OrderTypes::TYPE_QUOTE])) {
             // Clone invoice address if needed
             $invoiceAddress = $order->getInvoiceAddress();
             if (null !== $user = $invoiceAddress->getUser()) {
@@ -406,19 +406,19 @@ class OrderEventSubscriber extends AbstractEventSubscriber
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            OrderEvents::CONTENT_CHANGE => array(
-                array('onPreContentChange',   512),
-                array('onContentChange',      0),
-                array('onPostContentChange', -512),
-            ),
-            OrderEvents::STATE_CHANGE   => array(
-                array('onStateChange',      0),
-                array('onPostStateChange', -512),
-            ),
-            OrderEvents::PRE_CREATE     => array('onPreCreate', 0),
-            OrderEvents::PRE_UPDATE     => array('onPreUpdate', 0),
-            OrderEvents::PRE_DELETE     => array('onPreDelete', 0),
-        );
+        return [
+            OrderEvents::CONTENT_CHANGE => [
+                ['onPreContentChange',   512],
+                ['onContentChange',      0],
+                ['onPostContentChange', -512],
+            ],
+            OrderEvents::STATE_CHANGE   => [
+                ['onStateChange',      0],
+                ['onPostStateChange', -512],
+            ],
+            OrderEvents::PRE_CREATE     => ['onPreCreate', 0],
+            OrderEvents::PRE_UPDATE     => ['onPreUpdate', 0],
+            OrderEvents::PRE_DELETE     => ['onPreDelete', 0],
+        ];
     }
 }

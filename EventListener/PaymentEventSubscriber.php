@@ -16,7 +16,7 @@ use Ekyna\Component\Sale\Order\OrderTypes;
 use SM\Factory\FactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Class PaymentEventSubscriber
@@ -51,35 +51,35 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
     private $urlGenerator;
 
     /**
-     * @var SecurityContextInterface
+     * @var AuthorizationCheckerInterface
      */
-    private $securityContext;
+    private $authorization;
 
 
     /**
      * Constructor.
      *
-     * @param ResourceOperatorInterface $operator
-     * @param CalculatorInterface       $calculator
-     * @param StateResolverInterface    $stateResolver
-     * @param FactoryInterface          $factory
-     * @param UrlGeneratorInterface     $urlGenerator
-     * @param SecurityContextInterface  $securityContext
+     * @param ResourceOperatorInterface      $operator
+     * @param CalculatorInterface            $calculator
+     * @param StateResolverInterface         $stateResolver
+     * @param FactoryInterface               $factory
+     * @param UrlGeneratorInterface          $urlGenerator
+     * @param AuthorizationCheckerInterface  $authorization
      */
     public function __construct(
-        ResourceOperatorInterface $operator,
-        CalculatorInterface       $calculator,
-        StateResolverInterface    $stateResolver,
-        FactoryInterface          $factory,
-        UrlGeneratorInterface     $urlGenerator,
-        SecurityContextInterface  $securityContext
+        ResourceOperatorInterface      $operator,
+        CalculatorInterface            $calculator,
+        StateResolverInterface         $stateResolver,
+        FactoryInterface               $factory,
+        UrlGeneratorInterface          $urlGenerator,
+        AuthorizationCheckerInterface  $authorization
     ) {
-        $this->operator        = $operator;
-        $this->calculator      = $calculator;
-        $this->stateResolver   = $stateResolver;
-        $this->factory         = $factory;
-        $this->urlGenerator    = $urlGenerator;
-        $this->securityContext = $securityContext;
+        $this->operator      = $operator;
+        $this->calculator    = $calculator;
+        $this->stateResolver = $stateResolver;
+        $this->factory       = $factory;
+        $this->urlGenerator  = $urlGenerator;
+        $this->authorization = $authorization;
     }
 
     /**
@@ -182,10 +182,10 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
         } elseif ($type === OrderTypes::TYPE_QUOTE) {
             throw new \BadMethodCallException('Not yet implemented');
         } elseif ($type === OrderTypes::TYPE_ORDER) {
-            if ($this->securityContext->isGranted('ROLE_ADMIN')) {
-                $returnPath = $this->urlGenerator->generate('ekyna_order_order_admin_show', array('orderId' => $order->getId()));
+            if ($this->authorization->isGranted('ROLE_ADMIN')) {
+                $returnPath = $this->urlGenerator->generate('ekyna_order_order_admin_show', ['orderId' => $order->getId()]);
             } else {
-                $returnPath = $this->urlGenerator->generate('ekyna_cart_confirmation', array('key' => $order->getKey()));
+                $returnPath = $this->urlGenerator->generate('ekyna_cart_confirmation', ['key' => $order->getKey()]);
             }
         } else {
             throw new LogicException(sprintf('Invalid order type "%s".', $type));
@@ -221,11 +221,11 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
      */
     static public function getSubscribedEvents()
     {
-        return array(
-            PaymentEvents::PREPARE      => array('onPaymentPrepare', 0),
-            PaymentEvents::STATE_CHANGE => array('onPaymentStateChange', 0),
-            PaymentEvents::NOTIFY       => array('onPaymentNotify', 0),
-            PaymentEvents::DONE         => array('onPaymentDone', 0),
-        );
+        return [
+            PaymentEvents::PREPARE      => ['onPaymentPrepare', 0],
+            PaymentEvents::STATE_CHANGE => ['onPaymentStateChange', 0],
+            PaymentEvents::NOTIFY       => ['onPaymentNotify', 0],
+            PaymentEvents::DONE         => ['onPaymentDone', 0],
+        ];
     }
 }

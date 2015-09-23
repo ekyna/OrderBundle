@@ -131,17 +131,17 @@ class OrderItemEventSubscriber extends AbstractEventSubscriber
      */
     public static function getSubscribedEvents()
     {
-    	return array(
-    	    OrderItemEvents::ADD => array(
-    	        array('onPreAdd',      1024),
-        	    array('onAdd',           0),
-        	    array('onPostAdd',    -1024),
-    	    ),
-            OrderItemEvents::REMOVE => array(
-    	        array('onPreRemove',   1024),
-    	        array('onRemove',        0),
-    	        array('onPostRemove', -1024),
-    	    ),
-    	);
+    	return [
+    	    OrderItemEvents::ADD => [
+    	        ['onPreAdd',      1024],
+        	    ['onAdd',           0],
+        	    ['onPostAdd',    -1024],
+    	    ],
+            OrderItemEvents::REMOVE => [
+    	        ['onPreRemove',   1024],
+    	        ['onRemove',        0],
+    	        ['onPostRemove', -1024],
+    	    ],
+    	];
     }
 }

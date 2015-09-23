@@ -3,7 +3,6 @@
 namespace Ekyna\Bundle\OrderBundle\Validator\Constraints;
 
 use Ekyna\Component\Sale\Order\OrderInterface;
-use Ekyna\Component\Sale\Order\OrderTypes;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 

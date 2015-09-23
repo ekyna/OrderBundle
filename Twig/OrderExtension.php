@@ -52,10 +52,10 @@ class OrderExtension extends \Twig_Extension
      */
     public function getGlobals()
     {
-        return array(
+        return [
         	'order_document_logo' => $this->documentLogo,
             'order_states' => OrderStates::getConstants(),
-        );
+        ];
     }
 
     /**
@@ -63,11 +63,11 @@ class OrderExtension extends \Twig_Extension
      */
     public function getFilters()
     {
-        return array(
-            new \Twig_SimpleFilter('total', array($this, 'totalFilter')),
-            new \Twig_SimpleFilter('taxes', array($this, 'taxesFilter')),
-            new \Twig_SimpleFilter('price', array($this, 'priceFilter'), array('is_safe' => array('html'))),
-        );
+        return [
+            new \Twig_SimpleFilter('total', [$this, 'totalFilter']),
+            new \Twig_SimpleFilter('taxes', [$this, 'taxesFilter']),
+            new \Twig_SimpleFilter('price', [$this, 'priceFilter'], ['is_safe' => ['html']]),
+        ];
     }
 
     /**
@@ -75,10 +75,10 @@ class OrderExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
-            new \Twig_SimpleFunction('get_order_state',  array($this, 'getOrderState'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('render_order_state',  array($this, 'renderOrderState'), array('is_safe' => array('html'))),
-        );
+        return [
+            new \Twig_SimpleFunction('get_order_state',  [$this, 'getOrderState'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('render_order_state',  [$this, 'renderOrderState'], ['is_safe' => ['html']]),
+        ];
     }
 
     /**

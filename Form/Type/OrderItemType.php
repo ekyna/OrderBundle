@@ -58,53 +58,53 @@ class OrderItemType extends ResourceFormType
      */
     protected function getFields(array $options)
     {
-        return array(
-            array('designation', 'text', array(
+        return [
+            ['designation', 'text', [
                 'label' => 'ekyna_core.field.designation',
                 'sizing' => 'sm',
-                'attr' => array(
+                'attr' => [
                     'label_col' => 4,
                     'widget_col' => 8
-                )
-            )),
-            array('reference', 'text', array(
+                ]
+            ]],
+            ['reference', 'text', [
                 'label' => 'ekyna_core.field.reference',
                 'sizing' => 'sm',
-                'attr' => array(
+                'attr' => [
                     'label_col' => 4,
                     'widget_col' => 8
-                )
-            )),
-            array('weight', 'integer', array(
+                ]
+            ]],
+            ['weight', 'integer', [
                 'label' => 'ekyna_core.field.weight',
                 'sizing' => 'sm',
-                'attr' => array(
-                    'input_group' => array('append' => 'g'),
+                'attr' => [
+                    'input_group' => ['append' => 'g'],
                     'min' => 0,
                     'label_col' => 4,
                     'widget_col' => 8
-                ),
-            )),
-            array('price', 'number', array(
+                ],
+            ]],
+            ['price', 'number', [
                 'label' => 'ekyna_core.field.price',
                 'precision' => 5,
                 'sizing' => 'sm',
-                'attr' => array(
-                    'input_group' => array('append' => '€'),
+                'attr' => [
+                    'input_group' => ['append' => '€'],
                     'label_col' => 4,
                     'widget_col' => 8
-                ),
-            )),
-            array('quantity', 'integer', array(
+                ],
+            ]],
+            ['quantity', 'integer', [
                 'label' => 'ekyna_core.field.quantity',
                 'sizing' => 'sm',
-                'attr' => array(
+                'attr' => [
                     'min' => 1,
                     'label_col' => 4,
                     'widget_col' => 8
-                ),
-            )),
-            array('tax', 'ekyna_resource', array(
+                ],
+            ]],
+            ['tax', 'ekyna_resource', [
                 'label' => 'ekyna_core.field.tax',
                 'class' => 'Ekyna\Bundle\OrderBundle\Entity\Tax',
                 'multiple' => false,
@@ -113,17 +113,17 @@ class OrderItemType extends ResourceFormType
                 'empty_value' => 'ekyna_core.field.tax',
                 'allow_new' => $options['admin_mode'],
                 'sizing' => 'sm',
-                'attr' => array(
+                'attr' => [
                     'placeholder' => 'ekyna_core.field.tax',
                     'label_col' => 4,
                     'widget_col' => 8
-                ),
-            )),
-            array('position', 'hidden', array(
-                'attr' => array(
+                ],
+            ]],
+            ['position', 'hidden', [
+                'attr' => [
                     'data-collection-role' => 'position'
-                )
-            ))
-        );
+                ]
+            ]]
+        ];
     }
 }

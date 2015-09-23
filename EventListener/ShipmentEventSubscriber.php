@@ -31,8 +31,8 @@ class ShipmentEventSubscriber extends AbstractEventSubscriber
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            ShipmentEvents::STATE_CHANGE => array('onShipmentStateChange', 0),
-        );
+        return [
+            ShipmentEvents::STATE_CHANGE => ['onShipmentStateChange', 0],
+        ];
     }
 }

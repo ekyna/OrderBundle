@@ -31,20 +31,20 @@ class EkynaOrderExtension extends AbstractExtension
 
         $bundles = $container->getParameter('kernel.bundles');
 
-        $container->prependExtensionConfig('ekyna_user', array(
-            'account' => array(
+        $container->prependExtensionConfig('ekyna_user', [
+            'account' => [
                 'enable'    => true,
                 'profile'   => true,
                 'register'  => true,
                 'resetting' => true,
                 'address'   => true,
-            ),
-        ));
+            ],
+        ]);
 
         if (array_key_exists('AsseticBundle', $bundles)) {
-            $container->prependExtensionConfig('assetic', array(
-                'bundles' => array('EkynaOrderBundle')
-            ));
+            $container->prependExtensionConfig('assetic', [
+                'bundles' => ['EkynaOrderBundle']
+            ]);
         }
     }
 }

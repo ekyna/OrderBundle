@@ -115,7 +115,7 @@
                 {{ item.price|price }}
             </td>
             <td class="order-doc-number">
-                {% if item.tax is not sameas(null) %}
+                {% if item.tax is not same as(null) %}
                     {{ (item.tax.rate*100)|number_format(1, ',', ' ') }}%
                 {% else %}
                     0%

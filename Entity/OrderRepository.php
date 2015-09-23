@@ -14,6 +14,7 @@ class OrderRepository extends ResourceRepository
 {
     /**
      * {@inheritdoc}
+     * @return \Ekyna\Component\Sale\Order\OrderInterface
      */
     public function createNew($type = OrderTypes::TYPE_ORDER)
     {
@@ -32,10 +33,10 @@ class OrderRepository extends ResourceRepository
      */
     public function findOneByNumber($number, $type = OrderTypes::TYPE_ORDER)
     {
-        return $this->findOneBy(array(
+        return $this->findOneBy([
             'number' => $number,
             'type'   => $type
-        ));
+        ]);
     }
 
     /**
@@ -47,9 +48,9 @@ class OrderRepository extends ResourceRepository
      */
     public function findOneByKey($key, $type = OrderTypes::TYPE_ORDER)
     {
-        return $this->findOneBy(array(
+        return $this->findOneBy([
             'key' => $key,
             'type'   => $type
-        ));
+        ]);
     }
 }

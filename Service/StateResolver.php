@@ -59,7 +59,7 @@ class StateResolver implements StateResolverInterface
         $paymentState = $this->resolvePaymentsState($order);
         $shipmentState = $this->resolveShipmentsState($order);
 
-        if (in_array($paymentState, array(PaymentStates::STATE_PENDING, PaymentStates::STATE_AUTHORIZED, PaymentStates::STATE_COMPLETED))) {
+        if (in_array($paymentState, [PaymentStates::STATE_PENDING, PaymentStates::STATE_AUTHORIZED, PaymentStates::STATE_COMPLETED])) {
             $newState = OrderStates::STATE_ACCEPTED;
             if ($paymentState === PaymentStates::STATE_COMPLETED && $shipmentState == ShipmentStates::STATE_SHIPPED) {
                 $newState = OrderStates::STATE_COMPLETED;
@@ -139,7 +139,7 @@ class StateResolver implements StateResolverInterface
 
             // Check for offline pending payment
             foreach ($payments as $payment) {
-                if (in_array($payment->getState(), array(PaymentStates::STATE_PENDING, PaymentStates::STATE_PROCESSING))
+                if (in_array($payment->getState(), [PaymentStates::STATE_PENDING, PaymentStates::STATE_PROCESSING])
                     && $payment->getMethod()->getFactoryName() === 'offline') {
                     return PaymentStates::STATE_PENDING;
                 }

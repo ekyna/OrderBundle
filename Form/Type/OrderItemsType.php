@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\OrderBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class OrderItemsType
@@ -15,10 +15,10 @@ class OrderItemsType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(array(
+            ->setDefaults([
                 'label'           => false,
                 'type'            => 'ekyna_order_order_item',
                 'allow_add'       => true,
@@ -27,13 +27,13 @@ class OrderItemsType extends AbstractType
                 'add_button_text' => 'ekyna_core.button.add',
                 'sub_widget_col'  => 11,
                 'button_col'      => 1,
-                'attr'            => array(
+                'attr'            => [
                     'widget_col' => 12
-                ),
-                'options'         => array(
+                ],
+                'options'         => [
                     'label'    => false,
-                ),
-            ))
+                ],
+            ])
         ;
     }
 

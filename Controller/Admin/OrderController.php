@@ -53,7 +53,7 @@ class OrderController extends ResourceController
 
         $action = $this->generateUrl(
             'ekyna_order_order_admin_payment_new',
-            array('orderId' => $payment->getOrder()->getId())
+            ['orderId' => $payment->getOrder()->getId()]
         );
         $form = $this->createPaymentForm($payment, $action, $redirectPath);
 
@@ -73,11 +73,11 @@ class OrderController extends ResourceController
             'ekyna_order.payment.button.new'
         );
 
-        return $this->render('EkynaOrderBundle:Admin/Order/Payment:new.html.twig', array(
+        return $this->render('EkynaOrderBundle:Admin/Order/Payment:new.html.twig', [
             'form' => $form->createView(),
             'form_template' => 'EkynaOrderBundle:Admin/Order/Payment:_form.html.twig',
             'order' => $order,
-        ));
+        ]);
     }
 
     /**
@@ -99,10 +99,10 @@ class OrderController extends ResourceController
         }
 
         $redirectPath = $this->generateResourcePath($order);
-        $action = $this->generateUrl('ekyna_order_order_admin_payment_edit', array(
+        $action = $this->generateUrl('ekyna_order_order_admin_payment_edit', [
             'orderId' => $order->getId(),
             'paymentId' => $payment->getId(),
-        ));
+        ]);
         $form = $this->createPaymentForm($payment, $action, $redirectPath);
 
         $form->handleRequest($request);
@@ -119,11 +119,11 @@ class OrderController extends ResourceController
             'ekyna_order.payment.button.edit'
         );
 
-        return $this->render('EkynaOrderBundle:Admin/Order/Payment:edit.html.twig', array(
+        return $this->render('EkynaOrderBundle:Admin/Order/Payment:edit.html.twig', [
             'form' => $form->createView(),
             'form_template' => 'EkynaOrderBundle:Admin/Order/Payment:_form.html.twig',
             'order' => $order,
-        ));
+        ]);
     }
 
     /**
@@ -136,14 +136,14 @@ class OrderController extends ResourceController
      */
     private function createPaymentForm(OrderPaymentInterface $payment, $action, $cancelPath)
     {
-        $form = $this->createForm('ekyna_order_order_payment', $payment, array(
+        $form = $this->createForm('ekyna_order_order_payment', $payment, [
             'action' => $action,
             'method' => 'POST',
-            'attr' => array(
+            'attr' => [
                 'class' => 'form-horizontal form-with-tabs',
-            ),
+            ],
             'admin_mode' => true,
-        ));
+        ]);
         $form->add('actions', 'form_actions', [
             'buttons' => [
                 'save' => [
@@ -195,10 +195,10 @@ class OrderController extends ResourceController
         }
 
         $redirectPath = $this->generateResourcePath($order);
-        $action = $this->generateUrl('ekyna_order_order_admin_payment_remove', array(
+        $action = $this->generateUrl('ekyna_order_order_admin_payment_remove', [
             'orderId' => $order->getId(),
             'paymentId' => $payment->getId(),
-        ));
+        ]);
         $form = $this->createRemovePaymentForm($action, $redirectPath);
 
         $form->handleRequest($request);
@@ -217,10 +217,10 @@ class OrderController extends ResourceController
             'ekyna_order.payment.button.remove'
         );
 
-        return $this->render('EkynaOrderBundle:Admin/Order/Payment:remove.html.twig', array(
+        return $this->render('EkynaOrderBundle:Admin/Order/Payment:remove.html.twig', [
             'form' => $form->createView(),
             'order' => $order,
-        ));
+        ]);
     }
 
     /**
@@ -233,23 +233,23 @@ class OrderController extends ResourceController
     private function createRemovePaymentForm($action, $cancelPath)
     {
         return $this
-            ->createFormBuilder(null, array(
+            ->createFormBuilder(null, [
                 'action' => $action,
-                'attr' => array(
+                'attr' => [
                     'class' => 'form-horizontal',
-                ),
+                ],
                 'method' => 'POST',
                 'admin_mode' => true,
                 '_redirect_enabled' => true,
-            ))
-            ->add('confirm', 'checkbox', array(
+            ])
+            ->add('confirm', 'checkbox', [
                 'label' => 'ekyna_order.payment.message.remove_confirm',
-                'attr' => array('align_with_widget' => true),
+                'attr' => ['align_with_widget' => true],
                 'required' => true,
-                'constraints' => array(
+                'constraints' => [
                     new Constraints\True(),
-                )
-            ))
+                ]
+            ])
             ->add('actions', 'form_actions', [
                 'buttons' => [
                     'remove' => [

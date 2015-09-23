@@ -3,7 +3,7 @@
 namespace Ekyna\Bundle\OrderBundle\Settings;
 
 use Ekyna\Bundle\SettingBundle\Schema\AbstractSchema;
-use Ekyna\Bundle\SettingBundle\Schema\SettingsBuilderInterface;
+use Ekyna\Bundle\SettingBundle\Schema\SettingsBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -17,15 +17,13 @@ class OrderSettingsSchema extends AbstractSchema
     /**
      * {@inheritdoc}
      */
-    public function buildSettings(SettingsBuilderInterface $builder)
+    public function buildSettings(SettingsBuilder $builder)
     {
         $builder
-            ->setDefaults(array_merge(array(
+            ->setDefaults(array_merge([
                 'document_footer' => 'Pied de page des documents',
-            ), $this->defaults))
-            ->setAllowedTypes(array(
-                'document_footer' => 'string',
-            ))
+            ], $this->defaults))
+            ->setAllowedTypes('document_footer', 'string')
         ;
     }
 
@@ -35,13 +33,13 @@ class OrderSettingsSchema extends AbstractSchema
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('document_footer', 'tinymce', array(
+            ->add('document_footer', 'tinymce', [
                 'label'       => 'ekyna_order.order.field.document_footer',
                 'theme'       => 'simple',
-                'constraints' => array(
+                'constraints' => [
                     new NotBlank()
-                )
-            ))
+                ]
+            ])
         ;
     }
 

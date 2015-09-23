@@ -18,10 +18,10 @@
     ],
     "require" : {
         "php" : ">=5.4",
-        "ekyna/sale" : "0.3.*@dev",
-        "ekyna/admin-bundle" : "0.3.*@dev",
-        "ekyna/payment-bundle" : "0.3.*@dev",
-        "ekyna/shipment-bundle" : "0.3.*@dev",
+        "ekyna/sale" : "0.4.*@dev",
+        "ekyna/admin-bundle" : "0.4.*@dev",
+        "ekyna/payment-bundle" : "0.4.*@dev",
+        "ekyna/shipment-bundle" : "0.4.*@dev",
         "knplabs/knp-snappy-bundle": "~1.2"
     },
     "autoload" : {
@@ -31,7 +31,7 @@
     },
     "extra" : {
         "branch-alias" : {
-            "dev-master" : "0.3.x-dev"
+            "dev-master" : "0.4.x-dev"
         }
     }
 }
