@@ -15,6 +15,8 @@ use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Sale\Order\OrderInterface;
 use Ekyna\Component\Sale\Order\OrderStates;
 use Ekyna\Component\Sale\Order\OrderTypes;
+use Ekyna\Component\Sale\Payment\PaymentStates;
+use Ekyna\Component\Sale\Shipment\ShipmentStates;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -241,21 +243,31 @@ class OrderEventSubscriber extends AbstractEventSubscriber
         $order = $event->getOrder();
 
         if (!$event->getHard()) {
-            // Stop if order has payments
-            if (0 < $order->getPayments()->count()) {
-                $event->addMessage(new ResourceMessage(
-                    'ekyna_order.order.message.has_payment_cant_deleted',
-                    ResourceMessage::TYPE_ERROR
-                ));
-                return;
+            // Stop if order has valid payments
+            if (null !== $payments = $order->getPayments()) {
+                $breakingPaymentStates = array(PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED);
+                foreach ($payments as $payment) {
+                    if (!in_array($payment->getState(), $breakingPaymentStates)) {
+                        $event->addMessage(new ResourceMessage(
+                            'ekyna_order.order.message.has_payment_cant_deleted',
+                            ResourceMessage::TYPE_ERROR
+                        ));
+                        return;
+                    }
+                }
             }
             // Stop if order has shipments
-            if (0 < $order->getShipments()->count()) {
-                $event->addMessage(new ResourceMessage(
-                    'ekyna_order.order.message.has_shipment_cant_deleted',
-                    ResourceMessage::TYPE_ERROR
-                ));
-                return;
+            if (null !== $shipments = $order->getShipments()) {
+                $breakingShipmentStates = array(ShipmentStates::STATE_CHECKOUT, ShipmentStates::STATE_CANCELLED);
+                foreach ($shipments as $shipment) {
+                    if (!in_array($shipment->getState(), $breakingShipmentStates)) {
+                        $event->addMessage(new ResourceMessage(
+                            'ekyna_order.order.message.has_shipment_cant_deleted',
+                            ResourceMessage::TYPE_ERROR
+                        ));
+                        return;
+                    }
+                }
             }
         } else {
             // Delete unused cloned invoice address.
