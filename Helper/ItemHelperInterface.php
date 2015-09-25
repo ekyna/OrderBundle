@@ -25,7 +25,7 @@ interface ItemHelperInterface
      * Returns the subject from the order item.
      *
      * @param OrderItemInterface $item
-     * @return object
+     * @return object|null
      * @throws InvalidArgumentException
      */
     public function reverseTransform(OrderItemInterface $item);
@@ -44,7 +44,7 @@ interface ItemHelperInterface
      * Generates the front office path for the given subject or order item.
      *
      * @param object $subjectOrOrderItem
-     * @return string
+     * @return string|null
      * @throws InvalidArgumentException
      */
     public function generateFrontOfficePath($subjectOrOrderItem);
@@ -53,7 +53,7 @@ interface ItemHelperInterface
      * Generates the back office path for the given subject or order item.
      *
      * @param object $subjectOrOrderItem
-     * @return string
+     * @return string|null
      * @throws InvalidArgumentException
      */
     public function generateBackOfficePath($subjectOrOrderItem);

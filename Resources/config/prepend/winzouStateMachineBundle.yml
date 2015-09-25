@@ -32,5 +32,5 @@ winzou_state_machine:
                 to:   cancelled
             # When payments are cancelled.
             reset:
-                from: [new, pending, accepted]
+                from: [new, pending, accepted, refused]
                 to: new

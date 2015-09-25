@@ -49,7 +49,8 @@
 
         <!-- Number generator -->
         <service id="ekyna_order.order.generator" class="%ekyna_order.order.generator.class%">
-            <argument type="service" id="ekyna_order.order.repository" />
+            <argument type="service" id="doctrine.orm.default_entity_manager" />
+            <argument>%ekyna_order.order.class%</argument>
         </service>
 
         <!-- Events subscribers -->
