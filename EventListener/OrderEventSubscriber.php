@@ -15,6 +15,8 @@ use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Sale\Order\OrderInterface;
 use Ekyna\Component\Sale\Order\OrderStates;
 use Ekyna\Component\Sale\Order\OrderTypes;
+use Ekyna\Component\Sale\Payment\PaymentStates;
+use Ekyna\Component\Sale\Shipment\ShipmentStates;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -65,28 +67,29 @@ class OrderEventSubscriber extends AbstractEventSubscriber
      *
      * @param ResourceOperatorInterface $orderOperator
      * @param ResourceOperatorInterface $addressOperator
-     * @param CalculatorInterface       $calculator
-     * @param StateResolverInterface    $stateResolver
-     * @param GeneratorInterface        $generator
-     * @param ValidatorInterface        $validator
-     * @param bool                      $debug
+     * @param CalculatorInterface $calculator
+     * @param StateResolverInterface $stateResolver
+     * @param GeneratorInterface $generator
+     * @param ValidatorInterface $validator
+     * @param bool $debug
      */
     public function __construct(
         ResourceOperatorInterface $orderOperator,
         ResourceOperatorInterface $addressOperator,
-        CalculatorInterface       $calculator,
-        StateResolverInterface    $stateResolver,
-        GeneratorInterface        $generator,
-        ValidatorInterface        $validator,
+        CalculatorInterface $calculator,
+        StateResolverInterface $stateResolver,
+        GeneratorInterface $generator,
+        ValidatorInterface $validator,
         $debug = false
-    ) {
-        $this->orderOperator   = $orderOperator;
+    )
+    {
+        $this->orderOperator = $orderOperator;
         $this->addressOperator = $addressOperator;
-        $this->calculator      = $calculator;
-        $this->stateResolver   = $stateResolver;
-        $this->generator       = $generator;
-        $this->validator       = $validator;
-        $this->debug           = $debug;
+        $this->calculator = $calculator;
+        $this->stateResolver = $stateResolver;
+        $this->generator = $generator;
+        $this->validator = $validator;
+        $this->debug = $debug;
     }
 
     /**
@@ -141,8 +144,7 @@ class OrderEventSubscriber extends AbstractEventSubscriber
                 ->setType(OrderTypes::TYPE_ORDER)
                 ->setCreatedAt(new \DateTime())
                 ->setNumber(null)
-                ->setKey(null)
-            ;
+                ->setKey(null);
 
             $this->generateNumberAndKey($order);
             $this->handleAddresses($order);
@@ -241,21 +243,31 @@ class OrderEventSubscriber extends AbstractEventSubscriber
         $order = $event->getOrder();
 
         if (!$event->getHard()) {
-            // Stop if order has payments
-            if (0 < $order->getPayments()->count()) {
-                $event->addMessage(new ResourceMessage(
-                    'ekyna_order.order.message.has_payment_cant_deleted',
-                    ResourceMessage::TYPE_ERROR
-                ));
-                return;
+            // Stop if order has valid payments
+            if (null !== $payments = $order->getPayments()) {
+                $breakingPaymentStates = array(PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED);
+                foreach ($payments as $payment) {
+                    if (!in_array($payment->getState(), $breakingPaymentStates)) {
+                        $event->addMessage(new ResourceMessage(
+                            'ekyna_order.order.message.has_payment_cant_deleted',
+                            ResourceMessage::TYPE_ERROR
+                        ));
+                        return;
+                    }
+                }
             }
-            // Stop if order has shipments
-            if (0 < $order->getShipments()->count()) {
-                $event->addMessage(new ResourceMessage(
-                    'ekyna_order.order.message.has_shipment_cant_deleted',
-                    ResourceMessage::TYPE_ERROR
-                ));
-                return;
+            // Stop if order has valid shipments
+            if (null !== $shipments = $order->getShipments()) {
+                $breakingShipmentStates = array(ShipmentStates::STATE_CHECKOUT, ShipmentStates::STATE_CANCELLED);
+                foreach ($shipments as $shipment) {
+                    if (!in_array($shipment->getState(), $breakingShipmentStates)) {
+                        $event->addMessage(new ResourceMessage(
+                            'ekyna_order.order.message.has_shipment_cant_deleted',
+                            ResourceMessage::TYPE_ERROR
+                        ));
+                        return;
+                    }
+                }
             }
         } else {
             // Delete unused cloned invoice address.
@@ -316,8 +328,7 @@ class OrderEventSubscriber extends AbstractEventSubscriber
             $order->setDeliveryAddress(
                 $this->getOrderUserDefaultAddress($order)
             );
-        }
-        // Else if delivery address is set and "same delivery address"
+        } // Else if delivery address is set and "same delivery address"
         elseif ((null !== $deliveryAddress = $order->getDeliveryAddress()) && $order->getSameAddress()) {
             // Unset delivery address
             $order->setDeliveryAddress(null);
@@ -397,8 +408,7 @@ class OrderEventSubscriber extends AbstractEventSubscriber
     {
         $this->generator
             ->generateNumber($order)
-            ->generateKey($order)
-        ;
+            ->generateKey($order);
     }
 
     /**
@@ -408,12 +418,12 @@ class OrderEventSubscriber extends AbstractEventSubscriber
     {
         return [
             OrderEvents::CONTENT_CHANGE => [
-                ['onPreContentChange',   512],
-                ['onContentChange',      0],
+                ['onPreContentChange', 512],
+                ['onContentChange', 0],
                 ['onPostContentChange', -512],
             ],
             OrderEvents::STATE_CHANGE   => [
-                ['onStateChange',      0],
+                ['onStateChange', 0],
                 ['onPostStateChange', -512],
             ],
             OrderEvents::PRE_CREATE     => ['onPreCreate', 0],

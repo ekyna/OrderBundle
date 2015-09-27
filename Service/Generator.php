@@ -2,8 +2,8 @@
 
 namespace Ekyna\Bundle\OrderBundle\Service;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
-use Ekyna\Bundle\OrderBundle\Entity\OrderRepository;
 use Ekyna\Component\Sale\Order\OrderInterface;
 use Ekyna\Component\Sale\Order\OrderTypes;
 use Payum\Core\Security\Util\Random;
@@ -16,18 +16,26 @@ use Payum\Core\Security\Util\Random;
 class Generator implements GeneratorInterface
 {
     /**
-     * @var OrderRepository
+     * @var EntityManagerInterface
      */
-    private $repository;
+    private $manager;
+
+    /**
+     * @var string
+     */
+    private $orderClass;
+
 
     /**
      * Constructor.
-     * 
-     * @param OrderRepository $repository
+     *
+     * @param EntityManagerInterface $manager
+     * @param string                 $orderClass
      */
-    public function __construct(OrderRepository $repository)
+    public function __construct(EntityManagerInterface $manager, $orderClass)
     {
-        $this->repository = $repository;
+        $this->manager = $manager;
+        $this->orderClass = $orderClass;
     }
 
     /**
@@ -39,36 +47,54 @@ class Generator implements GeneratorInterface
             return $this;
         }
 
+        $this->manager->getFilters()->disable('softdeleteable');
+
         if (null === $date = $order->getCreatedAt()) {
             $order->setCreatedAt($date = new \DateTime());
         }
 
-    	$qb = $this->repository->createQueryBuilder('o');
-    	$qb
-            ->select('o.number')
-    	    ->where($qb->expr()->eq('o.type', ':type'))
-    	    ->andWhere($qb->expr()->eq('YEAR(o.createdAt)', ':year'))
-    	    ->andWhere($qb->expr()->eq('MONTH(o.createdAt)', ':month'))
-    	    ->andWhere($qb->expr()->isNotNull('o.number'))
-    	    ->orderBy('o.number', 'DESC')
+        if (null !== $order->getId()) {
+            $selectDql = <<<DQL
+SELECT o.number
+FROM $this->orderClass o
+WHERE o.type = :type
+  AND YEAR(o.createdAt) = :year
+  AND MONTH(o.createdAt) = :month
+  AND o.number IS NOT NULL
+  AND o.id != :id
+ORDER BY o.number DESC
+DQL;
+        } else {
+            $selectDql = <<<DQL
+SELECT o.number
+FROM $this->orderClass o
+WHERE o.type = :type
+  AND YEAR(o.createdAt) = :year
+  AND MONTH(o.createdAt) = :month
+  AND o.number IS NOT NULL
+ORDER BY o.number DESC
+DQL;
+        }
+
+        $query = $this->manager->createQuery($selectDql);
+        $query
             ->setMaxResults(1)
-    	    ->setParameter('type', $order->getType())
-    	    ->setParameter('year', $date->format('Y'))
-    	    ->setParameter('month', $date->format('m'))
-    	;
+            ->setParameter('type', $order->getType())
+            ->setParameter('year', $date->format('Y'))
+            ->setParameter('month', $date->format('m'))
+        ;
 
         if (null !== $order->getId()) {
-            $qb
-                ->andWhere($qb->expr()->neq('o.id', ':id'))
-                ->setParameter('id', $order->getId())
-            ;
+            $query->setParameter('id', $order->getId());
         }
 
-    	if (null !== $result = $qb->getQuery()->getOneOrNullResult(Query::HYDRATE_SCALAR)) {
+        if (null !== $result = $query->getOneOrNullResult(Query::HYDRATE_SCALAR)) {
             $order->setNumber((string) (intval($result['number']) + 1));
-    	} else {
+        } else {
             $order->setNumber($date->format('ym') . str_pad('1', 5, '0', STR_PAD_LEFT));
         }
+
+        $this->manager->getFilters()->enable('softdeleteable');
 
         return $this;
     }
@@ -82,13 +108,15 @@ class Generator implements GeneratorInterface
             return $this;
         }
 
-        $qb = $this->repository->createQueryBuilder('o');
-        $query = $qb
-            ->select('o.id')
-            ->andWhere($qb->expr()->eq('o.key', ':key'))
-            ->getQuery()
-            ->setMaxResults(1)
-        ;
+        $this->manager->getFilters()->disable('softdeleteable');
+
+        $query = $this->manager->createQuery(<<<DQL
+SELECT o.id
+FROM $this->orderClass o
+WHERE o.key = :key
+DQL
+        );
+        $query->setMaxResults(1);
 
         do {
             $key = substr(Random::generateToken(), 0, 32);
@@ -98,7 +126,9 @@ class Generator implements GeneratorInterface
             ;
         } while(null !== $result);
 
-    	$order->setKey($key);
+        $order->setKey($key);
+
+        $this->manager->getFilters()->enable('softdeleteable');
 
         return $this;
     }

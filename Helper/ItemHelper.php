@@ -29,19 +29,12 @@ class ItemHelper implements ItemHelperInterface
         $this->registry = $registry;
     }
 
-
     /**
      * {@inheritdoc}
      */
     public function transform($subject)
     {
-        foreach ($this->registry->getProviders() as $provider) {
-            if ($provider->supports($subject)) {
-                return $provider->transform($subject);
-            }
-        }
-
-        throw new InvalidArgumentException('Unsupported subject.');
+        return $this->getProvider($subject)->transform($subject);
     }
 
     /**
@@ -49,19 +42,12 @@ class ItemHelper implements ItemHelperInterface
      */
     public function reverseTransform(OrderItemInterface $item)
     {
-        if (null !== $subject = $item->getSubject()) {
-            return $subject;
+        if ((null === $subject = $item->getSubject()) && null !== $item->getSubjectType()) {
+            $subject = $this->getProvider($item)->reverseTransform($item);
+            $item->setSubject($subject);
         }
 
-        foreach ($this->registry->getProviders() as $provider) {
-            if ($provider->supports($item)) {
-                $subject = $provider->reverseTransform($item);
-                $item->setSubject($subject);
-                return $subject;
-            }
-        }
-
-        throw new InvalidArgumentException('Unsupported subject.');
+        return $subject;
     }
 
     /**
@@ -69,13 +55,11 @@ class ItemHelper implements ItemHelperInterface
      */
     public function getFormOptions(OrderItemInterface $item, $property)
     {
-        foreach ($this->registry->getProviders() as $provider) {
-            if ($provider->supports($item)) {
-                return $provider->getFormOptions($item, $property);
-            }
+        if (null !== $item->getSubjectType()) {
+            return $this->getProvider($item)->getFormOptions($item, $property);
         }
 
-        throw new InvalidArgumentException('Unsupported subject.');
+        return [];
     }
 
     /**
@@ -83,13 +67,24 @@ class ItemHelper implements ItemHelperInterface
      */
     public function generateFrontOfficePath($subjectOrOrderItem)
     {
-        foreach ($this->registry->getProviders() as $provider) {
-            if ($provider->supports($subjectOrOrderItem)) {
-                return $provider->generateFrontOfficePath($subjectOrOrderItem);
+        $provider = null;
+
+        if ($subjectOrOrderItem instanceof OrderItemInterface && null !== $subjectOrOrderItem->getSubjectType()) {
+            $provider = $this->getProvider($subjectOrOrderItem);
+        } else {
+            foreach ($this->registry->getProviders() as $p) {
+                if ($p->supports($subjectOrOrderItem)) {
+                    $provider = $p;
+                    break;
+                }
             }
         }
 
-        throw new InvalidArgumentException('Unsupported subject.');
+        if (null !== $provider) {
+            return $provider->generateFrontOfficePath($subjectOrOrderItem);
+        }
+
+        return null;
     }
 
     /**
@@ -97,9 +92,38 @@ class ItemHelper implements ItemHelperInterface
      */
     public function generateBackOfficePath($subjectOrOrderItem)
     {
+        $provider = null;
+
+        if ($subjectOrOrderItem instanceof OrderItemInterface && null !== $subjectOrOrderItem->getSubjectType()) {
+            $provider = $this->getProvider($subjectOrOrderItem);
+        } else {
+            foreach ($this->registry->getProviders() as $p) {
+                if ($p->supports($subjectOrOrderItem)) {
+                    $provider = $p;
+                    break;
+                }
+            }
+        }
+
+        if (null !== $provider) {
+            return $provider->generateBackOfficePath($subjectOrOrderItem);
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the provider supporting the subject or item.
+     *
+     * @param $subjectOrOrderItem
+     * @return \Ekyna\Bundle\OrderBundle\Provider\ItemProviderInterface
+     * @throws InvalidArgumentException
+     */
+    private function getProvider($subjectOrOrderItem)
+    {
         foreach ($this->registry->getProviders() as $provider) {
             if ($provider->supports($subjectOrOrderItem)) {
-                return $provider->generateBackOfficePath($subjectOrOrderItem);
+                return $provider;
             }
         }
 

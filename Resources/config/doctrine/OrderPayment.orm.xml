@@ -14,7 +14,7 @@
         <field name="notes" type="string" column="notes" length="255" nullable="true" />
 
         <many-to-one field="order" target-entity="Ekyna\Component\Sale\Order\OrderInterface" inversed-by="payments" orphan-removal="true">
-            <join-column name="order_id" referenced-column-name="id" nullable="true" />
+            <join-column name="order_id" referenced-column-name="id" nullable="true" on-delete="CASCADE" />
         </many-to-one>
 
     </entity>

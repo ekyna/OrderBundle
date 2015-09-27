@@ -28,5 +28,9 @@ winzou_state_machine:
                 from: [accepted, completed]
                 to:   refunded
             cancel:
-                from: [new, pending]
+                from: [new, pending, accepted]
                 to:   cancelled
+            # All payments removed.
+            reset:
+                from: [new, pending, accepted, refused]
+                to: new
