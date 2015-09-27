@@ -18,10 +18,10 @@
     ],
     "require" : {
         "php" : ">=5.4",
-        "ekyna/sale" : "0.4.*@dev",
-        "ekyna/admin-bundle" : "0.4.*@dev",
-        "ekyna/payment-bundle" : "0.4.*@dev",
-        "ekyna/shipment-bundle" : "0.4.*@dev",
+        "ekyna/sale" : "0.4.x-dev",
+        "ekyna/admin-bundle" : "0.4.x-dev",
+        "ekyna/payment-bundle" : "0.4.x-dev",
+        "ekyna/shipment-bundle" : "0.4.x-dev",
         "knplabs/knp-snappy-bundle": "~1.3"
     },
     "autoload" : {
