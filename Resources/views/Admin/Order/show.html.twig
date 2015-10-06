@@ -126,7 +126,7 @@
                             <tbody>
                             {% for payment in order.payments %}
                             <tr data-id="1">
-                                <td>{{ payment.method.paymentName }}</td>
+                                <td>{{ payment.method }}</td>
                                 <td>{{ payment.amount|price }}</td>
                                 <td>{{ payment.currency }}</td>
                                 <td>{{ payment.notes }}</td>
