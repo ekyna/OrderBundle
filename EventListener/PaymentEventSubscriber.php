@@ -109,9 +109,11 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
         }
         $order->setLocked(true);
 
-        $payment->setAmount(
-            $this->calculator->calculateOrderRemainingTotal($order)
-        );
+        if (0 >= $payment->getAmount()) {
+            $payment->setAmount(
+                $this->calculator->calculateOrderRemainingTotal($order)
+            );
+        }
 
         $this->updateOrder($order, $event, true);
     }
@@ -168,32 +170,33 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
             return;
         }
 
-        $details = $payment->getDetails();
-        if (array_key_exists('done_redirect_path', $details)) {
-            $event->setResponse(new RedirectResponse($details['done_redirect_path']));
-            return;
-        }
-
         $order = $payment->getOrder();
-        $type = $order->getType();
-
-        if ($type === OrderTypes::TYPE_CART) {
-            $returnPath = $this->urlGenerator->generate('ekyna_cart_payment');
-        } elseif ($type === OrderTypes::TYPE_QUOTE) {
-            throw new \BadMethodCallException('Not yet implemented');
-        } elseif ($type === OrderTypes::TYPE_ORDER) {
-            if ($this->securityContext->isGranted('ROLE_ADMIN')) {
-                $returnPath = $this->urlGenerator->generate('ekyna_order_order_admin_show', array('orderId' => $order->getId()));
-            } else {
-                $returnPath = $this->urlGenerator->generate('ekyna_cart_confirmation', array('key' => $order->getKey()));
-            }
-        } else {
-            throw new LogicException(sprintf('Invalid order type "%s".', $type));
-        }
-
         if ($order->getLocked()) {
             $order->setLocked(false);
             $this->updateOrder($order, $event);
+        }
+
+        $returnPath = null;
+        $details = $payment->getDetails();
+        if (array_key_exists('done_redirect_path', $details)) {
+            $returnPath = $details['done_redirect_path'];
+        } else {
+            $type = $order->getType();
+            if ($type === OrderTypes::TYPE_CART) {
+                $returnPath = $this->urlGenerator->generate('ekyna_cart_payment');
+            } elseif ($type === OrderTypes::TYPE_QUOTE) {
+                throw new \BadMethodCallException('Not yet implemented');
+            } elseif ($type === OrderTypes::TYPE_ORDER) {
+                if ($this->securityContext->isGranted('ROLE_ADMIN')) {
+                    $returnPath = $this->urlGenerator->generate('ekyna_order_order_admin_show', array('orderId' => $order->getId()));
+                } else {
+                    $returnPath = $this->urlGenerator->generate('ekyna_cart_confirmation', array('key' => $order->getKey()));
+                }
+            }
+        }
+
+        if (null === $returnPath) {
+            throw new LogicException('Unable to determine return path.');
         }
 
         $event->setResponse(new RedirectResponse($returnPath));
@@ -213,7 +216,9 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
 
         $this->operator->update($orderEvent);
 
-        $event->addMessages($orderEvent->getMessages());
+        if ($orderEvent->hasMessages()) {
+            $event->addMessages($orderEvent->getMessages());
+        }
     }
 
     /**
