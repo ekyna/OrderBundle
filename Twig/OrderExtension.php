@@ -30,6 +30,7 @@ class OrderExtension extends \Twig_Extension
      */
     private $documentLogo;
 
+
     /**
      * Constructor.
      * 
@@ -54,7 +55,6 @@ class OrderExtension extends \Twig_Extension
     {
         return array(
         	'order_document_logo' => $this->documentLogo,
-            'order_states' => OrderStates::getConstants(),
         );
     }
 
@@ -64,107 +64,94 @@ class OrderExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            new \Twig_SimpleFilter('total', array($this, 'totalFilter')),
-            new \Twig_SimpleFilter('taxes', array($this, 'taxesFilter')),
-            new \Twig_SimpleFilter('price', array($this, 'priceFilter'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFilter('order_total',       array($this, 'getOrderTotal')),
+            new \Twig_SimpleFilter('order_item_total',  array($this, 'getOrderItemTotal')),
+            new \Twig_SimpleFilter('order_taxes',       array($this, 'getOrderTaxes')),
+            new \Twig_SimpleFilter('order_item_tax',    array($this, 'getOrderItemTax')),
+
+            new \Twig_SimpleFilter('order_state_label', array($this, 'getOrderStateLabel'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFilter('order_state_badge', array($this, 'getOrderStateBadge'), array('is_safe' => array('html'))),
         );
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getFunctions()
-    {
-        return array(
-            new \Twig_SimpleFunction('get_order_state',  array($this, 'getOrderState'), array('is_safe' => array('html'))),
-            new \Twig_SimpleFunction('render_order_state',  array($this, 'renderOrderState'), array('is_safe' => array('html'))),
-        );
-    }
-
-    /**
-     * Renders the translated order state.
+     * Returns the order state label.
      *
-     * @param string $state
+     * @param string|OrderInterface $stateOrOrder $state
      * @return string
      */
-    public function getOrderState($state)
+    public function getOrderStateLabel($stateOrOrder)
     {
+        $state = $stateOrOrder instanceof OrderInterface ? $stateOrOrder->getState() : $stateOrOrder;
+
         return $this->translator->trans(OrderStates::getLabel($state));
     }
 
     /**
-     * Renders the order state label.
+     * Returns the order state badge.
      *
      * @param string|OrderInterface $stateOrOrder
      * @return string
      */
-    public function renderOrderState($stateOrOrder)
+    public function getOrderStateBadge($stateOrOrder)
     {
         $state = $stateOrOrder instanceof OrderInterface ? $stateOrOrder->getState() : $stateOrOrder;
+
         return sprintf(
             '<span class="label label-%s">%s</span>',
             OrderStates::getTheme($state),
-            $this->getOrderState($state)
+            $this->getOrderStateLabel($state)
         );
     }
     
     /**
-     * Returns the total.
+     * Returns the order total.
      *
-     * @param mixed $input
-     * @param bool $ati
+     * @param OrderInterface $order
+     * @param bool           $ati
      *
      * @return float
      */
-    public function totalFilter($input, $ati = false)
+    public function getOrderTotal(OrderInterface $order, $ati = false)
     {
-        if ($input instanceof OrderItemInterface) {
-            return $this->calculator->calculateOrderItemTotal($input, $ati);
-        } elseif ($input instanceof OrderInterface) {
-            return $this->calculator->calculateOrderTotal($input, $ati);
-        } else {
-            throw new \InvalidArgumentException('Expected OrderItemInterface or OrderInterface');
-        }
+        return $this->calculator->calculateOrderTotal($order, $ati);
     }
 
     /**
-     * Returns the taxes.
+     * Returns the order item total.
      *
-     * @param mixed $input
+     * @param OrderItemInterface $item
+     * @param bool               $ati
+     *
+     * @return float
+     */
+    public function getOrderItemTotal(OrderItemInterface $item, $ati = false)
+    {
+        return $this->calculator->calculateOrderItemTotal($item, $ati);
+    }
+
+    /**
+     * Returns the order taxes.
+     *
+     * @param OrderInterface $order
      *
      * @return \Ekyna\Component\Sale\Tax\TaxesAmounts
      */
-    public function taxesFilter($input)
+    public function getOrderTaxes(OrderInterface $order)
     {
-        if ($input instanceof OrderItemInterface) {
-            throw new \RuntimeException('Not yet implemented.');
-        } elseif ($input instanceof OrderInterface) {
-            return $this->calculator->calculateOrderTaxesAmounts($input);
-        } else {
-            throw new \InvalidArgumentException('Expected OrderItemInterface or OrderInterface');
-        }
+        return $this->calculator->calculateOrderTaxesAmounts($order);
     }
 
     /**
-     * Returns a formatted price
+     * Returns the order item tax.
      *
-     * @param float $price
-     * @param int $decimals
-     * @param string $decPoint
-     * @param string $thousandsSep
+     * @param OrderItemInterface $item
      *
-     * @return string
+     * @return \Ekyna\Component\Sale\Tax\TaxAmount
      */
-    public function priceFilter($price, $decimals = 2, $decPoint = ',', $thousandsSep = ' ')
+    public function getOrderItemTax(OrderItemInterface $item)
     {
-        if (!is_numeric($price)) {
-            throw new \InvalidArgumentException('Expected numeric value.');
-        }
-
-        $price = number_format($price, $decimals, $decPoint, $thousandsSep);
-        $price = $price . '&nbsp;€';
-
-        return $price;
+        return $this->calculator->calculateOrderItemTaxAmount($item);
     }
 
     /**

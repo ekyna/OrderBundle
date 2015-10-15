@@ -59,9 +59,9 @@ class StateResolver implements StateResolverInterface
         $paymentState = $this->resolvePaymentsState($order);
         $shipmentState = $this->resolveShipmentsState($order);
 
-        if (in_array($paymentState, array(PaymentStates::STATE_PENDING, PaymentStates::STATE_AUTHORIZED, PaymentStates::STATE_COMPLETED))) {
+        if (in_array($paymentState, array(PaymentStates::STATE_PENDING, PaymentStates::STATE_AUTHORIZED, PaymentStates::STATE_CAPTURED))) {
             $newState = OrderStates::STATE_ACCEPTED;
-            if ($paymentState === PaymentStates::STATE_COMPLETED && $shipmentState == ShipmentStates::STATE_SHIPPED) {
+            if ($paymentState === PaymentStates::STATE_CAPTURED && $shipmentState == ShipmentStates::STATE_SHIPPED) {
                 $newState = OrderStates::STATE_COMPLETED;
             }
         } elseif ($paymentState == PaymentStates::STATE_FAILED) {
@@ -70,8 +70,8 @@ class StateResolver implements StateResolverInterface
             $newState = OrderStates::STATE_REFUNDED;
         } elseif ($paymentState == PaymentStates::STATE_CANCELLED) {
             $newState = OrderStates::STATE_CANCELLED;
-        } elseif ($paymentState == PaymentStates::STATE_PENDING) {
-            $newState = OrderStates::STATE_PENDING;
+//        } elseif ($paymentState == PaymentStates::STATE_PENDING) {
+//            $newState = OrderStates::STATE_PENDING;
         } else {
             $newState = OrderStates::STATE_NEW;
         }
@@ -109,14 +109,14 @@ class StateResolver implements StateResolverInterface
      */
     private function resolvePaymentsState(OrderInterface $order)
     {
-        $completedTotal = $authorizedTotal = $refundTotal = $failedTotal = 0;
+        $capturedTotal = $authorizedTotal = $refundTotal = $failedTotal = 0;
 
         $payments = $order->getPayments();
         if (0 < $payments->count()) {
             // Gather state amounts
             foreach ($payments as $payment) {
-                if ($payment->getState() == PaymentStates::STATE_COMPLETED) {
-                    $completedTotal += $payment->getAmount();
+                if ($payment->getState() == PaymentStates::STATE_CAPTURED) {
+                    $capturedTotal += $payment->getAmount();
                 } else if ($payment->getState() == PaymentStates::STATE_AUTHORIZED) {
                     $authorizedTotal += $payment->getAmount();
                 } else if ($payment->getState() == PaymentStates::STATE_REFUNDED) {
@@ -127,9 +127,9 @@ class StateResolver implements StateResolverInterface
             }
 
             // State by amounts
-            if ($completedTotal >= $order->getAtiTotal()) {
-                return PaymentStates::STATE_COMPLETED;
-            } elseif ($authorizedTotal + $completedTotal >= $order->getAtiTotal()) {
+            if ($capturedTotal >= $order->getAtiTotal()) {
+                return PaymentStates::STATE_CAPTURED;
+            } elseif ($authorizedTotal + $capturedTotal >= $order->getAtiTotal()) {
                 return PaymentStates::STATE_AUTHORIZED;
             } elseif ($refundTotal >= $order->getAtiTotal()) {
                 return PaymentStates::STATE_REFUNDED;
@@ -139,7 +139,7 @@ class StateResolver implements StateResolverInterface
 
             // Check for offline pending payment
             foreach ($payments as $payment) {
-                if (in_array($payment->getState(), array(PaymentStates::STATE_PENDING, PaymentStates::STATE_PROCESSING))
+                if (in_array($payment->getState(), array(PaymentStates::STATE_PENDING))
                     && $payment->getMethod()->getFactoryName() === 'offline') {
                     return PaymentStates::STATE_PENDING;
                 }

@@ -188,9 +188,18 @@ class PaymentEventSubscriber extends AbstractEventSubscriber
                 throw new \BadMethodCallException('Not yet implemented');
             } elseif ($type === OrderTypes::TYPE_ORDER) {
                 if ($this->securityContext->isGranted('ROLE_ADMIN')) {
-                    $returnPath = $this->urlGenerator->generate('ekyna_order_order_admin_show', array('orderId' => $order->getId()));
+                    $returnPath = $this->urlGenerator->generate(
+                        'ekyna_order_order_admin_show',
+                        array('orderId' => $order->getId())
+                    );
                 } else {
-                    $returnPath = $this->urlGenerator->generate('ekyna_cart_confirmation', array('key' => $order->getKey()));
+                    $returnPath = $this->urlGenerator->generate(
+                        'ekyna_cart_confirmation',
+                        array(
+                            'orderKey' => $order->getKey(),
+                            'paymentId' => $payment->getId(),
+                        )
+                    );
                 }
             }
         }

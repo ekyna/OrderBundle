@@ -125,7 +125,7 @@ DQL
         $query->setMaxResults(1);
 
         do {
-            $key = substr(Random::generateToken(), 0, 32);
+            $key = substr(preg_replace('~[^a-zA-Z\d]~', '', Random::generateToken()), 0, 32);
             $result = $query
                 ->setParameter('key', $key)
                 ->getOneOrNullResult(Query::HYDRATE_SCALAR)

@@ -32,15 +32,15 @@
                             {{ show_row(order.number, 'text', 'ekyna_core.field.number', {'label_nb_col': 4}) }}
                         </div>
                         <div class="col-md-6">
-                            {{ show_row(render_order_state(order), 'text', 'ekyna_order.order.field.state', {'label_nb_col': 4}) }}
+                            {{ show_row(order|order_state_badge, 'text', 'ekyna_order.order.field.state', {'label_nb_col': 4}) }}
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            {{ show_row(order.atiTotal, 'number', 'ekyna_order.order.field.ati_total', {'label_nb_col': 4, 'append': '€'}) }}
+                            {{ show_row(order.atiTotal|localizedcurrency(order.currency), 'text', 'ekyna_order.order.field.ati_total', {'label_nb_col': 4, 'append': '€'}) }}
                         </div>
                         <div class="col-md-6">
-                            {{ show_row(render_payment_state(order.paymentState), 'text', 'ekyna_order.order.field.payment_state', {'label_nb_col': 4}) }}
+                            {{ show_row(order.paymentState|payment_state_badge, 'text', 'ekyna_order.order.field.payment_state', {'label_nb_col': 4}) }}
                         </div>
                     </div>
                     {% if order.requiresShipment() %}
@@ -127,10 +127,10 @@
                             {% for payment in order.payments %}
                             <tr data-id="1">
                                 <td>{{ payment.method }}</td>
-                                <td>{{ payment.amount|price }}</td>
+                                <td>{{ payment.amount|localizedcurrency(payment.currency) }}</td>
                                 <td>{{ payment.currency }}</td>
                                 <td>{{ payment.notes }}</td>
-                                <td>{{ render_payment_state(payment) }}</td>
+                                <td>{{ payment|payment_state_badge }}</td>
                                 <td class="actions">
                                     <a href="{{ path('ekyna_order_order_admin_payment_edit', {'orderId': order.id, 'paymentId': payment.id}) }}" class="btn btn-warning btn-xs">
                                         {{ 'ekyna_core.button.edit'|trans }}

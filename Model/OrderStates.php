@@ -19,13 +19,13 @@ final class OrderStates extends AbstractConstants
     {
         $prefix = 'ekyna_order.order.state.';
         return array(
-            States::STATE_NEW       => array($prefix.States::STATE_NEW,       'default'),
-            States::STATE_PENDING   => array($prefix.States::STATE_PENDING,   'warning'),
-            States::STATE_REFUSED   => array($prefix.States::STATE_REFUSED,   'danger'),
-            States::STATE_ACCEPTED  => array($prefix.States::STATE_ACCEPTED,  'success'),
-            States::STATE_COMPLETED => array($prefix.States::STATE_COMPLETED, 'success'),
-            States::STATE_REFUNDED  => array($prefix.States::STATE_REFUNDED,  'primary'),
-            States::STATE_CANCELLED => array($prefix.States::STATE_CANCELLED, 'default'),
+            States::STATE_NEW       => array($prefix.States::STATE_NEW,       'default', false),
+            States::STATE_PENDING   => array($prefix.States::STATE_PENDING,   'warning', true),
+            States::STATE_REFUSED   => array($prefix.States::STATE_REFUSED,   'danger',  false),
+            States::STATE_ACCEPTED  => array($prefix.States::STATE_ACCEPTED,  'success', true),
+            States::STATE_COMPLETED => array($prefix.States::STATE_COMPLETED, 'success', true),
+            States::STATE_REFUNDED  => array($prefix.States::STATE_REFUNDED,  'primary', true),
+            States::STATE_CANCELLED => array($prefix.States::STATE_CANCELLED, 'default', false),
         );
     }
 
