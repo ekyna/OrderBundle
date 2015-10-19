@@ -37,8 +37,11 @@ class OrderController extends ResourceController
 
         $redirectPath = $this->generateResourcePath($order);
 
-        $amount = $this->get('ekyna_order.order.calculator')->calculateOrderRemainingTotal($order);
-        if ($amount <= 0) {
+        $amount = $this
+            ->get('ekyna_order.order.calculator')
+            ->calculateOrderRemainingTotal($order)
+        ;
+        if (0 >= $amount) {
             $this->addFlash('ekyna_order.order.message.already_paid', 'info');
             return $this->redirect($redirectPath);
         }

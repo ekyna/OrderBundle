@@ -67,29 +67,28 @@ class OrderEventSubscriber extends AbstractEventSubscriber
      *
      * @param ResourceOperatorInterface $orderOperator
      * @param ResourceOperatorInterface $addressOperator
-     * @param CalculatorInterface $calculator
-     * @param StateResolverInterface $stateResolver
-     * @param GeneratorInterface $generator
-     * @param ValidatorInterface $validator
-     * @param bool $debug
+     * @param CalculatorInterface       $calculator
+     * @param StateResolverInterface    $stateResolver
+     * @param GeneratorInterface        $generator
+     * @param ValidatorInterface        $validator
+     * @param bool                      $debug
      */
     public function __construct(
         ResourceOperatorInterface $orderOperator,
         ResourceOperatorInterface $addressOperator,
-        CalculatorInterface $calculator,
-        StateResolverInterface $stateResolver,
-        GeneratorInterface $generator,
-        ValidatorInterface $validator,
+        CalculatorInterface       $calculator,
+        StateResolverInterface    $stateResolver,
+        GeneratorInterface        $generator,
+        ValidatorInterface        $validator,
         $debug = false
-    )
-    {
-        $this->orderOperator = $orderOperator;
+    ) {
+        $this->orderOperator   = $orderOperator;
         $this->addressOperator = $addressOperator;
-        $this->calculator = $calculator;
-        $this->stateResolver = $stateResolver;
-        $this->generator = $generator;
-        $this->validator = $validator;
-        $this->debug = $debug;
+        $this->calculator      = $calculator;
+        $this->stateResolver   = $stateResolver;
+        $this->generator       = $generator;
+        $this->validator       = $validator;
+        $this->debug           = $debug;
     }
 
     /**
@@ -144,7 +143,8 @@ class OrderEventSubscriber extends AbstractEventSubscriber
                 ->setType(OrderTypes::TYPE_ORDER)
                 ->setCreatedAt(new \DateTime())
                 ->setNumber(null)
-                ->setKey(null);
+                ->setKey(null)
+            ;
 
             $this->generateNumberAndKey($order);
             $this->handleAddresses($order);
@@ -245,7 +245,7 @@ class OrderEventSubscriber extends AbstractEventSubscriber
         if (!$event->getHard()) {
             // Stop if order has valid payments
             if (null !== $payments = $order->getPayments()) {
-                $breakingPaymentStates = array(PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED);
+                $breakingPaymentStates = [PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED];
                 foreach ($payments as $payment) {
                     if (!in_array($payment->getState(), $breakingPaymentStates)) {
                         $event->addMessage(new ResourceMessage(
@@ -258,7 +258,7 @@ class OrderEventSubscriber extends AbstractEventSubscriber
             }
             // Stop if order has valid shipments
             if (null !== $shipments = $order->getShipments()) {
-                $breakingShipmentStates = array(ShipmentStates::STATE_CHECKOUT, ShipmentStates::STATE_CANCELLED);
+                $breakingShipmentStates = [ShipmentStates::STATE_CHECKOUT, ShipmentStates::STATE_CANCELLED];
                 foreach ($shipments as $shipment) {
                     if (!in_array($shipment->getState(), $breakingShipmentStates)) {
                         $event->addMessage(new ResourceMessage(
@@ -328,7 +328,8 @@ class OrderEventSubscriber extends AbstractEventSubscriber
             $order->setDeliveryAddress(
                 $this->getOrderUserDefaultAddress($order)
             );
-        } // Else if delivery address is set and "same delivery address"
+        }
+        // Else if delivery address is set and "same delivery address"
         elseif ((null !== $deliveryAddress = $order->getDeliveryAddress()) && $order->getSameAddress()) {
             // Unset delivery address
             $order->setDeliveryAddress(null);
@@ -408,7 +409,8 @@ class OrderEventSubscriber extends AbstractEventSubscriber
     {
         $this->generator
             ->generateNumber($order)
-            ->generateKey($order);
+            ->generateKey($order)
+        ;
     }
 
     /**
