@@ -14,6 +14,7 @@ class OrderRepository extends ResourceRepository
 {
     /**
      * {@inheritdoc}
+     * @return \Ekyna\Component\Sale\Order\OrderInterface
      */
     public function createNew($type = OrderTypes::TYPE_ORDER)
     {
