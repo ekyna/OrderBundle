@@ -33,6 +33,16 @@ interface OrderHelperInterface
     public function addSubject(OrderInterface $order, $subject, $quantity = 1);
 
     /**
+     * Synchronizes the subject with the corresponding order item.
+     *
+     * @param OrderInterface $order
+     * @param object $subject
+     * @return \Ekyna\Bundle\OrderBundle\Event\OrderItemEvent
+     * @throws \Ekyna\Bundle\OrderBundle\Exception\OrderException
+     */
+    public function syncSubject(OrderInterface $order, $subject);
+
+    /**
      * Removes the subject from the order.
      *
      * @param OrderInterface $order

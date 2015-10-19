@@ -50,12 +50,7 @@ class OrderItemEventSubscriber extends AbstractEventSubscriber
             return;
         }
 
-        if (!$event->hasItem()) {
-            if (!$event->hasSubject()) {
-                throw new LogicException('At least the item or the subject must be set.');
-            }
-            $event->setItem($this->helper->transform($event->getSubject()));
-        }
+        $this->prepareEvent($event);
     }
 
     /**
@@ -78,7 +73,33 @@ class OrderItemEventSubscriber extends AbstractEventSubscriber
      */
     public function onPostAdd(OrderItemEvent $event)
     {
-        // TODO remove => OrderEventSubscriber listen to OrderItemEvent::ADD
+        $this->dispatcher->dispatch(OrderEvents::CONTENT_CHANGE, $event);
+    }
+
+    /**
+     * Pre item sync event handler.
+     *
+     * @param OrderItemEvent $event
+     * @throws LogicException
+     */
+    public function onPreSync(OrderItemEvent $event)
+    {
+        if ($this->isOrderLocked($event)) {
+            return;
+        }
+
+        if (!$event->hasItem()) {
+            throw new LogicException('Item must be set.');
+        }
+    }
+
+    /**
+     * Post item sync event handler.
+     *
+     * @param OrderItemEvent $event
+     */
+    public function onPostSync(OrderItemEvent $event)
+    {
         $this->dispatcher->dispatch(OrderEvents::CONTENT_CHANGE, $event);
     }
 
@@ -94,12 +115,7 @@ class OrderItemEventSubscriber extends AbstractEventSubscriber
             return;
         }
 
-        if (!$event->hasItem()) {
-            if (!$event->hasSubject()) {
-                throw new LogicException('At least the item or the subject must be set.');
-            }
-            $event->setItem($this->helper->transform($event->getSubject()));
-        }
+        $this->prepareEvent($event);
     }
 
     /**
@@ -122,8 +138,23 @@ class OrderItemEventSubscriber extends AbstractEventSubscriber
      */
     public function onPostRemove(OrderItemEvent $event)
     {
-        // TODO remove => OrderEventSubscriber listen to OrderItemEvent::REMOVE
         $this->dispatcher->dispatch(OrderEvents::CONTENT_CHANGE, $event);
+    }
+
+    /**
+     * Prepares the event by transforming the subject if needed.
+     *
+     * @param OrderItemEvent $event
+     * @throws LogicException
+     */
+    private function prepareEvent(OrderItemEvent $event)
+    {
+        if (!$event->hasItem()) {
+            if (!$event->hasSubject()) {
+                throw new LogicException('At least the item or the subject must be set.');
+            }
+            $event->setItem($this->helper->transform($event->getSubject()));
+        }
     }
 
     /**
@@ -136,6 +167,10 @@ class OrderItemEventSubscriber extends AbstractEventSubscriber
     	        array('onPreAdd',      1024),
         	    array('onAdd',           0),
         	    array('onPostAdd',    -1024),
+    	    ),
+    	    OrderItemEvents::SYNC => array(
+    	        array('onPreSync',      1024),
+        	    array('onPostSync',    -1024),
     	    ),
             OrderItemEvents::REMOVE => array(
     	        array('onPreRemove',   1024),

@@ -10,5 +10,6 @@ namespace Ekyna\Bundle\OrderBundle\Event;
 class OrderItemEvents
 {
     const ADD    = 'ekyna_order.order_item.add';
+    const SYNC   = 'ekyna_order.order_item.sync';
     const REMOVE = 'ekyna_order.order_item.remove';
 }
