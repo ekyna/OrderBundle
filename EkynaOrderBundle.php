@@ -5,6 +5,7 @@ namespace Ekyna\Bundle\OrderBundle;
 use Ekyna\Bundle\CoreBundle\AbstractBundle;
 use Ekyna\Bundle\OrderBundle\DependencyInjection\Compiler\AdminMenuPass;
 use Ekyna\Bundle\OrderBundle\DependencyInjection\Compiler\ItemProviderPass;
+use Ekyna\Bundle\OrderBundle\DependencyInjection\Compiler\RepositoryPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
@@ -23,6 +24,7 @@ class EkynaOrderBundle extends AbstractBundle
 
         $container->addCompilerPass(new AdminMenuPass());
         $container->addCompilerPass(new ItemProviderPass());
+        $container->addCompilerPass(new RepositoryPass());
     }
 
     /**
