@@ -6,6 +6,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Query;
 use Ekyna\Bundle\AdminBundle\Doctrine\ORM\ResourceRepository;
 use Ekyna\Bundle\OrderBundle\Helper\ItemHelperInterface;
+use Ekyna\Bundle\UserBundle\Model\UserInterface;
 use Ekyna\Component\Sale\Order\OrderTypes;
 
 /**
@@ -74,33 +75,55 @@ class OrderRepository extends ResourceRepository
     }
 
     /**
-     * Finds orders by subject.
+     * Finds orders by subject, optionally filtered by user and/or type (default order).
      *
-     * @param object $subject
-     * @param string $type
-     * @param int    $hydrationMode
+     * @param object        $subject
+     * @param UserInterface $user
+     * @param string        $type
+     * @param int           $hydrationMode
      * @return \Ekyna\Component\Sale\Order\OrderInterface[]
      */
-    public function findBySubject($subject, $type = OrderTypes::TYPE_ORDER, $hydrationMode = Query::HYDRATE_OBJECT)
-    {
+    public function findBySubject(
+        $subject,
+        UserInterface $user = null,
+        $type = OrderTypes::TYPE_ORDER,
+        $hydrationMode = Query::HYDRATE_OBJECT
+    ) {
         $item = $this->itemHelper->transform($subject);
 
-        $dql = <<<DQL
-SELECT o FROM Ekyna\Bundle\OrderBundle\Entity\Order o
-JOIN o.items AS i
-WHERE o.type = :type
-  AND i.subjectData = :subject_data
-  AND i.subjectType = :subject_type
-GROUP BY o.id
-DQL;
+        $qb = $this->getCollectionQueryBuilder();
+        $qb
+            ->join('o.items', 'i')
+            ->andWhere($qb->expr()->eq('o.type', ':type'))
+            ->andWhere($qb->expr()->eq('i.subjectData', ':subject_data'))
+            ->andWhere($qb->expr()->eq('i.subjectType', ':subject_type'))
+            ->addOrderBy('o.updatedAt', 'desc')
+            ->groupBy('o.id')
+        ;
+        if (null !== $user) {
+            $qb->andWhere($qb->expr()->eq('o.user', ':user'));
+        }
 
-        $query = $this->getEntityManager()->createQuery($dql);
-
-        return $query
+        $query = $qb
+            ->getQuery()
             ->setParameter('type', $type)
             ->setParameter('subject_type', $item->getSubjectType())
             ->setParameter('subject_data', $item->getSubjectData(), Type::JSON_ARRAY)
-            ->getResult($hydrationMode)
         ;
+        if (null !== $user) {
+            $query->setParameter('user', $user);
+        }
+
+        return $query->getResult($hydrationMode);
+    }
+
+    /**
+     * Returns the alias.
+     *
+     * @return string
+     */
+    protected function getAlias()
+    {
+        return 'o';
     }
 }
