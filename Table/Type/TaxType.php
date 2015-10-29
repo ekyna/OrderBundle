@@ -24,7 +24,7 @@ class TaxType extends ResourceTableType
             ->addColumn('name', 'anchor', array(
                 'label' => 'ekyna_core.field.name',
                 'sortable' => true,
-                'route_name' => 'ekyna_product_tax_admin_show',
+                'route_name' => 'ekyna_order_tax_admin_show',
                 'route_parameters_map' => array(
                     'taxId' => 'id'
                 ),

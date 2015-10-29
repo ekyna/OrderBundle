@@ -107,6 +107,12 @@
             <tag name="form.type" alias="ekyna_order_order_payment" />
         </service>
 
+        <!-- Dashboard widget -->
+        <service id="ekyna_order.dashboard.orders" class="Ekyna\Bundle\OrderBundle\Dashboard\OrdersWidgetType">
+            <argument id="ekyna_order.order.repository" type="service" />
+            <tag name="ekyna_admin.dashboard.widget_type" alias="orders" />
+        </service>
+
         <!-- Twig extensions -->
         <service id="ekyna_order.twig_extension" class="Ekyna\Bundle\OrderBundle\Twig\OrderExtension">
             <argument type="service" id="translator" />

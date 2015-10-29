@@ -7,6 +7,7 @@ use Doctrine\ORM\Query;
 use Ekyna\Bundle\AdminBundle\Doctrine\ORM\ResourceRepository;
 use Ekyna\Bundle\OrderBundle\Helper\ItemHelperInterface;
 use Ekyna\Bundle\UserBundle\Model\UserInterface;
+use Ekyna\Component\Sale\Order\OrderStates;
 use Ekyna\Component\Sale\Order\OrderTypes;
 
 /**
@@ -115,6 +116,43 @@ class OrderRepository extends ResourceRepository
         }
 
         return $query->getResult($hydrationMode);
+    }
+
+    /**
+     * Finds the latest that require treatment (for dashboard).
+     *
+     * @param int $limit
+     * @param string $dateInterval
+     * @param string $type
+     * @return array
+     */
+    public function findLatestRequiringTreatment($limit = 6, $dateInterval = '-6 months', $type = OrderTypes::TYPE_ORDER)
+    {
+        $qb = $this->getCollectionQueryBuilder();
+        $qb
+            ->select('PARTIAL o.{id,number,email,state,atiTotal}')
+            ->andWhere($qb->expr()->eq('o.type', ':type'))
+            ->andWhere($qb->expr()->in('o.state', ':states'))
+            ->andWhere($qb->expr()->gte('o.createdAt', ':date_ceil'))
+            ->addOrderBy('o.createdAt', 'desc')
+            ->addOrderBy('o.number', 'desc')
+            ->groupBy('o.id')
+        ;
+
+        $dateCeil = new \DateTime();
+        $dateCeil->modify($dateInterval);
+
+        $states = array(OrderStates::STATE_NEW, OrderStates::STATE_PENDING, OrderStates::STATE_ACCEPTED);
+
+        $query = $qb
+            ->getQuery()
+            ->setMaxResults($limit)
+            ->setParameter('type', $type)
+            ->setParameter('states', $states)
+            ->setParameter('date_ceil', $dateCeil, Type::DATETIME)
+        ;
+
+        return $query->getArrayResult();
     }
 
     /**
