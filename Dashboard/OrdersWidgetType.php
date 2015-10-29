@@ -37,7 +37,7 @@ class OrdersWidgetType extends AbstractWidgetType
     {
         $orders = $this->repository->findLatestRequiringTreatment();
 
-        return $twig->render('EkynaOrderBundle:Admin/Dashboard:order.html.twig', array(
+        return $twig->render('EkynaOrderBundle:Admin/Dashboard:orders.html.twig', array(
             'orders' => $orders,
         ));
     }
