@@ -63,4 +63,28 @@ class OrderPayment extends Payment implements OrderPaymentInterface
         $this->notes = $notes;
         return $this;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getClientEmail()
+    {
+        if (null !== $this->order) {
+            return $this->order->getEmail();
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getClientId()
+    {
+        if (null !== $this->order) {
+            if (null !== $customer = $this->order->getUser()) {
+                return $customer->getId();
+            }
+        }
+        return null;
+    }
 }

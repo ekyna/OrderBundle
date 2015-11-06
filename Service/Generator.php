@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Ekyna\Component\Sale\Order\OrderInterface;
 use Ekyna\Component\Sale\Order\OrderTypes;
+use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Payum\Core\Security\Util\Random;
 
 /**
@@ -28,7 +29,7 @@ class Generator implements GeneratorInterface
 
     /**
      * Constructor.
-     *
+     * 
      * @param EntityManagerInterface $manager
      * @param string                 $orderClass
      */
@@ -88,7 +89,7 @@ DQL;
             $query->setParameter('id', $order->getId());
         }
 
-        if (null !== $result = $query->getOneOrNullResult(Query::HYDRATE_SCALAR)) {
+    	if (null !== $result = $query->getOneOrNullResult(Query::HYDRATE_SCALAR)) {
             $order->setNumber((string) (intval($result['number']) + 1));
         } else {
             $order->setNumber($date->format('ym') . str_pad('1', 5, '0', STR_PAD_LEFT));
@@ -115,18 +116,18 @@ SELECT o.id
 FROM $this->orderClass o
 WHERE o.key = :key
 DQL
-        );
+);
         $query->setMaxResults(1);
 
         do {
-            $key = substr(Random::generateToken(), 0, 32);
+            $key = substr(preg_replace('~[^a-zA-Z\d]~', '', Random::generateToken()), 0, 32);
             $result = $query
                 ->setParameter('key', $key)
                 ->getOneOrNullResult(Query::HYDRATE_SCALAR)
             ;
         } while(null !== $result);
 
-        $order->setKey($key);
+    	$order->setKey($key);
 
         $this->manager->getFilters()->enable('softdeleteable');
 

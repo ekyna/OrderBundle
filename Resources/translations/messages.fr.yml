@@ -51,6 +51,9 @@ ekyna_order:
             already_paid: La commande est déjà réglée en totalité
             has_payment_cant_deleted: Cette commande a des paiements et ne peut être supprimée.
             has_shipment_cant_deleted: Cette commande a des livraisons et ne peut être supprimée.
+        dashboard:
+            title: Commandes à traiter
+            none: Aucune commande à traiter
     payment:
         label:
             singular: Paiement

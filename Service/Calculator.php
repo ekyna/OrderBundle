@@ -123,7 +123,7 @@ class Calculator implements CalculatorInterface
     {
         $total = 0;
         foreach ($order->getPayments() as $payment) {
-            if (in_array($payment->getState(), [PaymentStates::STATE_AUTHORIZED, PaymentStates::STATE_COMPLETED])) {
+            if (in_array($payment->getState(), [PaymentStates::STATE_AUTHORIZED, PaymentStates::STATE_CAPTURED])) {
                 $total += $payment->getAmount();
             }
         }

@@ -9,7 +9,7 @@
 	{% stylesheets output='css/order-document.css' filter='cssrewrite, ?yui_css' debug=false
 	    '@EkynaOrderBundle/Resources/asset/css/order-document.css'
 	%}
-	<link href="{{ app.request.schemeAndHttpHost ~ asset_url }}" rel="stylesheet" type="text/css" />
+	<link href="{{ asset(asset_url, null, true) }}" rel="stylesheet" type="text/css" />
 	{%- endstylesheets %}
     {% endblock %}
 </head>
@@ -18,13 +18,15 @@
 
 {# TODO translations #}
 
+{% set currency = order.currency %}
+
 {# --- HEADER --- #}
 {% block header %}
 <table class="order-doc-bloc order-doc-header">
     <tr>
         <td class="order-doc-header-logo">
-            <a href="{{ path('home') }}">
-                <img alt="{{ get_setting('general.site_name') }}" src="{{ asset(order_document_logo) }}" />
+            <a href="{{ url('home') }}">
+                <img alt="{{ get_setting('general.site_name') }}" src="{{ asset(order_document_logo, null, true) }}" />
             </a>
         </td>
         <td class="order-doc-header-address">
@@ -76,7 +78,7 @@
             <td class="order-doc-address">
                 {% if order.requiresShipment %}
                     {% if order.sameAddress %}
-                        {{ 'ekyna_order.order.field.same_address'|trans }}
+                        {{ render_address(order.invoiceAddress) }}
                     {% else %}
                         {{ render_address(order.deliveryAddress) }}
                     {% endif %}
@@ -112,7 +114,7 @@
             </td>
             {#% if order.hasItemsDiscount %}<td class="order-doc-number">{{ item.discount|number_format(2, ',', ' ') }} €</td>{% endif %#}
             <td class="order-doc-number">
-                {{ item.price|price }}
+                {{ item.price|localizedcurrency(currency) }}
             </td>
             <td class="order-doc-number">
                 {% if item.tax is not same as(null) %}
@@ -125,7 +127,7 @@
                 {{ item.quantity }}
             </td>
             <td class="order-doc-number">
-                {{ item|total|price }}
+                {{ item|order_item_total|localizedcurrency(currency) }}
             </td>
         </tr>
         {% endfor %}
@@ -151,31 +153,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% set taxes = order|taxes %}
+                        {% set taxes = order|order_taxes %}
                         <tr>
                             <td class="order-doc-number" rowspan="{% if taxes|length > 1 %}{{ taxes|length }}{% else %}2{% endif %}">
-                                {{ order.netTotal|price }} {# TODO items total ? #}
+                                {{ order.netTotal|localizedcurrency(currency) }} {# TODO items total ? #}
                             </td>
                             {#% if order.totalDiscount > 0 %}<td class="order-doc-number" rowspan="{% if taxes|length > 1 %}{{ taxes|length }}{% else %}2{% endif %}">{{ order.totalDiscount|number_format(2, ',', ' ') }} €</td>{% endif %#}
                             <td{% if taxes|length < 2 %} rowspan="2"{% endif %}>
                                 {% if taxes|length > 0 %}{{ taxes|first.name }}{% endif %}
                             </td>
                             <td class="order-doc-number"{% if taxes|length < 2 %} rowspan="2"{% endif %}>
-                                {% if taxes|length > 0 %}{{ taxes|first.amount|price }}{% endif %}
+                                {% if taxes|length > 0 %}{{ taxes|first.amount|localizedcurrency(currency) }}{% endif %}
                             </td>
                             {% if order.requiresShipment %}
                             <td>
                                 <strong>H.T.</strong>
                             </td>
                             <td class="order-doc-number">
-                                {{ order.netShippingCost|price }}
+                                {{ order.netShippingCost|localizedcurrency(currency) }}
                             </td>
                             {% endif %}
                             <td>
                                 <strong>H.T.</strong>
                             </td>
                             <td class="order-doc-number">
-                                {{ order.netTotal|price }}
+                                {{ order.netTotal|localizedcurrency(currency) }}
                             </td>
                         </tr>
                         <tr>
@@ -184,7 +186,7 @@
                                 {{ taxes|slice(1,1)|first.name }}
                             </td>
                             <td class="order-doc-number">
-                                {{ taxes|slice(1,1)|first.amount|price }}
+                                {{ taxes|slice(1,1)|first.amount|localizedcurrency(currency) }}
                             </td>
                             {% endif %}
                             {% if order.requiresShipment %}
@@ -192,14 +194,14 @@
                                 <strong>T.V.A.</strong>
                             </td>
                             <td class="order-doc-number"{% if taxes|length > 2 %} rowspan="{{ taxes|length - 1 }}"{% endif %}>
-                                {{ order.shippingTaxAmount|price }}
+                                {{ order.shippingTaxAmount|localizedcurrency(currency) }}
                             </td>
                             {% endif %}
                             <td{% if taxes|length > 2 %} rowspan="{{ taxes|length - 1 }}"{% endif %}>
                                 <strong>T.V.A.</strong>
                             </td>
                             <td class="order-doc-number"{% if taxes|length > 2 %} rowspan="{{ taxes|length - 1 }}"{% endif %}>
-                                {{ taxes.total|price }}
+                                {{ taxes.total|localizedcurrency(currency) }}
                             </td>
                         </tr>
                         {% if taxes|length > 2 %}
@@ -209,7 +211,7 @@
                                 {{ tax.title }}
                             </td>
                             <td class="order-doc-number">
-                                {{ taxes[loop.index0].amount|price }}
+                                {{ taxes[loop.index0].amount|localizedcurrency(currency) }}
                             </td>
                         </tr>    
                         {% endfor %}
@@ -226,7 +228,7 @@
                                     Total T.T.C.
                                 </th>
                                 <td>
-                                    {{ order.atiTotal|price }}
+                                    {{ order.atiTotal|localizedcurrency(currency) }}
                                 </td>
                             </tr>
                         </tbody>

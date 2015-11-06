@@ -11,13 +11,12 @@
 
         <parameter key="ekyna_order.order.generator.class">Ekyna\Bundle\OrderBundle\Service\Generator</parameter>
 
-        <parameter key="ekyna_order.payum.paypal.action.capture_order_using_express_checkout.class">Ekyna\Bundle\OrderBundle\Payum\Action\Paypal\CaptureOrderUsingExpressCheckoutAction</parameter>
+        <parameter key="ekyna_order.payum.paypal.action.convert_payment.class">Ekyna\Bundle\OrderBundle\Payum\Action\Paypal\ConvertPaymentAction</parameter>
 
         <parameter key="ekyna_order.order.form_type.class">Ekyna\Bundle\OrderBundle\Form\Type\OrderType</parameter>
         <parameter key="ekyna_order.order_items.form_type.class">Ekyna\Bundle\OrderBundle\Form\Type\OrderItemsType</parameter>
         <parameter key="ekyna_order.order_item.form_type.class">Ekyna\Bundle\OrderBundle\Form\Type\OrderItemType</parameter>
         <parameter key="ekyna_order.order_payment.form_type.class">Ekyna\Bundle\OrderBundle\Form\Type\OrderPaymentType</parameter>
-        <!--<parameter key="ekyna_order.add_product.form_type.class">Ekyna\Bundle\OrderBundle\Form\Type\AddProductType</parameter>-->
     </parameters>
 
     <services>
@@ -83,7 +82,8 @@
         </service>
 
         <!-- Payum -->
-        <service id="ekyna_order.payum.paypal.action.capture_order_using_express_checkout" class="%ekyna_order.payum.paypal.action.capture_order_using_express_checkout.class%">
+        <service id="ekyna_order.payum.paypal.action.convert_payment" class="%ekyna_order.payum.paypal.action.convert_payment.class%">
+            <argument type="service" id="ekyna_order.order.calculator" />
             <tag name="payum.action" factory="paypal_express_checkout_nvp" />
         </service>
 
@@ -106,10 +106,12 @@
             <argument>%ekyna_order.order_payment.class%</argument>
             <tag name="form.type" alias="ekyna_order_order_payment" />
         </service>
-        <!--<service id="ekyna_order.add_product.form_type" class="%ekyna_order.add_product.form_type.class%">
-            <argument>%ekyna_product.options.configuration%</argument>
-            <tag name="form.type" alias="ekyna_order_add_product" />
-        </service>-->
+
+        <!-- Dashboard widget -->
+        <service id="ekyna_order.dashboard.orders" class="Ekyna\Bundle\OrderBundle\Dashboard\OrdersWidgetType">
+            <argument id="ekyna_order.order.repository" type="service" />
+            <tag name="ekyna_admin.dashboard.widget_type" alias="orders" />
+        </service>
 
         <!-- Twig extensions -->
         <service id="ekyna_order.twig_extension" class="Ekyna\Bundle\OrderBundle\Twig\OrderExtension">

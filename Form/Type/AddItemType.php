@@ -4,7 +4,7 @@ namespace Ekyna\Bundle\OrderBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class AddItemType
@@ -30,12 +30,12 @@ class AddItemType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver
-            ->setDefaults([
+            ->setDefaults(array(
                 'data_class' => 'Ekyna\Bundle\OrderBundle\Model\AddOrderItem',
-            ])
+            ))
         ;
     }
 
