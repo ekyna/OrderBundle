@@ -28,9 +28,9 @@
             </constraint>
         </property>-->
 
-        <property name="user">
+        <!--<property name="user">
             <constraint name="Valid" />
-        </property>
+        </property>-->
         <property name="gender">
             <constraint name="NotBlank">
                 <option name="groups">
