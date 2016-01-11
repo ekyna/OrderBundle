@@ -60,10 +60,10 @@
 <table class="order-doc-bloc order-doc-table">
     <thead>
         <tr>
-            <th>Adresse de facturation</th>
+            <th>{{ 'ekyna_order.order.field.invoice_address'|trans }}</th>
             <th class="order-doc-blank">&nbsp;</th>
             {% if order.requiresShipment %}
-            <th>Adresse de livraison</th>
+            <th>{{ 'ekyna_order.order.field.delivery_address'|trans }}</th>
             {% else %}
             <th class="order-doc-blank">&nbsp;</th>
             {% endif %}
@@ -94,13 +94,13 @@
 <table class="order-doc-bloc order-doc-table order-doc-items">
     <thead>
         <tr>
-            <th>Désignation</th>
-            <th>Référence</th>
+            <th>{{ 'ekyna_core.field.designation'|trans }}</th>
+            <th>{{ 'ekyna_core.field.reference'|trans }}</th>
             {#% if order.hasItemsDiscount %}<th>Remise</th>{% endif %#}
-            <th>Prix unit. H.T.</th>
-            <th>T.V.A.</th>
-            <th>Quantité</th>
-            <th>Total H.T.</th>
+            <th>{{ 'ekyna_order.item.field.net_unit_price'|trans }}</th>
+            <th>{{ 'ekyna_order.item.field.tax'|trans }}</th>
+            <th>{{ 'ekyna_core.field.quantity'|trans }}</th>
+            <th>{{ 'ekyna_order.item.field.net_total'|trans }}</th>
         </tr>
     </thead>
     <tbody>

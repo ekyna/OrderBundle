@@ -201,6 +201,9 @@ class OrderEventSubscriber extends AbstractEventSubscriber
 
         // Handle addresses
         $this->handleAddresses($order);
+
+        // Totals
+        $this->calculator->updateTotals($order);
     }
 
     /**
@@ -229,6 +232,9 @@ class OrderEventSubscriber extends AbstractEventSubscriber
 
         // Handle addresses
         $this->handleAddresses($order);
+
+        // Totals
+        $this->calculator->updateTotals($order);
     }
 
     /**
