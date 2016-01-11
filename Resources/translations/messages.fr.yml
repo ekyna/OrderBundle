@@ -24,7 +24,7 @@ ekyna_order:
             invoice: Facture
             invoice_pdf: Facture PDF
             no_shipment: Sans livraison
-            details: Détails
+            details: Détail
             net_unit: Prix Unit. HT
             net_total: Total HT
             ati_total: Total TTC
@@ -54,6 +54,11 @@ ekyna_order:
         dashboard:
             title: Commandes à traiter
             none: Aucune commande à traiter
+    item:
+        field:
+            net_unit_price: Prix unit. H.T.
+            net_total: Total H.T.
+            tax: T.V.A.
     payment:
         label:
             singular: Paiement
